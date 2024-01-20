@@ -1,2 +1,1 @@
-# dmtmms
-DMT Member Management System
+# DMT Member Management System
