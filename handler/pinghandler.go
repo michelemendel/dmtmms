@@ -1,0 +1,10 @@
+package handler
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/michelemendel/dmtmms/view"
+)
+
+func (h *Handler) PingHandler(c echo.Context) error {
+	return render(c, view.Ping())
+}

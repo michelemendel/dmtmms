@@ -1,0 +1,11 @@
+package view
+
+import "github.com/michelemendel/dmtmms/view/layout"
+
+templ Index(name string) {
+	@layout.Base("Helo") {
+		<h1 class="mt-2 text-4xl font-bold underline">
+			HelloY, { name }
+		</h1>
+	}
+}
