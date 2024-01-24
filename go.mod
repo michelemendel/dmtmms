@@ -6,7 +6,9 @@ go 1.21.5
 
 require (
 	github.com/a-h/templ v0.2.513
+	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.11.4
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (

@@ -20,3 +20,6 @@ go.work
 
 # Macos
 .DS_Store
+
+*.db*
+*.log
