@@ -8,23 +8,31 @@ build_server:
 # --------------------------------------------------------------------------------
 # Run
 
-# NOTE: Use 
-# > make server
-# or
-# > air
-
-# @APP_ENV=development ./bin/server 2>&1
-server: build_server
-	@./bin/server
-
-templ_gen:
+templ:
+	@echo "Generating templ files"
 	@templ generate
 
-templ_gen_watch:
+templwatch:
+	@echo "Generating and watching templ files"
 	@templ generate --watch
 
-tailw:
+server: build_server
+	@echo "Starting web server"
+	@./bin/server
+
+serverwatch: build_server
+	@echo "Starting web server with air to watch for changes"
+	@air
+
+tail:
+	@echo "Generating CSS with Tailwind"
+	@npx tailwindcss -i ./tailw_src/input.css -o ./public/output.css
+
+# Also watches templ files
+tailwatch:
+	@echo "Generating and watching CSS with Tailwind"
 	@npx tailwindcss -i ./tailw_src/input.css -o ./public/output.css --watch
 
-prod: templ_gen build_server
-	@APP_ENV=production ./bin/server
+# Starts and watches everything
+watch_all:
+	@${MAKE} -j3 templwatch serverwatch tailwatch

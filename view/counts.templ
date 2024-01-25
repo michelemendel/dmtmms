@@ -1,0 +1,29 @@
+package view
+
+import (
+	"github.com/michelemendel/dmtmms/view/layout"
+	"strconv"
+)
+
+templ Counts(global, session int) {
+	@layout.Base("Helo") {
+		<form id="countsForm" method="POST" hx-post="/counts" hx-select="#countsForm" hx-swap="outerHTML">
+			<div class="pl-3 mt-3 ml-5 text-2xl font-normal">
+				<div class="font-bold">
+					<h1 class="">{ strconv.Itoa(global) }</h1>
+					<p class="">Global</p>
+					<div>
+						<button class="" type="submit" name="val" value="global">+1</button>
+					</div>
+				</div>
+				<div class="">
+					<h1 class="">{ strconv.Itoa(session) }</h1>
+					<p class="">Session</p>
+					<div>
+						<button class="" type="submit" name="val" value="session">+1</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	}
+}
