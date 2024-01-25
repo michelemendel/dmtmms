@@ -10,7 +10,7 @@ import (
 var globalCount int
 var sessionCount int
 
-func (h *Handler) CountsHandler(c echo.Context) error {
+func (h *HandlerContext) CountsHandler(c echo.Context) error {
 
 	val := c.FormValue("val")
 	fmt.Println("FormVal:", val)

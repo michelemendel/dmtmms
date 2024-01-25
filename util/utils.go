@@ -4,6 +4,7 @@ import (
 	"log"
 	"sync"
 
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 )
 
@@ -19,4 +20,8 @@ func InitEnvExec() {
 	if err != nil {
 		log.Fatal("[utils]:error loading env file:", envFile)
 	}
+}
+
+func GenerateUuid() string {
+	return uuid.NewString()
 }

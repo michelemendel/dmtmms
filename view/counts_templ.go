@@ -34,7 +34,7 @@ func Counts(global, session int) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form id=\"countsForm\" method=\"POST\" hx-post=\"/counts\" hx-select=\"#countsForm\" hx-swap=\"outerHTML\"><div class=\"pl-3 mt-3 ml-5 text-2xl font-normal\"><div class=\"font-bold\"><h1 class=\"\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form id=\"countsForm\" hx-post=\"/counts\" hx-select=\"#countsForm\" hx-swap=\"outerHTML\"><div class=\"pl-3 mt-3 ml-5 text-2xl font-normal\"><div class=\"font-bold\"><h1 class=\"\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

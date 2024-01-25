@@ -1,11 +1,11 @@
 package handler
 
-type Handler struct {
-	// log *logging.Logger
+type HandlerContext struct {
+	loggedInUsers []LoggedInUser
 }
 
-func NewHandler() *Handler {
-	return &Handler{
-		// log: log,
+func NewHandlerContext() *HandlerContext {
+	return &HandlerContext{
+		loggedInUsers: make([]LoggedInUser, 0),
 	}
 }

@@ -5,6 +5,6 @@ import (
 	"github.com/michelemendel/dmtmms/view"
 )
 
-func (h *Handler) PingHandler(c echo.Context) error {
+func (h *HandlerContext) PingHandler(c echo.Context) error {
 	return render(c, view.Ping())
 }

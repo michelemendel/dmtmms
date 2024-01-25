@@ -7,9 +7,11 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/michelemendel/dmtmms/c"
+	consts "github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/handler"
 	"github.com/michelemendel/dmtmms/util"
 )
@@ -20,13 +22,13 @@ func init() {
 
 func main() {
 	strconv.Itoa(4)
-	env := os.Getenv(c.APP_ENV)
-	logoutput := os.Getenv(c.LOG_OUTPUT)
-	webServerPort := os.Getenv(c.WEB_SERVER_PORT)
+	env := os.Getenv(consts.APP_ENV)
+	logoutput := os.Getenv(consts.LOG_OUTPUT)
+	webServerPort := os.Getenv(consts.WEB_SERVER_PORT)
 
 	fmt.Printf("ENVIRONMENT:\nmode:%s\nlogoutput:%s\nwebServerPort:%s\n", env, logoutput, webServerPort)
 
-	if logoutput == c.LOG_OUTPUT_FILE {
+	if logoutput == consts.LOG_OUTPUT_FILE {
 		slog.SetDefault(util.FileLogger())
 	} else {
 		slog.SetDefault(util.StdOutLogger())
@@ -34,46 +36,42 @@ func main() {
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
-	// e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
-	// 	fmt.Println("AUTH", username, password)
-	// 	if subtle.ConstantTimeCompare([]byte(username), []byte("joe")) == 1 &&
-	// 		subtle.ConstantTimeCompare([]byte(password), []byte("secret")) == 1 {
-	// 		return true, nil
-	// 	}
-	// 	return false, nil
-	// }))
-
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.SESSION_KEY)))))
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
-	h := handler.NewHandler()
-	Routes(e, h)
-
+	hCtx := handler.NewHandlerContext()
+	// e.Use(hCtx.Auth)
+	Routes(e, hCtx)
 	slog.Debug("Starting server", "port", webServerPort)
 	e.Logger.Fatal(e.Start(":" + webServerPort))
 }
 
-func Routes(e *echo.Echo, h *handler.Handler) {
+func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.Static("/public", "public")
-	e.GET("/", h.IndexHandler)
-	e.GET("/login", h.LoginHandler)
-	e.GET("/counts", h.CountsHandler)
-	e.POST("/counts", h.CountsHandler)
-	e.GET("/ping", h.PingHandler)
+	e.GET("/login", hCtx.LoginHandler)
+	e.POST("/login", hCtx.LoginHandler)
+	e.GET("/logout", hCtx.LogoutHandler)
+	e.GET("/", hCtx.IndexHandler)
+	e.GET("/counts", hCtx.CountsHandler)
+	e.POST("/counts", hCtx.CountsHandler)
+	e.GET("/ping", hCtx.PingHandler)
 }
 
 func customHTTPErrorHandler(err error, c echo.Context) {
 	code := http.StatusInternalServerError
 	httpErr, ok := err.(*echo.HTTPError)
-	fmt.Println("customHTTPErrorHandler", err, ok, code)
 	if ok {
 		code = httpErr.Code
 	}
 
+	fmt.Printf("customHTTPErrorHandler:ok:%v, code:%v, err:%s\n", ok, code, httpErr.Message)
+
 	// c.Logger().Error(err)
 	// errorPage := fmt.Sprintf("%d.html", code)
-	errorPage := "./public/errorPage.html"
-	if err := c.File(errorPage); err != nil {
-		// c.Logger().Error(err)
-		fmt.Println("customHTTPErrorHandler", err)
-	}
+	// errorPage := "./public/errorPage.html"
+	// fileErr := c.File(errorPage)
+	// if fileErr != nil {
+	// 	c.Logger().Error(fileErr)
+	// 	// fmt.Println("customHTTPErrorHandler", fileErr)
+	// }
 }
