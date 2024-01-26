@@ -1,11 +1,19 @@
 package handler
 
+import (
+	"context"
+
+	"github.com/labstack/echo/v4"
+)
+
 type HandlerContext struct {
-	loggedInUsers []LoggedInUser
+	Ctx           context.Context
+	LoggedInUsers []LoggedInUser
 }
 
-func NewHandlerContext() *HandlerContext {
+func NewHandlerContext(echo *echo.Echo) *HandlerContext {
 	return &HandlerContext{
-		loggedInUsers: make([]LoggedInUser, 0),
+		Ctx:           context.Background(),
+		LoggedInUsers: make([]LoggedInUser, 0),
 	}
 }

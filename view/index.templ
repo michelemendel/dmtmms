@@ -1,13 +1,19 @@
 package view
 
-import "github.com/michelemendel/dmtmms/view/layout"
+import "github.com/michelemendel/dmtmms/constants"
 
 templ Index(name string) {
-	@layout.Base("index") {
+	@Base("index") {
 		<button hx-get="/logout" hx-swap="outerHTML">LOGOUT</button>
 		// <a href="/logout">LOGOUT</a>
-		<h1 class="pl-3 mt-3 ml-5 text-2xl font-normal">
-			Hello, Erik the Fish, { name }
-		</h1>
+		if ctx.Value(constants.UsernameKey) != nil {
+			<h1 class="pl-3 mt-3 ml-5 text-2xl font-normal">
+				Hello, { ctx.Value(constants.UsernameKey).(string) }, { name }
+			</h1>
+		} else {
+			<h1 class="pl-3 mt-3 ml-5 text-2xl font-normal">
+				Not logged in
+			</h1>
+		}
 	}
 }

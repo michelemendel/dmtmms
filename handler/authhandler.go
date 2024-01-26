@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -20,7 +21,7 @@ func (h *HandlerContext) IsAuthenticated(c echo.Context) bool {
 	sess, _ := session.Get(consts.SESSION_NAME, c)
 	token := sess.Values[consts.TOKEN_NAME]
 	if token != nil {
-		for _, u := range h.loggedInUsers {
+		for _, u := range h.LoggedInUsers {
 			if u.token == token {
 				fmt.Printf("IsAuthenticated: user:%s, token:%s\n", u.name, u.token)
 				return true
@@ -36,34 +37,15 @@ func (h *HandlerContext) AuthCheck(c echo.Context) error {
 	if !h.IsAuthenticated(c) {
 		fmt.Println("AuthCheck: NOT AUTHENTICATED")
 		// return c.Redirect(http.StatusMovedPermanently, "/login")
-		return render(c, view.Login())
+		return h.render(c, view.Login())
 	}
 	return nil
 }
 
-// func (h *HandlerContext) Auth(next echo.HandlerFunc) echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-// 		fmt.Println("[auth_middleware] START: currRoute:", c.Get("currentRoute"))
-// 		if !h.IsAuthenticated(c) {
-// 			fmt.Println("[auth_middleware] NOT AUTHENTICATED")
-// 			// c.Redirect(http.StatusMovedPermanently, "/login")
-// 			// render(c, view.Login())
-// 			// return nil
-// 		}
-
-// 		fmt.Println("[auth_middleware] NEXT")
-// 		if err := next(c); err != nil {
-// 			c.Error(err)
-// 		}
-// 		fmt.Println("[auth_middleware] AFTER NEXT")
-// 		return nil
-// 	}
-// }
-
 func (h *HandlerContext) LoginHandler(c echo.Context) error {
 	if h.IsAuthenticated(c) {
 		// return c.Redirect(http.StatusMovedPermanently, "/")
-		return render(c, view.Index("THE INDEX"))
+		return h.render(c, view.Index("THE INDEX"))
 	}
 
 	sess, _ := session.Get(consts.SESSION_NAME, c)
@@ -72,7 +54,7 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 
 	fmt.Println("LoginHandler: un/pw:", username, password)
 
-	if username == "joe" && password == "joe" {
+	if strings.ToLower(username) == "joe" && password == "joe" {
 		sess.Options = &sessions.Options{
 			Path:   "/",
 			MaxAge: 30, // 30 seconds
@@ -80,16 +62,20 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 			HttpOnly: true,
 		}
 		newToken := util.GenerateUuid()
-		h.loggedInUsers = append(h.loggedInUsers, LoggedInUser{name: username, token: newToken})
+		h.LoggedInUsers = append(h.LoggedInUsers, LoggedInUser{name: username, token: newToken})
 		sess.Values[consts.TOKEN_NAME] = newToken
 		sess.Save(c.Request(), c.Response())
 		// return c.Redirect(http.StatusMovedPermanently, "/")
 		fmt.Println("LoginHandler: A")
-		return render(c, view.Index("THE INDEX"))
+		h.SetCtxVal(consts.UsernameKey, username)
+
+		fmt.Println("LoginHandler: USER:", h.GetCtxVal("user"), h.Ctx.Value("user"), c.Get("user"))
+
+		return h.render(c, view.Index("THE INDEX"))
 	}
 
 	fmt.Println("LoginHandler: B")
-	return render(c, view.Login())
+	return h.render(c, view.Login())
 }
 
 func (h *HandlerContext) LogoutHandler(c echo.Context) error {
@@ -100,5 +86,5 @@ func (h *HandlerContext) LogoutHandler(c echo.Context) error {
 	sess.Save(c.Request(), c.Response())
 	fmt.Println("LogoutHandler:B:", sess.Values)
 	// return c.Redirect(http.StatusMovedPermanently, "/login")
-	return render(c, view.Login())
+	return h.render(c, view.Login())
 }

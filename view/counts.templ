@@ -1,12 +1,11 @@
 package view
 
 import (
-	"github.com/michelemendel/dmtmms/view/layout"
 	"strconv"
 )
 
 templ Counts(global, session int) {
-	@layout.Base("Helo") {
+	@Base("Helo") {
 		<form id="countsForm" hx-post="/counts" hx-select="#countsForm" hx-swap="outerHTML">
 			<div class="pl-3 mt-3 ml-5 text-2xl font-normal">
 				<div class="font-bold">

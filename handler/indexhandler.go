@@ -10,5 +10,5 @@ import (
 func (h *HandlerContext) IndexHandler(c echo.Context) error {
 	fmt.Println("IndexHandler")
 	h.AuthCheck(c)
-	return render(c, view.Index("THE INDEX"))
+	return h.render(c, view.Index("THE INDEX"))
 }

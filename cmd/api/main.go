@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -21,7 +20,6 @@ func init() {
 }
 
 func main() {
-	strconv.Itoa(4)
 	env := os.Getenv(consts.APP_ENV)
 	logoutput := os.Getenv(consts.LOG_OUTPUT)
 	webServerPort := os.Getenv(consts.WEB_SERVER_PORT)
@@ -39,8 +37,7 @@ func main() {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.SESSION_KEY)))))
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
-	hCtx := handler.NewHandlerContext()
-	// e.Use(hCtx.Auth)
+	hCtx := handler.NewHandlerContext(e)
 	Routes(e, hCtx)
 	slog.Debug("Starting server", "port", webServerPort)
 	e.Logger.Fatal(e.Start(":" + webServerPort))

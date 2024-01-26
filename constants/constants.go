@@ -12,3 +12,7 @@ const (
 	SESSION_NAME      = "session"
 	TOKEN_NAME        = "token"
 )
+
+const (
+	UsernameKey = "username"
+)
