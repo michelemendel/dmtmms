@@ -14,5 +14,7 @@ const (
 )
 
 const (
-	UsernameKey = "username"
+	UsernameKey   = "username"
+	TokenKey      = "token"
+	IsLoggedInKey = "isloggedinkey"
 )

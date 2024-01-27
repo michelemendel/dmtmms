@@ -4,16 +4,20 @@ import "github.com/michelemendel/dmtmms/constants"
 
 templ Index(name string) {
 	@Base("index") {
-		<button hx-get="/logout" hx-swap="outerHTML">LOGOUT</button>
-		// <a href="/logout">LOGOUT</a>
-		if ctx.Value(constants.UsernameKey) != nil {
+		<div class="container">
+			<div>
+				{ ctx.Value(constants.UsernameKey).(string) }
+			</div>
+		</div>
+		<button hx-get="/logout" hx-target="#appRoot" hx-swap="innerHTML">LOGOUT</button>
+		if ctx.Value(constants.IsLoggedInKey).(bool) == true {
 			<h1 class="pl-3 mt-3 ml-5 text-2xl font-normal">
-				Hello, { ctx.Value(constants.UsernameKey).(string) }, { name }
+				Hello, { ctx.Value(constants.UsernameKey).(string) }
 			</h1>
 		} else {
-			<h1 class="pl-3 mt-3 ml-5 text-2xl font-normal">
-				Not logged in
-			</h1>
+			<p>
+				Hello, stranger
+			</p>
 		}
 	}
 }

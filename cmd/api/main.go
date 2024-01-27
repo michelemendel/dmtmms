@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/michelemendel/dmtmms/auth"
 	consts "github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/handler"
 	"github.com/michelemendel/dmtmms/util"
@@ -37,7 +38,8 @@ func main() {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.SESSION_KEY)))))
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
-	hCtx := handler.NewHandlerContext(e)
+	a := auth.NewUsers()
+	hCtx := handler.NewHandlerContext(e, a)
 	Routes(e, hCtx)
 	slog.Debug("Starting server", "port", webServerPort)
 	e.Logger.Fatal(e.Start(":" + webServerPort))

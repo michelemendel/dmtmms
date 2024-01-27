@@ -1,5 +1,7 @@
 package view
 
+import "github.com/michelemendel/dmtmms/constants"
+
 templ Base(title string) {
 	<!DOCTYPE html>
 	<html>
@@ -11,8 +13,12 @@ templ Base(title string) {
 			<script src="/public/htmx.min.js"></script>
 			<link href="/public/output.css" rel="stylesheet"/>
 		</head>
-		<body>
-			{ children... }
+		<body id="appRoot">
+			if ctx.Value(constants.IsLoggedInKey).(bool) == true {
+				{ children... }
+			} else {
+				@Login()
+			}
 		</body>
 	</html>
 }
