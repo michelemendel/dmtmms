@@ -14,10 +14,10 @@ templ Base(title string) {
 			<link href="/public/output.css" rel="stylesheet"/>
 		</head>
 		<body id="appRoot">
-			if ctx.Value(constants.IsLoggedInKey).(bool) == true {
+			if ctx.Value(constants.IS_LOGGEDIN_KEY).(bool) == true {
 				{ children... }
 			} else {
-				@Login()
+				@Login(ctx.Value(constants.ERROR_KEY).(string))
 			}
 		</body>
 	</html>

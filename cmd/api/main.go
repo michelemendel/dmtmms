@@ -13,6 +13,7 @@ import (
 	"github.com/michelemendel/dmtmms/auth"
 	consts "github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/handler"
+	repo "github.com/michelemendel/dmtmms/repository"
 	"github.com/michelemendel/dmtmms/util"
 )
 
@@ -21,13 +22,13 @@ func init() {
 }
 
 func main() {
-	env := os.Getenv(consts.APP_ENV)
-	logoutput := os.Getenv(consts.LOG_OUTPUT)
-	webServerPort := os.Getenv(consts.WEB_SERVER_PORT)
+	env := os.Getenv(consts.APP_ENV_KEY)
+	logoutput := os.Getenv(consts.LOG_OUTPUT_TYPE_KEY)
+	webServerPort := os.Getenv(consts.WEB_SERVER_PORT_KEY)
 
 	fmt.Printf("ENVIRONMENT:\nmode:%s\nlogoutput:%s\nwebServerPort:%s\n", env, logoutput, webServerPort)
 
-	if logoutput == consts.LOG_OUTPUT_FILE {
+	if logoutput == consts.LOG_OUTPUT_TYPE_FILE {
 		slog.SetDefault(util.FileLogger())
 	} else {
 		slog.SetDefault(util.StdOutLogger())
@@ -35,11 +36,17 @@ func main() {
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.SESSION_KEY)))))
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.SESSION_KEY_KEY)))))
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
 	a := auth.NewUsers()
-	hCtx := handler.NewHandlerContext(e, a)
+	r := repo.NewRepo()
+
+	// TODO: Remove b4to
+	r.InitDDL()
+	r.InitRoot()
+
+	hCtx := handler.NewHandlerContext(e, a, r)
 	Routes(e, hCtx)
 	slog.Debug("Starting server", "port", webServerPort)
 	e.Logger.Fatal(e.Start(":" + webServerPort))
@@ -47,7 +54,7 @@ func main() {
 
 func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.Static("/public", "public")
-	e.GET("/login", hCtx.LoginHandler)
+	e.GET("/login", hCtx.LoginViewHandler)
 	e.POST("/login", hCtx.LoginHandler)
 	e.GET("/logout", hCtx.LogoutHandler)
 	e.GET("/", hCtx.IndexHandler)

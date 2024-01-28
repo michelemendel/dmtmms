@@ -6,13 +6,13 @@ templ Index(name string) {
 	@Base("index") {
 		<div class="container">
 			<div>
-				{ ctx.Value(constants.UsernameKey).(string) }
+				{ ctx.Value(constants.USER_NAME_KEY).(string) }
 			</div>
 		</div>
 		<button hx-get="/logout" hx-target="#appRoot" hx-swap="innerHTML">LOGOUT</button>
-		if ctx.Value(constants.IsLoggedInKey).(bool) == true {
+		if ctx.Value(constants.IS_LOGGEDIN_KEY).(bool) == true {
 			<h1 class="pl-3 mt-3 ml-5 text-2xl font-normal">
-				Hello, { ctx.Value(constants.UsernameKey).(string) }
+				Hello, { ctx.Value(constants.USER_NAME_KEY).(string) }
 			</h1>
 		} else {
 			<p>

@@ -51,13 +51,13 @@ func Base(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if ctx.Value(constants.IsLoggedInKey).(bool) == true {
+		if ctx.Value(constants.IS_LOGGEDIN_KEY).(bool) == true {
 			templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = Login().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = Login(ctx.Value(constants.ERROR_KEY).(string)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

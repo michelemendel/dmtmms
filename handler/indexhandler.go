@@ -9,5 +9,5 @@ import (
 
 func (h *HandlerContext) IndexHandler(c echo.Context) error {
 	fmt.Println("[INDEXHANDLER]")
-	return h.render(c, view.Index("THE INDEX"))
+	return h.render(c, view.Index("THE INDEX"), nil)
 }

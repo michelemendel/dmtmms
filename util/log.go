@@ -9,6 +9,7 @@ import (
 
 	"log/slog"
 
+	consts "github.com/michelemendel/dmtmms/constants"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
@@ -35,13 +36,13 @@ func StdOutLogger() *slog.Logger {
 
 func FileLogger() *slog.Logger {
 	// file := openfile()
-	file := rotate(filepath.Join("log", os.Getenv("LOG_FILE")))
+	file := rotate(filepath.Join("log", os.Getenv(consts.LOG_FILE_NAME_KEY)))
 	return slog.New(slog.NewTextHandler(file, options))
 }
 
 // func openfile() *os.File {
-// 	filename := filepath.Join("log", os.Getenv("LOG_FILE"))
-// 	fmt.Println("[LOG]:openfile", "LOG_FILE:", filename)
+// 	filename := filepath.Join("log", os.Getenv(consts.LOG_FILE_NAME_ENV))
+// 	fmt.Println("[LOG]:openfile", "LOG_FILE_NAME_ENV:", filename)
 // 	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 // 	if err != nil {
 // 		log.Fatal(err)

@@ -6,5 +6,5 @@ import (
 )
 
 func (h *HandlerContext) PingHandler(c echo.Context) error {
-	return h.render(c, view.Ping())
+	return h.render(c, view.Ping(), nil)
 }

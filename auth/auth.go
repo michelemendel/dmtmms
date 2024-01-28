@@ -2,7 +2,6 @@ package auth
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -31,25 +30,25 @@ func NewUsers() *Auth {
 func (auth *Auth) Login(c echo.Context, username, password string) error {
 	sess, _ := session.Get(consts.SESSION_NAME, c)
 
-	if (strings.ToLower(username) == "joe" && password == "joe") || (strings.ToLower(username) == "ben" && password == "ben") {
-		sess.Options = &sessions.Options{
-			Path:   "/",
-			MaxAge: 30, // 30 seconds
-			// MaxAge:   86400 * 1, // 1 day
-			HttpOnly: true,
-		}
-		newToken := util.GenerateUuid()
-		auth.LoggedInUsers[TokenType(newToken)] = User{Name: username, Token: TokenType(newToken)}
-
-		sess.Values[consts.TOKEN_NAME] = newToken
-		sess.Save(c.Request(), c.Response())
-
-		fmt.Println("[AUTH]:Login: USER:", username, newToken)
-		return nil
+	// if (strings.ToLower(username) == "joe" && password == "joe") || (strings.ToLower(username) == "ben" && password == "ben") {
+	sess.Options = &sessions.Options{
+		Path:   "/",
+		MaxAge: 30, // 30 seconds
+		// MaxAge:   86400 * 1, // 1 day
+		HttpOnly: true,
 	}
+	newToken := util.GenerateUUID()
+	auth.LoggedInUsers[TokenType(newToken)] = User{Name: username, Token: TokenType(newToken)}
 
-	fmt.Println("[AUTH]:Login: invalid credentials")
-	return fmt.Errorf("invalid credentials")
+	sess.Values[consts.TOKEN_NAME] = newToken
+	sess.Save(c.Request(), c.Response())
+
+	fmt.Println("[AUTH]:Login: USER:", username, newToken)
+	return nil
+	// }
+
+	// fmt.Println("[AUTH]:Login: invalid credentials")
+	// return fmt.Errorf("invalid credentials")
 }
 
 func (auth *Auth) Logout(c echo.Context) error {
@@ -62,6 +61,7 @@ func (auth *Auth) Logout(c echo.Context) error {
 	}
 
 	sess.Options.MaxAge = -1
+	// sess.
 	sess.Save(c.Request(), c.Response())
 	delete(auth.LoggedInUsers, TokenType(token.(string)))
 	return nil

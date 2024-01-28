@@ -21,5 +21,5 @@ func (h *HandlerContext) CountsHandler(c echo.Context) error {
 		sessionCount++
 	}
 
-	return h.render(c, view.Counts(globalCount, sessionCount))
+	return h.render(c, view.Counts(globalCount, sessionCount), nil)
 }
