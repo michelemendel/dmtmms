@@ -10,10 +10,10 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/michelemendel/dmtmms/auth"
 	consts "github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/handler"
 	repo "github.com/michelemendel/dmtmms/repository"
+	session1 "github.com/michelemendel/dmtmms/session"
 	"github.com/michelemendel/dmtmms/util"
 )
 
@@ -39,12 +39,8 @@ func main() {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.SESSION_KEY_KEY)))))
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
-	a := auth.NewUsers()
+	a := session1.NewSession()
 	r := repo.NewRepo()
-
-	// TODO: Remove b4to
-	r.InitDDL()
-	r.InitRoot()
 
 	hCtx := handler.NewHandlerContext(e, a, r)
 	Routes(e, hCtx)

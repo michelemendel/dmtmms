@@ -10,7 +10,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/michelemendel/dmtmms/constants"
-	"github.com/michelemendel/dmtmms/util"
+	"github.com/michelemendel/dmtmms/entity"
 )
 
 const dbName = "sqlite3"
@@ -46,49 +46,15 @@ func (r *Repo) GetDB() *sql.DB {
 	return r.db
 }
 
-func (r *Repo) IsAuthenticated(username string, password string) bool {
+func (r *Repo) GetUser(username string) (entity.User, error) {
 	var name string
 	var pw string
 
 	err := r.db.QueryRow("SELECT name, password FROM users WHERE name = ?", username).Scan(&name, &pw)
 	if err != nil {
 		slog.Error(err.Error(), "name", username)
-		return false
+		return entity.User{}, err
 	}
 	fmt.Println("[REPO]:IsAuthenticated", "name:", name, "pw:", pw)
-
-	return util.ValidatePassword(password, pw)
-}
-
-func (r *Repo) InitRoot() {
-	stmt, err := r.db.Prepare("INSERT INTO users(name,password) values(?, ?)")
-	if err != nil {
-		slog.Error(err.Error())
-	}
-	hpw, _ := util.HashPassword("joe")
-	_, err = stmt.Exec("root", hpw)
-	if err != nil {
-		slog.Error(err.Error())
-	}
-}
-
-func (r *Repo) InitDDL() {
-	var sqlStmts = make(map[string]string)
-
-	sqlStmts["drop_user"] = `DROP TABLE IF EXISTS users;`
-	sqlStmts["user"] = `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL,
-		password TEXT NOT NULL,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-	);
-	`
-
-	for name, sqlStmt := range sqlStmts {
-		_, err := r.db.Exec(sqlStmt)
-		if err != nil {
-			slog.Error(fmt.Sprintf("Error in stmt %q:%s\n%s\n", err, name, sqlStmt))
-		}
-	}
+	return entity.NewUser(name, pw), nil
 }

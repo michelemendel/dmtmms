@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/labstack/echo/v4"
+	"github.com/michelemendel/dmtmms/util"
 	"github.com/michelemendel/dmtmms/view"
 )
 
@@ -26,12 +27,18 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
-	isAuthed := h.Repo.IsAuthenticated(username, password)
+	user, err := h.Repo.GetUser(username)
+	if err != nil {
+		return h.render(c, view.Login("Invalid credentials"), fmt.Errorf("invalid credentials"))
+	}
+
+	isAuthed := util.ValidatePassword(password, user.HashedPassword)
 	fmt.Println("[LOGINHANDLER]:isAuthed:", isAuthed)
 	if !isAuthed {
 		return h.render(c, view.Login("Invalid credentials"), fmt.Errorf("invalid credentials"))
 	}
-	err := h.Auth.Login(c, username, password)
+
+	err = h.Auth.Login(c, username)
 	return h.render(c, view.Index("THE INDEX"), err)
 }
 
