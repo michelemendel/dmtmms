@@ -31,8 +31,9 @@ func (s *Session) Login(c echo.Context, username string) error {
 	sess, _ := session.Get(consts.SESSION_NAME, c)
 
 	sess.Options = &sessions.Options{
-		Path:   "/",
-		MaxAge: 30, // 30 seconds
+		Path: "/",
+		// MaxAge: 30, // 30 seconds
+		MaxAge: 3600 * 5, // 5 minutes
 		// MaxAge:   86400 * 1, // 1 day
 		HttpOnly: true,
 	}
@@ -42,7 +43,6 @@ func (s *Session) Login(c echo.Context, username string) error {
 	sess.Values[consts.TOKEN_NAME] = newToken
 	sess.Save(c.Request(), c.Response())
 
-	fmt.Println("[SESSION]:Login: USER:", username, newToken)
 	return nil
 }
 
@@ -64,16 +64,14 @@ func (s *Session) Logout(c echo.Context) error {
 }
 
 func (s *Session) GetCurrentUser(c echo.Context) (User, error) {
-	s.PrintLoggedInUsers()
+	// s.PrintLoggedInUsers()
 
 	sess, _ := session.Get(consts.SESSION_NAME, c)
 	token := sess.Values[consts.TOKEN_NAME]
 	if token != nil {
 		user := s.LoggedInUsers[TokenType(token.(string))]
-		fmt.Printf("[SESSION]:GetCurrentUser:%s:%s\n", user.Name, user.Token)
 		return user, nil
 	}
-	fmt.Println("[SESSION]:GetCurrentUser: not found")
 	return User{}, fmt.Errorf("no user found")
 }
 

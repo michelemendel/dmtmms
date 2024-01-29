@@ -5,6 +5,7 @@
 
 https://github.com/michelemendel/dmtmms
 
+--- 
 
 ## Installation
 
@@ -31,6 +32,8 @@ Linux Debian 12
 - .bashrc
 - dmtmms .env file
 
+---
+
 ## Start development environment
 
 See also Makefile
@@ -53,6 +56,7 @@ Note: Tailwind is configured to look for HTML and JavaScript in:
 
 See tailwind.config.js for more details
 
+---
 
 ## Start production environment
 
@@ -60,9 +64,19 @@ Templates and CSS are generated on the development machine and pushed to Github.
 
 - Pull from Github
 - $> make server
+  - This will first build the application
 
+---
 
-## SQLITE3
+## CLI
+
+This a command line interface, mainly used for database migrations.
+
+- $> make cli
+
+---
+
+## Database: SQLITE3
 
 This is a file and doesn't require a server
 
@@ -71,6 +85,9 @@ This is a file and doesn't require a server
 - pragma journal_mode = WAL
 - pragma busy_timeout = 5000
 - dates as ISO8601 strings, in Go it's RC3339
+- STRICT mode
+
+setting PRAGMA in Go, see https://gist.github.com/dgsb/6061941d2185f761848b143f080f4cd9
 
 ### Backup
 
@@ -78,9 +95,12 @@ This is a file and doesn't require a server
   - This file will have to be moved to a safe place
 - Alt. use litestream
 
-### Look into
+### Some sqlite3 CLI commands
 
-- setting PRAGMA in Go, see https://gist.github.com/dgsb/6061941d2185f761848b143f080f4cd9
-- STRICT mode
-- create table if not exists ...
-- insert or ignore into...
+- .show
+- .stats
+- .tables
+- .schema
+- pragma busy_timeout = 5000
+- explain query plan select ...
+- .mode column , box, ...

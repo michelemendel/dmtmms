@@ -1,0 +1,33 @@
+package view
+
+import "github.com/michelemendel/dmtmms/constants"
+import "github.com/michelemendel/dmtmms/entity"
+
+templ Users(users []entity.User) {
+	<div id="users">
+		@MainLayout() {
+			<p>
+				Users
+			</p>
+			<div id="user-edit">
+				<button
+					hx-get={ constants.ROUTE_USER_EDIT }
+					hx-target="#user-edit"
+					hx-swap="innerHTML"
+					class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+				>
+					Add User
+				</button>
+			</div>
+			<ul>
+				for _, user := range users {
+					<li>
+						<div>
+							{ user.Name },{ user.Role }
+						</div>
+					</li>
+				}
+			</ul>
+		}
+	</div>
+}

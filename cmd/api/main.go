@@ -13,6 +13,7 @@ import (
 	consts "github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/handler"
 	repo "github.com/michelemendel/dmtmms/repository"
+	"github.com/michelemendel/dmtmms/routes"
 	session1 "github.com/michelemendel/dmtmms/session"
 	"github.com/michelemendel/dmtmms/util"
 )
@@ -41,22 +42,12 @@ func main() {
 
 	a := session1.NewSession()
 	r := repo.NewRepo()
+	defer r.DB.Close()
 
 	hCtx := handler.NewHandlerContext(e, a, r)
-	Routes(e, hCtx)
+	routes.Routes(e, hCtx)
 	slog.Debug("Starting server", "port", webServerPort)
 	e.Logger.Fatal(e.Start(":" + webServerPort))
-}
-
-func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
-	e.Static("/public", "public")
-	e.GET("/login", hCtx.LoginViewHandler)
-	e.POST("/login", hCtx.LoginHandler)
-	e.GET("/logout", hCtx.LogoutHandler)
-	e.GET("/", hCtx.IndexHandler)
-	e.GET("/counts", hCtx.CountsHandler)
-	e.POST("/counts", hCtx.CountsHandler)
-	e.GET("/ping", hCtx.PingHandler)
 }
 
 func customHTTPErrorHandler(err error, c echo.Context) {

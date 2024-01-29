@@ -38,11 +38,7 @@ watch_all:
 	@${MAKE} -j3 templwatch serverwatch tailwatch
 
 # --------------------------------------------------------------------------------
-# Database
+# CLI, mainly for database migrations
 
-build_migration:
-	@go build -o bin/migration ./cmd/migration/...
-
-migrate: build_migration
-	@echo "Migrating database"
-	@./bin/migration
+build_cli:
+	@go build -o bin/cli ./cmd/cli/...

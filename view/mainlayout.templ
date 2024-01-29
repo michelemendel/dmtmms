@@ -1,0 +1,28 @@
+package view
+
+import (
+	"github.com/michelemendel/dmtmms/constants"
+)
+
+templ MainLayout() {
+	@AppRoot("index") {
+		<div id="mainLayoutRoot">
+			<span>
+				<button hx-get={ constants.ROUTE_MEMBERS } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">MEMBERS</button>
+			</span>
+			|
+			<span>
+				<button hx-get={ constants.ROUTE_USERS } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">USERS</button>
+			</span>
+			|
+			<span>
+				<button hx-get={ constants.ROUTE_LOGOUT } hx-target="#appRoot" hx-swap="innerHTML">LOGOUT</button>
+			</span>
+			|
+			<span>
+				{ ctx.Value(constants.USER_NAME_KEY).(string) } ({ ctx.Value(constants.USER_ROLE_KEY).(string) })
+			</span>
+		</div>
+	}
+	{ children... }
+}

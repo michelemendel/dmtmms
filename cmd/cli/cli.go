@@ -8,18 +8,21 @@ import (
 )
 
 func main() {
-	op := flag.String("op", "", "migrate,fill")
+	op := flag.String("op", "", "migrate,initdata,users")
 	flag.Parse()
 	repo := repo.NewRepo()
 	defer repo.Close()
 
-	fmt.Println("[MIGRATION]", "op:", *op)
+	fmt.Println("op:", *op)
 
 	switch *op {
 	case "migrate":
+		repo.DBConfig()
 		repo.RunDDL()
-	case "fill":
-		repo.InitRoot()
+	case "initdata":
+		repo.InitRootUser()
+	case "users":
+		repo.GetUsers()
 	default:
 		fmt.Println("no op specified")
 	}

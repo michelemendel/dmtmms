@@ -1,13 +1,15 @@
 package entity
 
 type User struct {
-	UserName       string
+	Name           string
 	HashedPassword string
+	Role           string
 }
 
-func NewUser(username, password string) User {
+func NewUser(name, password, role string) User {
 	return User{
-		UserName:       username,
+		Name:           name,
 		HashedPassword: password,
+		Role:           role,
 	}
 }

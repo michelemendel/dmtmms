@@ -14,29 +14,31 @@ func (h *HandlerContext) render(c echo.Context, comp templ.Component, err error)
 	ctx := context.Background()
 
 	user, _ := h.Auth.GetCurrentUser(c)
-	fmt.Printf("[RENDER]:user:%s:%s - err:%v (%T)\n", user.Name, user.Token, err, err)
+	fmt.Printf("[RENDER]: user:%s, token:%s, err:%v\n", user.Name, user.Token, err)
 	isLoggedOut := session.User{} == user
-	fmt.Println("[RENDER]:isLoggedOut:", isLoggedOut)
+	// fmt.Printf("[RENDER]: isLoggedOut:%v\n", isLoggedOut)
+
+	ctx = context.WithValue(ctx, constants.IS_LOGGEDIN_KEY, false)
+	ctx = context.WithValue(ctx, constants.ERROR_KEY, "")
+	ctx = context.WithValue(ctx, constants.USER_ROLE_KEY, "")
 
 	if err != nil {
 		ctx = context.WithValue(ctx, constants.ERROR_KEY, err.Error())
-		ctx = context.WithValue(ctx, constants.IS_LOGGEDIN_KEY, false)
 		ctx = context.WithValue(ctx, constants.USER_NAME_KEY, "error")
 	} else if isLoggedOut {
-		ctx = context.WithValue(ctx, constants.ERROR_KEY, "")
-		ctx = context.WithValue(ctx, constants.IS_LOGGEDIN_KEY, false)
 		ctx = context.WithValue(ctx, constants.USER_NAME_KEY, "anonymous")
 	} else {
-		ctx = context.WithValue(ctx, constants.ERROR_KEY, "")
+		u, _ := h.Repo.SelectUser(user.Name)
 		ctx = context.WithValue(ctx, constants.IS_LOGGEDIN_KEY, true)
 		ctx = context.WithValue(ctx, constants.USER_NAME_KEY, user.Name)
+		ctx = context.WithValue(ctx, constants.USER_ROLE_KEY, u.Role)
 	}
 
 	// TODO: Remove b4to
 	// Bypass the auth check for now
-	ctx = context.WithValue(ctx, constants.ERROR_KEY, "")
 	ctx = context.WithValue(ctx, constants.IS_LOGGEDIN_KEY, true)
 	ctx = context.WithValue(ctx, constants.USER_NAME_KEY, "root")
+	ctx = context.WithValue(ctx, constants.USER_ROLE_KEY, "admin")
 
 	return comp.Render(ctx, c.Response())
 }

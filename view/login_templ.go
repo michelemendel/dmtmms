@@ -88,7 +88,7 @@ func Login(err string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <input value=\"Joe\" type=\"text\" id=\"username\" name=\"username\" required class=\"w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500\" placeholder=\"Joe\"></div><!--")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <input value=\"root\" type=\"text\" id=\"username\" name=\"username\" required class=\"w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500\" placeholder=\"Joe\"></div><!--")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

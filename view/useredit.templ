@@ -1,0 +1,30 @@
+package view
+
+import "github.com/michelemendel/dmtmms/constants"
+import "github.com/michelemendel/dmtmms/entity"
+
+templ UserEdit(user entity.User) {
+	<p>
+		Edit User
+	</p>
+	<button
+		hx-get={ constants.ROUTE_USERS }
+		hx-target="#users"
+		hx-swap="outerHTML"
+		class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+	>
+		Close
+	</button>
+	<div>
+		<form
+			hx-post={ constants.ROUTE_USER_EDIT }
+			hx-target="#users"
+			hx-swap="innerHTML"
+		>
+			<input type="text" name="username" placeholder="name"/>
+			<input type="text" name="password" placeholder="password"/>
+			<input type="text" name="role" placeholder="role"/>
+			<input type="submit" value="Save"/>
+		</form>
+	</div>
+}

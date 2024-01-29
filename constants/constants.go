@@ -23,6 +23,19 @@ const (
 const (
 	ERROR_KEY     = "error"
 	USER_NAME_KEY = "username"
+	USER_ROLE_KEY = "userrole"
 	// TokenKey      = "token"
 	IS_LOGGEDIN_KEY = "isloggedinkey"
+)
+
+// Routes
+const (
+	ROUTE_INDEX       = "/"
+	ROUTE_LOGIN       = "/login"
+	ROUTE_LOGOUT      = "/logout"
+	ROUTE_MEMBERS     = "/member"
+	ROUTE_MEMBER_EDIT = "/member/edit"
+	ROUTE_USERS       = "/users"
+	ROUTE_USER_EDIT   = "/user/edit"
+	ROUTE_PING        = "/ping"
 )
