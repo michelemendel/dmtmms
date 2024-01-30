@@ -4,6 +4,7 @@ import (
 	"github.com/michelemendel/dmtmms/constants"
 )
 
+// TODO: Not used, Can be removed
 templ MainLayout() {
 	@AppRoot("index") {
 		<div id="mainLayoutRoot">
@@ -16,7 +17,7 @@ templ MainLayout() {
 			</span>
 			|
 			<span>
-				<button hx-get={ constants.ROUTE_LOGOUT } hx-target="#appRoot" hx-swap="innerHTML">LOGOUT</button>
+				<button hx-get={ constants.ROUTE_LOGOUT } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="/">LOGOUT</button>
 			</span>
 			|
 			<span>

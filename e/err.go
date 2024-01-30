@@ -1,7 +1,10 @@
-package err
+package e
+
+import "errors"
 
 var (
-// ErrDuplicate    = errors.New("record already exists")
+	UserExists = errors.New("user already exists")
+
 // ErrNotExists    = errors.New("row not exists")
 // ErrUpdateFailed = errors.New("update failed")
 // ErrDeleteFailed = errors.New("delete failed")

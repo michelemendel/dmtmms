@@ -61,7 +61,7 @@ func Login(err string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><form id=\"loginForm\" hx-post=\"/login\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\"><!--")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><form id=\"loginForm\" hx-post=\"/login\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"/members\"><!--")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -136,7 +136,7 @@ func Login(err string) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(ctx.Value(constants.ERROR_KEY).(string))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/login.templ`, Line: 29, Col: 79}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/login.templ`, Line: 35, Col: 79}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {

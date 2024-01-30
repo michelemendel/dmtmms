@@ -11,7 +11,13 @@ templ Login(err string) {
 			<div class="text-1xl font-normal text-gray-600 mb-4">Member Register</div>
 			<h1 class="text-2xl font-semibold mb-4">Login</h1>
 			<!-- Form -->
-			<form id="loginForm" hx-post="/login" hx-target="#appRoot" hx-swap="innerHTML">
+			<form
+				id="loginForm"
+				hx-post="/login"
+				hx-target="#appRoot"
+				hx-swap="innerHTML"
+				hx-push-url="/members"
+			>
 				<!-- Username Input -->
 				<div class="mb-4">
 					<label for="username" class="inline-block text-gray-600">Username</label>
