@@ -1,0 +1,30 @@
+<div id=\"users\">
+</div>
+<div id=\"userEdit\">
+</div>
+<div id=\"userForm\"><form hx-post=\"
+\" hx-target=\"#users\" hx-swap=\"outerHTML\"><input type=\"text\" name=\"username\" value=\"
+\" placeholder=\"name\"> <input type=\"text\" name=\"password\" placeholder=\"password\"> <label for=\"role\">Role</label> <select name=\"role\" id=\"role\">
+</select> <input type=\"submit\" value=\"Add User\"> <input hx-get=\"
+\" hx-target=\"#users\" hx-swap=\"innerHTML\" type=\"submit\" value=\"Cancel\"></form>
+<div class=\"mb-4\"><div class=\"block text-red-600\">
+</div></div>
+</div>
+<div><form hx-put=\"
+\" hx-target=\"#users\" hx-swap=\"innerHTML\"><input type=\"hidden\" name=\"username\" value=\"
+\"> <span>
+</span> <label for=\"role\">Role</label> <select name=\"role\" id=\"role\">
+</select> <input type=\"submit\" value=\"Update User\"> <input hx-get=\"
+\" hx-target=\"#users\" hx-swap=\"innerHTML\" type=\"submit\" value=\"Cancel\"></form></div>
+<option value=\"
+\"
+ selected
+>
+</option>
+<ul>
+<li><span>
+</span> <span>
+</span> <span hx-get=\"
+\" hx-target=\"#users\" hx-swap=\"innerHTML\">Edit</span> <span hx-delete=\"
+\" hx-target=\"#users\" hx-swap=\"innerHTML\">Delete</span></li>
+</ul>

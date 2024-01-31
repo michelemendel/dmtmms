@@ -21,6 +21,12 @@ Macos
 - Tailwind (CSS)
   - npm install -D tailwindcss
 - HTMX - download htmx.min.js from https://htmx.org/
+- templ 
+  - https://github.com/a-h/templ
+  - https://templ.guide/
+  - go get github.com/a-h/templ
+  - templ cli
+    - go install github.com/a-h/templ/cmd/templ@latest
 
 ### Production
 

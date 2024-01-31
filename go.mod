@@ -5,7 +5,7 @@ go 1.21.5
 // go 1.21
 
 require (
-	github.com/a-h/templ v0.2.513
+	github.com/a-h/templ v0.2.543
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/sessions v1.2.2
 	github.com/joho/godotenv v1.5.1

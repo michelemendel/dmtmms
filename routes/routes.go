@@ -15,18 +15,18 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.POST(consts.ROUTE_LOGIN, hCtx.LoginHandler)
 	e.GET(consts.ROUTE_LOGOUT, hCtx.LogoutHandler)
 
-	// Members
 	e.GET(consts.ROUTE_INDEX, hCtx.MembersHandler)
+
+	// Members
 	e.GET(consts.ROUTE_MEMBERS, hCtx.MembersHandler)
 	e.GET(consts.ROUTE_MEMBER_EDIT, hCtx.MemberEditHandler)
 
 	// Users
-	e.GET(consts.ROUTE_USERS, hCtx.UsersNavHandler)
-	e.GET(consts.ROUTE_USER_CREATE, hCtx.UserFormHandler)
+	e.GET(consts.ROUTE_USERS, hCtx.UsersInitHandler)
+	e.GET(consts.ROUTE_USERS+"/:op", hCtx.UsersInitHandler)
 	e.POST(consts.ROUTE_USER_CREATE, hCtx.UserCreateHandler)
-	e.GET(consts.ROUTE_USER_UPDATE+"/:username", hCtx.UserFormHandler)
+	e.GET(consts.ROUTE_USER_UPDATE+"/:username", hCtx.UserUpdateInitHandler)
 	e.PUT(consts.ROUTE_USER_UPDATE, hCtx.UserUpdateHandler)
-	e.GET(consts.ROUTE_USER_EDIT_CLOSE, hCtx.UsersHandler)
 	e.DELETE(consts.ROUTE_USER_DELETE+"/:username", hCtx.UserDeleteHandler)
 
 	//

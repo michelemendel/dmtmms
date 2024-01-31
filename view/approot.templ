@@ -18,7 +18,7 @@ templ AppRoot(title string) {
 		<body id="appRoot">
 			if ctx.Value(constants.IS_LOGGEDIN_KEY).(bool) == true {
 				@NavBar()
-				{ children... }
+				// { children... }
 			} else {
 				@Login(ctx.Value(constants.ERROR_KEY).(string))
 			}

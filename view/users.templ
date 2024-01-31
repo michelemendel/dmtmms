@@ -3,100 +3,110 @@ package view
 import "github.com/michelemendel/dmtmms/constants"
 import "github.com/michelemendel/dmtmms/entity"
 
-templ UsersNav(users []entity.User) {
-	@AppRoot("") {
-		@Users(users)
+type UsersViewCtx struct {
+	Op           string
+	Users        []entity.User
+	SelectedUser entity.User
+	Roles        []string
+	Err          error
+}
+
+func MakeUsersViewCtx(users []entity.User, selectedUser entity.User, op string, err error) *UsersViewCtx {
+	return &UsersViewCtx{
+		Op:           op,
+		Users:        users,
+		SelectedUser: selectedUser,
+		Roles:        []string{"read", "admin"},
+		Err:          err,
 	}
 }
 
-templ Users(users []entity.User) {
+templ (vctx *UsersViewCtx) UsersInit() {
+	@AppRoot("")
+	@vctx.UsersLayout()
+}
+
+templ (vctx *UsersViewCtx) UsersLayout() {
 	<div id="users">
-		@UserFormButton()
-		@UserFormType(entity.User{}, constants.OP_CREATE)
-		@UserList(users)
+		@vctx.UserFormSelectType()
+		@vctx.UserList()
 	</div>
 }
 
-// hx-get={ constants.ROUTE_USER_CREATE }
-// hx-target="this"
-// hx-swap="outerHTML"
-templ UserFormButton() {
-	<div
-		id="userEditButton"
-	>
-		<button
-			class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-		>
-			Add User
-		</button>
-	</div>
-}
-
-templ UserFormType(user entity.User, op string) {
+templ (vctx *UsersViewCtx) UserFormSelectType() {
 	<div id="userEdit">
-		// @UserEditCloseButton(user, op)
-		<!-- Create or update form -->
-		if op == constants.OP_CREATE {
-			@UserForm(user)
+		if vctx.Op == constants.OP_CREATE {
+			@vctx.UserCreateForm()
 		} else {
-			@UserUpdateForm(user)
+			@vctx.UserUpdateForm()
 		}
 	</div>
 }
 
-// templ UserEditCloseButton(user entity.User, op string) {
-// 	<button
-// 		hx-get={ constants.ROUTE_USER_EDIT_CLOSE }
-// 		hx-target="#users"
-// 		hx-swap="outerHTML"
-// 		type="button"
-// 		class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-// 	>
-// 		<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-// 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-// 		</svg>
-// 	</button>
-// }
-templ UserForm(user entity.User) {
+templ (vctx *UsersViewCtx) UserCreateForm() {
 	<div id="userForm">
 		<form
 			hx-post={ constants.ROUTE_USER_CREATE }
 			hx-target="#users"
 			hx-swap="outerHTML"
 		>
-			<input type="text" name="username" value={ user.Name } placeholder="name"/>
+			<input type="text" name="username" value={ vctx.SelectedUser.Name } placeholder="name"/>
 			<input type="text" name="password" placeholder="password"/>
-			<input type="text" name="role" value={ user.Role } placeholder="role"/>
+			<label for="role">Role</label>
+			<select name="role" id="role">
+				@vctx.roleOptions()
+			</select>
 			<input type="submit" value="Add User"/>
+			<input
+				hx-get={ constants.ROUTE_USERS + "/cancel" }
+				hx-target="#users"
+				hx-swap="innerHTML"
+				type="submit"
+				value="Cancel"
+			/>
 		</form>
-		if ctx.Value(constants.ERROR_KEY) != "" {
+		if vctx.Err != nil {
 			<div class="mb-4">
-				<div class="block text-red-600">{ ctx.Value(constants.ERROR_KEY).(string) }</div>
+				<div class="block text-red-600">{ vctx.Err.Error() }</div>
 			</div>
 		}
 	</div>
 }
 
-templ UserUpdateForm(user entity.User) {
+templ (vctx *UsersViewCtx) UserUpdateForm() {
 	<div>
 		<form
 			hx-put={ constants.ROUTE_USER_UPDATE }
 			hx-target="#users"
 			hx-swap="innerHTML"
 		>
-			<input type="hidden" name="username" value={ user.Name }/>
-			<span>{ user.Name }</span>
-			// <input type="text" name="password" placeholder="password"/>
-			<input type="text" name="role" value={ user.Role } placeholder="role"/>
-			<input type="submit" value="Save"/>
+			<input type="hidden" name="username" value={ vctx.SelectedUser.Name }/>
+			<span>{ vctx.SelectedUser.Name }</span>
+			<label for="role">Role</label>
+			<select name="role" id="role">
+				@vctx.roleOptions()
+			</select>
+			<input type="submit" value="Update User"/>
+			<input
+				hx-get={ constants.ROUTE_USERS + "/cancel" }
+				hx-target="#users"
+				hx-swap="innerHTML"
+				type="submit"
+				value="Cancel"
+			/>
 		</form>
 	</div>
 }
 
-// <ul hx-preserve="true">
-templ UserList(users []entity.User) {
+templ (vctx *UsersViewCtx) roleOptions() {
+	for _, role := range vctx.Roles {
+		<option value={ role } selected?={ role == vctx.SelectedUser.Role }>{ role }</option>
+	}
+}
+
+templ (vctx *UsersViewCtx) UserList() {
 	<ul>
-		for _, user := range users {
+		for _, user := range vctx.Users {
 			<li>
 				<span>
 					{ user.Name }
