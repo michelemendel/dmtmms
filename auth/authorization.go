@@ -1,18 +1,20 @@
 package auth
 
-import "github.com/michelemendel/dmtmms/constants"
+import (
+	"github.com/michelemendel/dmtmms/constants"
+)
 
-func IsAuthorized(loggedInUserRole string, object string) bool {
+func IsAuthorized(loggedInUserRole string, target string) bool {
 	switch loggedInUserRole {
 	case "root":
 		return true
 	case "admin":
-		switch object {
+		switch target {
 		case constants.AUTH_NAV_USERS:
 			return true
 		}
 	case "read":
-		switch object {
+		switch target {
 		case constants.AUTH_NAV_USERS:
 			return false
 		}

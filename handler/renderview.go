@@ -9,7 +9,7 @@ import (
 	"github.com/michelemendel/dmtmms/constants"
 )
 
-func (h *HandlerContext) render(c echo.Context, comp templ.Component) error {
+func (h *HandlerContext) renderView(c echo.Context, comp templ.Component) error {
 	user, _ := h.Session.GetCurrentUser(c)
 	isLoggedOut := auth.UserSession{} == user
 
