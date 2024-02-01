@@ -1,5 +1,6 @@
 package entity
 
+// DTO
 type User struct {
 	Name           string
 	HashedPassword string

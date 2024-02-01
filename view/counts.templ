@@ -4,8 +4,8 @@ import (
 	"strconv"
 )
 
-templ Counts(global, session int) {
-	@AppRoot("Helo") {
+templ (vctx *ViewCtx) Counts(global, session int) {
+	@vctx.AppRoot("Helo") {
 		<form id="countsForm" hx-post="/counts" hx-select="#countsForm" hx-swap="outerHTML">
 			<div class="pl-3 mt-3 ml-5 text-2xl font-normal">
 				<div class="font-bold">

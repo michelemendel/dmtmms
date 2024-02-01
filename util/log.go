@@ -36,7 +36,7 @@ func StdOutLogger() *slog.Logger {
 
 func FileLogger() *slog.Logger {
 	// file := openfile()
-	file := rotate(filepath.Join("log", os.Getenv(consts.LOG_FILE_NAME_KEY)))
+	file := rotate(filepath.Join("log", os.Getenv(consts.ENV_FILE_NAME_KEY)))
 	return slog.New(slog.NewTextHandler(file, options))
 }
 

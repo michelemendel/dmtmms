@@ -1,39 +1,20 @@
 package view
 
 import "github.com/michelemendel/dmtmms/constants"
-import "github.com/michelemendel/dmtmms/entity"
 
-type UsersViewCtx struct {
-	Op           string
-	Users        []entity.User
-	SelectedUser entity.User
-	Roles        []string
-	Err          error
-}
-
-func MakeUsersViewCtx(users []entity.User, selectedUser entity.User, op string, err error) *UsersViewCtx {
-	return &UsersViewCtx{
-		Op:           op,
-		Users:        users,
-		SelectedUser: selectedUser,
-		Roles:        []string{"read", "admin"},
-		Err:          err,
-	}
-}
-
-templ (vctx *UsersViewCtx) UsersInit() {
-	@AppRoot("")
+templ (vctx *ViewCtx) UsersInit() {
+	@vctx.AppRoot("")
 	@vctx.UsersLayout()
 }
 
-templ (vctx *UsersViewCtx) UsersLayout() {
+templ (vctx *ViewCtx) UsersLayout() {
 	<div id="users">
 		@vctx.UserFormSelectType()
 		@vctx.UserList()
 	</div>
 }
 
-templ (vctx *UsersViewCtx) UserFormSelectType() {
+templ (vctx *ViewCtx) UserFormSelectType() {
 	<div id="userEdit">
 		if vctx.Op == constants.OP_CREATE {
 			@vctx.UserCreateForm()
@@ -43,7 +24,7 @@ templ (vctx *UsersViewCtx) UserFormSelectType() {
 	</div>
 }
 
-templ (vctx *UsersViewCtx) UserCreateForm() {
+templ (vctx *ViewCtx) UserCreateForm() {
 	<div id="userForm">
 		<form
 			hx-post={ constants.ROUTE_USER_CREATE }
@@ -52,10 +33,7 @@ templ (vctx *UsersViewCtx) UserCreateForm() {
 		>
 			<input type="text" name="username" value={ vctx.SelectedUser.Name } placeholder="name"/>
 			<input type="text" name="password" placeholder="password"/>
-			<label for="role">Role</label>
-			<select name="role" id="role">
-				@vctx.roleOptions()
-			</select>
+			@vctx.roleOptions()
 			<input type="submit" value="Add User"/>
 			<input
 				hx-get={ constants.ROUTE_USERS + "/cancel" }
@@ -73,7 +51,7 @@ templ (vctx *UsersViewCtx) UserCreateForm() {
 	</div>
 }
 
-templ (vctx *UsersViewCtx) UserUpdateForm() {
+templ (vctx *ViewCtx) UserUpdateForm() {
 	<div>
 		<form
 			hx-put={ constants.ROUTE_USER_UPDATE }
@@ -82,10 +60,7 @@ templ (vctx *UsersViewCtx) UserUpdateForm() {
 		>
 			<input type="hidden" name="username" value={ vctx.SelectedUser.Name }/>
 			<span>{ vctx.SelectedUser.Name }</span>
-			<label for="role">Role</label>
-			<select name="role" id="role">
-				@vctx.roleOptions()
-			</select>
+			@vctx.roleOptions()
 			<input type="submit" value="Update User"/>
 			<input
 				hx-get={ constants.ROUTE_USERS + "/cancel" }
@@ -98,13 +73,16 @@ templ (vctx *UsersViewCtx) UserUpdateForm() {
 	</div>
 }
 
-templ (vctx *UsersViewCtx) roleOptions() {
-	for _, role := range vctx.Roles {
-		<option value={ role } selected?={ role == vctx.SelectedUser.Role }>{ role }</option>
-	}
+templ (vctx *ViewCtx) roleOptions() {
+	<label for="role">Role</label>
+	<select name="role" id="role">
+		for _, role := range vctx.Roles {
+			<option value={ role } selected?={ role == vctx.SelectedUser.Role }>{ role }</option>
+		}
+	</select>
 }
 
-templ (vctx *UsersViewCtx) UserList() {
+templ (vctx *ViewCtx) UserList() {
 	<ul>
 		for _, user := range vctx.Users {
 			<li>
@@ -121,13 +99,15 @@ templ (vctx *UsersViewCtx) UserList() {
 				>
 					Edit
 				</span>
-				<span
-					hx-delete={ constants.ROUTE_USER_DELETE + "/" + user.Name }
-					hx-target="#users"
-					hx-swap="innerHTML"
-				>
-					Delete
-				</span>
+				if user.Name != ctx.Value(constants.CTX_USER_NAME_KEY).(string) {
+					<span
+						hx-delete={ constants.ROUTE_USER_DELETE + "/" + user.Name }
+						hx-target="#users"
+						hx-swap="innerHTML"
+					>
+						Delete
+					</span>
+				}
 			</li>
 		}
 	</ul>

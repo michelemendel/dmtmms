@@ -1,10 +1,12 @@
 <!doctype html><html><head><title>
-</title><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"icon\" type=\"image/x-icon\" href=\"/public/favicon/favicon.ico\"><script src=\"/public/app.js\"></script><script src=\"/public/htmx.min.js\"></script><link href=\"/public/style.css\" rel=\"stylesheet\"><link href=\"/public/output.css\" rel=\"stylesheet\"></head><body id=\"appRoot\">
+</title><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"icon\" type=\"image/x-icon\" href=\"/public/favicon/favicon.ico\"><script src=\"/public/htmx.min.js\"></script><link href=\"/public/output.css\" rel=\"stylesheet\"></head><body id=\"appRoot\">
  
 </body></html>
 <nav><div id=\"mainLayout\"><span><button hx-get=\"
-\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">MEMBERS</button></span> | <span><button hx-get=\"
-\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">USERS</button></span> | <span><button hx-get=\"
+\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">MEMBERS</button></span> 
+| <span><button hx-get=\"
+\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">USERS</button></span>
+| <span><button hx-get=\"
 \" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"/\">LOGOUT</button></span> | <span>
  (
 )</span></div></nav>

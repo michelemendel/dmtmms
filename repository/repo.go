@@ -21,9 +21,9 @@ func NewRepo() *Repo {
 	var dbFile string
 
 	if os.Getenv("APP_ENV") == "production" {
-		dbFile = filepath.Join(os.Getenv(constants.PROD_DB_DIR_KEY), os.Getenv(constants.DB_NAME_KEY))
+		dbFile = filepath.Join(os.Getenv(constants.ENV_PROD_DB_DIR_KEY), os.Getenv(constants.ENV_DB_NAME_KEY))
 	} else {
-		dbFile = filepath.Join(os.Getenv(constants.DEV_DB_DIR_KEY), os.Getenv(constants.DB_NAME_KEY))
+		dbFile = filepath.Join(os.Getenv(constants.ENV_DEV_DB_DIR_KEY), os.Getenv(constants.ENV_DB_NAME_KEY))
 	}
 
 	db, err := sql.Open(dbName, dbFile)

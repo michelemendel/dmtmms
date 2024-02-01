@@ -8,8 +8,8 @@ package view
 // 		</p>
 // 	}
 // }
-templ Members() {
-	@AppRoot("")
+templ (vctx *ViewCtx) Members() {
+	@vctx.AppRoot("")
 	<p>
 		Members
 	</p>

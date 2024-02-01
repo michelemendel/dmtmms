@@ -10,18 +10,18 @@ import (
 
 func (h *HandlerContext) UsersInitHandler(c echo.Context) error {
 	users := h.GetUsers()
-	v := view.MakeUsersViewCtx(users, entity.User{}, constants.OP_CREATE, nil)
+	vctx := view.MakeViewCtx(users, entity.User{}, constants.OP_CREATE, nil)
 	if c.Param("op") == "" {
-		return h.render(c, v.UsersInit(), nil)
+		return h.render(c, vctx.UsersInit())
 	} else {
-		return h.render(c, v.UsersLayout(), nil)
+		return h.render(c, vctx.UsersLayout())
 	}
 }
 
 func (h *HandlerContext) Users(c echo.Context, op string) error {
 	users := h.GetUsers()
-	v := view.MakeUsersViewCtx(users, entity.User{}, op, nil)
-	return h.render(c, v.UsersLayout(), nil)
+	vctx := view.MakeViewCtx(users, entity.User{}, op, nil)
+	return h.render(c, vctx.UsersLayout())
 }
 
 func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
@@ -37,8 +37,8 @@ func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 	err := h.Repo.CreateUser(user)
 	if err != nil {
 		users := h.GetUsers()
-		v := view.MakeUsersViewCtx(users, user, constants.OP_CREATE, err)
-		return h.render(c, v.UsersLayout(), nil)
+		vctx := view.MakeViewCtx(users, user, constants.OP_CREATE, err)
+		return h.render(c, vctx.UsersLayout())
 	}
 
 	return h.Users(c, constants.OP_CREATE)
@@ -51,8 +51,8 @@ func (h *HandlerContext) UserUpdateInitHandler(c echo.Context) error {
 		user = entity.User{}
 	}
 	users := h.GetUsers()
-	v := view.MakeUsersViewCtx(users, user, constants.OP_UPDATE, nil)
-	return h.render(c, v.UsersLayout(), nil)
+	vctx := view.MakeViewCtx(users, user, constants.OP_UPDATE, nil)
+	return h.render(c, vctx.UsersLayout())
 }
 
 func (h *HandlerContext) UserUpdateHandler(c echo.Context) error {
@@ -64,8 +64,8 @@ func (h *HandlerContext) UserUpdateHandler(c echo.Context) error {
 	}
 	err := h.Repo.UpdateUser(user)
 	if err != nil {
-		v := view.MakeUsersViewCtx([]entity.User{}, user, constants.OP_UPDATE, err)
-		return h.render(c, v.UsersLayout(), err)
+		vctx := view.MakeViewCtx([]entity.User{}, user, constants.OP_UPDATE, err)
+		return h.render(c, vctx.UsersLayout())
 	}
 	return h.Users(c, constants.OP_CREATE)
 }
@@ -75,8 +75,8 @@ func (h *HandlerContext) UserDeleteHandler(c echo.Context) error {
 	err := h.Repo.DeleteUser(username)
 	if err != nil {
 		users := h.GetUsers()
-		v := view.MakeUsersViewCtx(users, entity.User{}, constants.OP_CREATE, err)
-		return h.render(c, v.UsersLayout(), err)
+		vctx := view.MakeViewCtx(users, entity.User{}, constants.OP_CREATE, err)
+		return h.render(c, vctx.UsersLayout())
 	}
 
 	return h.Users(c, constants.OP_CREATE)
@@ -90,5 +90,13 @@ func (h *HandlerContext) GetUsers() []entity.User {
 	if err != nil {
 		users = []entity.User{}
 	}
+
+	// remove the root user from the list
+	for i, user := range users {
+		if user.Name == "root" {
+			users = append(users[:i], users[i+1:]...)
+		}
+	}
+
 	return users
 }

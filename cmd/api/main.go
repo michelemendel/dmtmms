@@ -10,11 +10,11 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/michelemendel/dmtmms/auth"
 	consts "github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/handler"
 	repo "github.com/michelemendel/dmtmms/repository"
 	"github.com/michelemendel/dmtmms/routes"
-	session1 "github.com/michelemendel/dmtmms/session"
 	"github.com/michelemendel/dmtmms/util"
 )
 
@@ -23,9 +23,9 @@ func init() {
 }
 
 func main() {
-	env := os.Getenv(consts.APP_ENV_KEY)
-	logoutput := os.Getenv(consts.LOG_OUTPUT_TYPE_KEY)
-	webServerPort := os.Getenv(consts.WEB_SERVER_PORT_KEY)
+	env := os.Getenv(consts.ENV_APP_ENV_KEY)
+	logoutput := os.Getenv(consts.ENV_LOG_OUTPUT_TYPE_KEY)
+	webServerPort := os.Getenv(consts.ENV_WEB_SERVER_PORT_KEY)
 
 	fmt.Printf("ENVIRONMENT:\nmode:%s\nlogoutput:%s\nwebServerPort:%s\n", env, logoutput, webServerPort)
 
@@ -37,10 +37,10 @@ func main() {
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.SESSION_KEY_KEY)))))
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.ENV_SESSION_KEY_KEY)))))
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
-	a := session1.NewSession()
+	a := auth.NewSession()
 	r := repo.NewRepo()
 	defer r.DB.Close()
 

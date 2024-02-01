@@ -2,30 +2,35 @@ package constants
 
 // Env keys
 const (
-	APP_ENV_KEY         = "APP_ENV"
-	LOG_OUTPUT_TYPE_KEY = "LOG_OUTPUT_TYPE"
-	LOG_FILE_NAME_KEY   = "LOG_FILE_NAME"
-	WEB_SERVER_PORT_KEY = "WEB_SERVER_PORT"
-	SESSION_KEY_KEY     = "SESSION_KEY"
-	DEV_DB_DIR_KEY      = "DEV_DB_DIR"
-	PROD_DB_DIR_KEY     = "PROD_DB_DIR"
-	DB_NAME_KEY         = "DB_NAME"
+	ENV_APP_ENV_KEY         = "APP_ENV"
+	ENV_FILE_NAME_KEY       = "LOG_FILE_NAME"
+	ENV_LOG_OUTPUT_TYPE_KEY = "LOG_OUTPUT_TYPE"
+	ENV_WEB_SERVER_PORT_KEY = "WEB_SERVER_PORT"
+	ENV_SESSION_KEY_KEY     = "SESSION_KEY"
+	ENV_DEV_DB_DIR_KEY      = "DEV_DB_DIR"
+	ENV_PROD_DB_DIR_KEY     = "PROD_DB_DIR"
+	ENV_DB_NAME_KEY         = "DB_NAME"
 )
 
+// Log output types
 const (
 	LOG_OUTPUT_TYPE_FILE   = "file"
 	LOG_OUTPUT_TYPE_STDOUT = "stdout"
-	SESSION_NAME           = "session"
-	TOKEN_NAME             = "token"
+)
+
+// Auth keys
+const (
+	AUTH_SESSION_NAME = "session"
+	AUTH_TOKEN_NAME   = "token"
+	// auth objects
+	AUTH_NAV_USERS = "navUsers"
 )
 
 // Context keys
 const (
-	ERROR_KEY     = "error"
-	USER_NAME_KEY = "username"
-	USER_ROLE_KEY = "userrole"
-	// TokenKey      = "token"
-	IS_LOGGEDIN_KEY = "isloggedinkey"
+	CTX_USER_NAME_KEY   = "username"
+	CTX_USER_ROLE_KEY   = "userrole"
+	CTX_IS_LOGGEDIN_KEY = "isloggedinkey"
 )
 
 // Routes
@@ -43,7 +48,9 @@ const (
 	ROUTE_PING            = "/ping"
 )
 
+// View operations
 const (
+	OP_NONE   = ""
 	OP_CREATE = "create"
 	OP_UPDATE = "update"
 )
