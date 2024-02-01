@@ -1,7 +1,6 @@
 package view
 
 import (
-	"fmt"
 	"github.com/michelemendel/dmtmms/constants"
 )
 
@@ -112,28 +111,14 @@ templ (vctx *ViewCtx) UserList() {
 						Delete
 					</span>
 					<span
-						hx-get={ constants.ROUTE_USER_RESET_PW + "/" + user.Name }
-						hx-target="#users"
-						hx-swap="innerHTML"
-						hx-confirm={ fmt.Sprintf(`
-By clicking ok, %s's password will be reset.
-Copy the password and send it to the user.
-You will not be able to see it again.`, user.Name) }
-					>
-						Reset password
-					</span>
-					<span
+						id={ "resetPW-" + user.Name }
 						hx-get={ constants.ROUTE_USER_RESET_PW + "/" + user.Name }
 						hx-target="#users"
 						hx-swap={ "innerHTML" }
-						_="
-							on htmx:confirm(issueRequest)
-             				halt the event
-             				call Swal.fire({title: 'Confirm', text:'Do you want to continue?'})
-             				if result.isConfirmed issueRequest()
-							"
+						hx-trigger="confirmed"
+						onClick={ resetPWConfirm(user.Name) }
 					>
-						Resetpassword
+						Reset password
 					</span>
 					if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
 						<span>
@@ -146,10 +131,7 @@ You will not be able to see it again.`, user.Name) }
 	</ul>
 }
 
-// hx-trigger="confirmed"
-// onClick={ resetPWConfirm() }
-
-script resetPWConfirm() {
+script resetPWConfirm(username string) {
 	console.log('resetPWConfirm');
 	msg = "By clicking ok, the password will be reset. Copy the password and send it to the user. You will not be able to see it again.";
 	Swal.fire({
@@ -159,12 +141,8 @@ script resetPWConfirm() {
 		})
 		.then(function(result){
         if(result.isConfirmed){
-			console.log('confirmed');
-			htmx.trigger(this, "confirmed");
-		}
-		if(result.dismiss === Swal.DismissReason.cancel){
-			console.log('cancellled');
-			htmx.trigger(this, 'cancelled');
+			// console.log('confirmed');
+			htmx.trigger("#resetPW-"+username, "confirmed");
 		}
 	})
 }
