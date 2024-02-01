@@ -419,32 +419,48 @@ You will not be able to see it again.`, user.Name)))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_USER_RESET_PW + "/" + user.Name))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 35)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString("innerHTML"))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 36)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 				if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 35)
+					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 37)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var13 string
 					templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(vctx.TempPassword)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/users.templ`, Line: 126, Col: 64}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/users.templ`, Line: 139, Col: 55}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 36)
+					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 38)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 37)
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 39)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 38)
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 40)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -453,4 +469,32 @@ You will not be able to see it again.`, user.Name)))
 		}
 		return templ_7745c5c3_Err
 	})
+}
+
+// hx-trigger="confirmed"
+// onClick={ resetPWConfirm() }
+func resetPWConfirm() templ.ComponentScript {
+	return templ.ComponentScript{
+		Name: `__templ_resetPWConfirm_0992`,
+		Function: `function __templ_resetPWConfirm_0992(){console.log('resetPWConfirm');
+	msg = "By clicking ok, the password will be reset. Copy the password and send it to the user. You will not be able to see it again.";
+	Swal.fire({
+		title: 'Reset password',
+		showCancelButton: true,
+		text: msg,
+		})
+		.then(function(result){
+        if(result.isConfirmed){
+			console.log('confirmed');
+			htmx.trigger(this, "confirmed");
+		}
+		if(result.dismiss === Swal.DismissReason.cancel){
+			console.log('cancellled');
+			htmx.trigger(this, 'cancelled');
+		}
+	})
+}`,
+		Call:       templ.SafeScript(`__templ_resetPWConfirm_0992`),
+		CallInline: templ.SafeScriptInline(`__templ_resetPWConfirm_0992`),
+	}
 }

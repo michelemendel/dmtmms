@@ -27,6 +27,14 @@ Macos
   - go get github.com/a-h/templ
   - templ cli
     - go install github.com/a-h/templ/cmd/templ@latest
+- sweetalert2 - 11.10.4
+  - https://sweetalert2.github.io/
+  - Download from
+    - https://github.com/sweetalert2/sweetalert2/releases
+      - sweetalert2.min.js
+      - sweetalert2.min.css
+- https://hyperscript.org/docs/#install
+  - Get the _hyperscript.min.js from https://github.com/bigskysoftware/_hyperscript/tree/master/dist
 
 ### Production
 

@@ -122,13 +122,49 @@ You will not be able to see it again.`, user.Name) }
 					>
 						Reset password
 					</span>
+					<span
+						hx-get={ constants.ROUTE_USER_RESET_PW + "/" + user.Name }
+						hx-target="#users"
+						hx-swap={ "innerHTML" }
+						_="
+							on htmx:confirm(issueRequest)
+             				halt the event
+             				call Swal.fire({title: 'Confirm', text:'Do you want to continue?'})
+             				if result.isConfirmed issueRequest()
+							"
+					>
+						Resetpassword
+					</span>
 					if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
 						<span>
-							Copy and send the temporary password: { vctx.TempPassword }
+							Copy the temporary password: { vctx.TempPassword }
 						</span>
 					}
 				}
 			</li>
 		}
 	</ul>
+}
+
+// hx-trigger="confirmed"
+// onClick={ resetPWConfirm() }
+
+script resetPWConfirm() {
+	console.log('resetPWConfirm');
+	msg = "By clicking ok, the password will be reset. Copy the password and send it to the user. You will not be able to see it again.";
+	Swal.fire({
+		title: 'Reset password',
+		showCancelButton: true,
+		text: msg,
+		})
+		.then(function(result){
+        if(result.isConfirmed){
+			console.log('confirmed');
+			htmx.trigger(this, "confirmed");
+		}
+		if(result.dismiss === Swal.DismissReason.cancel){
+			console.log('cancellled');
+			htmx.trigger(this, 'cancelled');
+		}
+	})
 }

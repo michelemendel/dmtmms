@@ -31,8 +31,10 @@
 <span hx-delete=\"
 \" hx-target=\"#users\" hx-swap=\"innerHTML\">Delete</span> <span hx-get=\"
 \" hx-target=\"#users\" hx-swap=\"innerHTML\" hx-confirm=\"
-\">Reset password</span> 
-<span>Copy and send the temporary password: 
+\">Reset password</span> <span hx-get=\"
+\" hx-target=\"#users\" hx-swap=\"
+\" _=\"\n							on htmx:confirm(issueRequest)\n             				halt the event\n             				call Swal.fire({title: &#39;Confirm&#39;, text:&#39;Do you want to continue?&#39;})\n             				if result.isConfirmed issueRequest()\n							\">Resetpassword</span> 
+<span>Copy the temporary password: 
 </span>
 </li>
 </ul>
