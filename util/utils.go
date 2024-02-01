@@ -1,8 +1,10 @@
 package util
 
 import (
+	"encoding/base64"
 	"log"
 	"log/slog"
+	"strings"
 	"sync"
 
 	"github.com/google/uuid"
@@ -41,4 +43,10 @@ func HashPassword(password string) (string, error) {
 func ValidatePassword(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+// Generate a random password with n charactes.
+func GeneratePassword() string {
+	aLongString := base64.StdEncoding.EncodeToString([]byte(GenerateUUID()))
+	return strings.ToLower(aLongString[0:8])
 }

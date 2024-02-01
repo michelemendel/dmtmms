@@ -35,17 +35,23 @@ const (
 
 // Routes
 const (
-	ROUTE_INDEX           = "/"
-	ROUTE_LOGIN           = "/login"
-	ROUTE_LOGOUT          = "/logout"
-	ROUTE_MEMBERS         = "/members"
-	ROUTE_MEMBER_EDIT     = "/member/edit"
+	//
+	ROUTE_LOGIN  = "/login"
+	ROUTE_LOGOUT = "/logout"
+	//
+	ROUTE_INDEX = "/"
+	//
+	ROUTE_MEMBERS     = "/members"
+	ROUTE_MEMBER_EDIT = "/member/edit"
+	//
 	ROUTE_USERS           = "/users"
 	ROUTE_USER_CREATE     = "/user/create"
 	ROUTE_USER_EDIT_CLOSE = "/user/editclose"
 	ROUTE_USER_DELETE     = "/user/delete"
 	ROUTE_USER_UPDATE     = "/user/update"
-	ROUTE_PING            = "/ping"
+	ROUTE_USER_RESET_PW   = "/user/resetpw"
+	//
+	ROUTE_PING = "/ping"
 )
 
 // View operations

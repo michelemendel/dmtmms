@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log/slog"
 	"slices"
 
 	"github.com/labstack/echo/v4"
@@ -83,6 +84,19 @@ func (h *HandlerContext) UserDeleteHandler(c echo.Context) error {
 	}
 
 	return h.Users(c, constants.OP_CREATE)
+}
+
+func (h *HandlerContext) ResetPasswordHandler(c echo.Context) error {
+	username := c.Param("username")
+	newPW := util.GeneratePassword()
+	hpw, _ := util.HashPassword(newPW)
+	err := h.Repo.ResetPassword(username, hpw)
+	if err != nil {
+		slog.Error(err.Error(), "error generating new temporary password for ", username)
+	}
+	users := h.GetUsers()
+	vctx := view.MakeViewCtx(view.MakeOpts().WithUsers(users).WithOp(constants.OP_CREATE).WithTempPW(newPW, username))
+	return h.renderView(c, vctx.UsersLayout())
 }
 
 //--------------------------------------------------------------------------------

@@ -1,8 +1,6 @@
 package view
 
 import (
-	"fmt"
-
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
 )
@@ -24,20 +22,24 @@ func MakeViewCtx(opts Opts) *ViewCtx {
 }
 
 type Opts struct {
-	Op           string
-	Users        []entity.User
-	SelectedUser entity.User
-	Roles        []string
-	Err          error
+	Op                   string
+	Users                []entity.User
+	SelectedUser         entity.User
+	Roles                []string
+	TempPassword         string
+	TempPasswordUserName string
+	Err                  error
 }
 
 func MakeOpts() Opts {
 	return Opts{
-		Op:           constants.OP_NONE,
-		Users:        []entity.User{},
-		SelectedUser: entity.User{},
-		Roles:        []string{"read", "admin"},
-		Err:          nil,
+		Op:                   constants.OP_NONE,
+		Users:                []entity.User{},
+		SelectedUser:         entity.User{},
+		Roles:                []string{"read", "admin"},
+		TempPassword:         "",
+		TempPasswordUserName: "",
+		Err:                  nil,
 	}
 }
 
@@ -47,7 +49,6 @@ func (o Opts) WithOp(op string) Opts {
 }
 
 func (o Opts) WithUsers(users []entity.User) Opts {
-	fmt.Println("[OPTS]:USERS1:", users)
 	o.Users = users
 	return o
 }
@@ -59,6 +60,12 @@ func (o Opts) WithSelectedUser(user entity.User) Opts {
 
 func (o Opts) WithRoles(roles []string) Opts {
 	o.Roles = roles
+	return o
+}
+
+func (o Opts) WithTempPW(password string, username string) Opts {
+	o.TempPassword = password
+	o.TempPasswordUserName = username
 	return o
 }
 

@@ -27,8 +27,12 @@
 <li><span>
 </span> <span>
 </span> <span hx-get=\"
-\" hx-target=\"#users\" hx-swap=\"innerHTML\">Edit</span> 
+\" hx-target=\"#users\" hx-swap=\"innerHTML\">Edit</span>
 <span hx-delete=\"
-\" hx-target=\"#users\" hx-swap=\"innerHTML\">Delete</span>
+\" hx-target=\"#users\" hx-swap=\"innerHTML\">Delete</span> <span hx-get=\"
+\" hx-target=\"#users\" hx-swap=\"innerHTML\" hx-confirm=\"
+\">Reset password</span> 
+<span>Copy and send the temporary password: 
+</span>
 </li>
 </ul>

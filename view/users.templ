@@ -1,6 +1,9 @@
 package view
 
-import "github.com/michelemendel/dmtmms/constants"
+import (
+	"fmt"
+	"github.com/michelemendel/dmtmms/constants"
+)
 
 templ (vctx *ViewCtx) UsersInit() {
 	@vctx.AppRoot("")
@@ -99,6 +102,7 @@ templ (vctx *ViewCtx) UserList() {
 				>
 					Edit
 				</span>
+				// Don't show delete and reset password for the current user
 				if user.Name != ctx.Value(constants.CTX_USER_NAME_KEY).(string) {
 					<span
 						hx-delete={ constants.ROUTE_USER_DELETE + "/" + user.Name }
@@ -107,6 +111,22 @@ templ (vctx *ViewCtx) UserList() {
 					>
 						Delete
 					</span>
+					<span
+						hx-get={ constants.ROUTE_USER_RESET_PW + "/" + user.Name }
+						hx-target="#users"
+						hx-swap="innerHTML"
+						hx-confirm={ fmt.Sprintf(`
+By clicking ok, %s's password will be reset.
+Copy the password and send it to the user.
+You will not be able to see it again.`, user.Name) }
+					>
+						Reset password
+					</span>
+					if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
+						<span>
+							Copy and send the temporary password: { vctx.TempPassword }
+						</span>
+					}
 				}
 			</li>
 		}

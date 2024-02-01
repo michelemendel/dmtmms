@@ -57,3 +57,12 @@ func (r *Repo) UpdateUserRole(username string, role string) error {
 	}
 	return nil
 }
+
+func (r *Repo) ResetPassword(username string, hashedPassword string) error {
+	_, err := r.DB.Exec("UPDATE users SET password = ? WHERE name = ?", hashedPassword, username)
+	if err != nil {
+		slog.Error(err.Error(), "name", username)
+		return err
+	}
+	return nil
+}

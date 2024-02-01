@@ -10,8 +10,6 @@ import (
 	"github.com/michelemendel/dmtmms/util"
 )
 
-// TODO: Move to auth package
-
 type Session struct {
 	LoggedInUsers map[TokenType]UserSession
 }

@@ -28,11 +28,8 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.GET(constants.ROUTE_USER_UPDATE+"/:username", hCtx.UserUpdateInitHandler)
 	e.PUT(constants.ROUTE_USER_UPDATE, hCtx.UserUpdateHandler)
 	e.DELETE(constants.ROUTE_USER_DELETE+"/:username", hCtx.UserDeleteHandler)
+	e.GET(constants.ROUTE_USER_RESET_PW+"/:username", hCtx.ResetPasswordHandler)
 
 	//
 	e.GET(constants.ROUTE_PING, hCtx.PingHandler)
-
-	// TODO: remove this
-	e.GET("/counts", hCtx.CountsHandler)
-	e.POST("/counts", hCtx.CountsHandler)
 }
