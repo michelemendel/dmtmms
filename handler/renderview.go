@@ -27,9 +27,9 @@ func (h *HandlerContext) renderView(c echo.Context, comp templ.Component) error 
 
 	// TODO: Remove b4to
 	// Bypass the auth check for now
-	ctx = context.WithValue(ctx, constants.CTX_IS_LOGGEDIN_KEY, true)
-	ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, "root")
-	ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, "admin")
+	// ctx = context.WithValue(ctx, constants.CTX_IS_LOGGEDIN_KEY, true)
+	// ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, "root")
+	// ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, "admin")
 
 	return comp.Render(ctx, c.Response())
 }

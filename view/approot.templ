@@ -48,7 +48,9 @@ templ (vctx *ViewCtx) NavBar() {
 			</span>
 			|
 			<span>
-				{ ctx.Value(constants.CTX_USER_NAME_KEY).(string) } ({ ctx.Value(constants.CTX_USER_ROLE_KEY).(string) })
+				<button hx-get={ constants.ROUTE_USER_SET_PW } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">
+					{ ctx.Value(constants.CTX_USER_NAME_KEY).(string) } ({ ctx.Value(constants.CTX_USER_ROLE_KEY).(string) })
+				</button>
 			</span>
 		</div>
 	</nav>

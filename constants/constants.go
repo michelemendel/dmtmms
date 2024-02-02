@@ -50,6 +50,7 @@ const (
 	ROUTE_USER_DELETE     = "/user/delete"
 	ROUTE_USER_UPDATE     = "/user/update"
 	ROUTE_USER_RESET_PW   = "/user/resetpw"
+	ROUTE_USER_SET_PW     = "/user/setpw"
 	//
 	ROUTE_PING = "/ping"
 )

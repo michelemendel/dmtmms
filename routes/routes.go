@@ -29,6 +29,8 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.PUT(constants.ROUTE_USER_UPDATE, hCtx.UserUpdateHandler)
 	e.DELETE(constants.ROUTE_USER_DELETE+"/:username", hCtx.UserDeleteHandler)
 	e.GET(constants.ROUTE_USER_RESET_PW+"/:username", hCtx.ResetPasswordHandler)
+	e.GET(constants.ROUTE_USER_SET_PW, hCtx.SetPasswordInitHandler)
+	e.POST(constants.ROUTE_USER_SET_PW, hCtx.SetPasswordHandler)
 
 	//
 	e.GET(constants.ROUTE_PING, hCtx.PingHandler)

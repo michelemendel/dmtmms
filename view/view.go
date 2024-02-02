@@ -29,6 +29,7 @@ type Opts struct {
 	TempPassword         string
 	TempPasswordUserName string
 	Err                  error
+	Msg                  string
 }
 
 func MakeOpts() Opts {
@@ -40,6 +41,7 @@ func MakeOpts() Opts {
 		TempPassword:         "",
 		TempPasswordUserName: "",
 		Err:                  nil,
+		Msg:                  "",
 	}
 }
 
@@ -71,5 +73,10 @@ func (o Opts) WithTempPW(password string, username string) Opts {
 
 func (o Opts) WithErr(err error) Opts {
 	o.Err = err
+	return o
+}
+
+func (o Opts) WithMsg(msg string) Opts {
+	o.Msg = msg
 	return o
 }

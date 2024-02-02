@@ -7,6 +7,7 @@
 | <span><button hx-get=\"
 \" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">USERS</button></span>
 | <span><button hx-get=\"
-\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"/\">LOGOUT</button></span> | <span>
+\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"/\">LOGOUT</button></span> | <span><button hx-get=\"
+\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">
  (
-)</span></div></nav>
+)</button></span></div></nav>

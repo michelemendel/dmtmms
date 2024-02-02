@@ -103,6 +103,38 @@ func (h *HandlerContext) ResetPasswordHandler(c echo.Context) error {
 	return h.renderView(c, vctx.UsersLayout())
 }
 
+func (h *HandlerContext) SetPasswordInitHandler(c echo.Context) error {
+	username := c.Param("username")
+	user := entity.User{Name: username}
+	vctx := view.MakeViewCtx(view.MakeOpts().WithSelectedUser(user))
+	return h.renderView(c, vctx.UserSetPasswordInit())
+}
+
+func (h *HandlerContext) SetPasswordHandler(c echo.Context) error {
+	newPW := c.FormValue("newpassword")
+	newPWCheck := c.FormValue("newpasswordcheck")
+	userSession, err := h.Session.GetCurrentUser(c)
+	username := userSession.Name
+	if err != nil {
+		slog.Error("error getting current user", "error", err.Error())
+		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(fmt.Errorf("there was an error getting the current user")))
+		return h.renderView(c, vctx.UserSetPassword(newPW, newPWCheck))
+	}
+	if newPW != newPWCheck {
+		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(fmt.Errorf("passwords do not match")))
+		return h.renderView(c, vctx.UserSetPassword(newPW, newPWCheck))
+	}
+	hpw, _ := util.HashPassword(newPW)
+	err = h.Repo.UpdateUserPassword(entity.User{Name: username, HashedPassword: hpw})
+	if err != nil {
+		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(fmt.Errorf("there was an error setting the new password")))
+		return h.renderView(c, vctx.UserSetPassword(newPW, newPWCheck))
+	}
+
+	vctx := view.MakeViewCtx(view.MakeOpts().WithMsg("password updated successfully"))
+	return h.renderView(c, vctx.UserSetPassword("", ""))
+}
+
 //--------------------------------------------------------------------------------
 // Helper functions
 
