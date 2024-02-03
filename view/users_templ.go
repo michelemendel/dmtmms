@@ -387,11 +387,15 @@ func (vctx *ViewCtx) UserList() templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if user.Name != ctx.Value(constants.CTX_USER_NAME_KEY).(string) {
+				templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, deleteConfirm(user.Name))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 31)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_USER_DELETE + "/" + user.Name))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString("delete-" + user.Name))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -399,7 +403,7 @@ func (vctx *ViewCtx) UserList() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, resetPWConfirm(user.Name))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_USER_DELETE + "/" + user.Name))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -407,7 +411,8 @@ func (vctx *ViewCtx) UserList() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString("resetPW-" + user.Name))
+				var templ_7745c5c3_Var13 templ.ComponentScript = deleteConfirm(user.Name)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13.Call)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -415,7 +420,7 @@ func (vctx *ViewCtx) UserList() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_USER_RESET_PW + "/" + user.Name))
+				templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, resetPWConfirm(user.Name))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -423,7 +428,7 @@ func (vctx *ViewCtx) UserList() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString("innerHTML"))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString("resetPW-" + user.Name))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -431,8 +436,7 @@ func (vctx *ViewCtx) UserList() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var13 templ.ComponentScript = resetPWConfirm(user.Name)
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13.Call)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_USER_RESET_PW + "/" + user.Name))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -440,32 +444,49 @@ func (vctx *ViewCtx) UserList() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString("innerHTML"))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 38)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var14 templ.ComponentScript = resetPWConfirm(user.Name)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14.Call)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 39)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 				if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 38)
+					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 40)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var14 string
-					templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(vctx.TempPassword)
+					var templ_7745c5c3_Var15 string
+					templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(vctx.TempPassword)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/users.templ`, Line: 124, Col: 55}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/users.templ`, Line: 127, Col: 55}
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 39)
+					templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 41)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 40)
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 42)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 41)
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 43)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -476,11 +497,31 @@ func (vctx *ViewCtx) UserList() templ.Component {
 	})
 }
 
+func deleteConfirm(username string) templ.ComponentScript {
+	return templ.ComponentScript{
+		Name: `__templ_deleteConfirm_7543`,
+		Function: `function __templ_deleteConfirm_7543(username){msg = "Are you sure you want to delete the user? This action cannot be undone.";
+	Swal.fire({
+		title: 'Delete user',
+		showCancelButton: true,
+		text: msg,
+		})
+		.then(function(result){
+        if(result.isConfirmed){
+			// console.log('confirmed');
+			htmx.trigger("#delete-"+username, "confirmed");
+		}
+	})
+}`,
+		Call:       templ.SafeScript(`__templ_deleteConfirm_7543`, username),
+		CallInline: templ.SafeScriptInline(`__templ_deleteConfirm_7543`, username),
+	}
+}
+
 func resetPWConfirm(username string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_resetPWConfirm_3b4d`,
-		Function: `function __templ_resetPWConfirm_3b4d(username){console.log('resetPWConfirm');
-	msg = "By clicking ok, the password will be reset. Copy the password and send it to the user. You will not be able to see it again.";
+		Name: `__templ_resetPWConfirm_8801`,
+		Function: `function __templ_resetPWConfirm_8801(username){msg = "By clicking ok, the password will be reset. Copy the password and send it to the user. You will not be able to see it again.";
 	Swal.fire({
 		title: 'Reset password',
 		showCancelButton: true,
@@ -493,7 +534,7 @@ func resetPWConfirm(username string) templ.ComponentScript {
 		}
 	})
 }`,
-		Call:       templ.SafeScript(`__templ_resetPWConfirm_3b4d`, username),
-		CallInline: templ.SafeScriptInline(`__templ_resetPWConfirm_3b4d`, username),
+		Call:       templ.SafeScript(`__templ_resetPWConfirm_8801`, username),
+		CallInline: templ.SafeScriptInline(`__templ_resetPWConfirm_8801`, username),
 	}
 }

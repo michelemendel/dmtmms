@@ -33,8 +33,8 @@ templ (vctx *ViewCtx) UserCreateForm() {
 			hx-target="#users"
 			hx-swap="outerHTML"
 		>
-			<input type="text" name="username" value={ vctx.SelectedUser.Name } placeholder="name"/>
-			<input type="text" name="password" placeholder="password"/>
+			<input type="text" required name="username" value={ vctx.SelectedUser.Name } placeholder="name"/>
+			<input type="text" required name="password" placeholder="password"/>
 			@vctx.roleOptions()
 			<input type="submit" value="Add User"/>
 			<input
@@ -104,9 +104,12 @@ templ (vctx *ViewCtx) UserList() {
 				// Don't show delete and reset password for the current user
 				if user.Name != ctx.Value(constants.CTX_USER_NAME_KEY).(string) {
 					<span
+						id={ "delete-" + user.Name }
 						hx-delete={ constants.ROUTE_USER_DELETE + "/" + user.Name }
 						hx-target="#users"
 						hx-swap="innerHTML"
+						hx-trigger="confirmed"
+						onClick={ deleteConfirm(user.Name) }
 					>
 						Delete
 					</span>
@@ -131,8 +134,22 @@ templ (vctx *ViewCtx) UserList() {
 	</ul>
 }
 
+script deleteConfirm(username string) {
+	msg = "Are you sure you want to delete the user? This action cannot be undone.";
+	Swal.fire({
+		title: 'Delete user',
+		showCancelButton: true,
+		text: msg,
+		})
+		.then(function(result){
+        if(result.isConfirmed){
+			// console.log('confirmed');
+			htmx.trigger("#delete-"+username, "confirmed");
+		}
+	})
+}
+
 script resetPWConfirm(username string) {
-	console.log('resetPWConfirm');
 	msg = "By clicking ok, the password will be reset. Copy the password and send it to the user. You will not be able to see it again.";
 	Swal.fire({
 		title: 'Reset password',

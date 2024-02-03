@@ -33,6 +33,12 @@ func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 	role := c.FormValue("role")
+
+	if username == "" || password == "" || role == "" {
+		vctx := view.MakeViewCtx(view.MakeOpts().WithUsers(h.GetUsers()).WithOp(constants.OP_CREATE).WithErr(fmt.Errorf("username, password, and role are required")))
+		return h.renderView(c, vctx.UsersLayout())
+	}
+
 	hpw, _ := util.HashPassword(password)
 	user := entity.User{
 		Name:           username,
@@ -41,8 +47,7 @@ func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 	}
 	err := h.Repo.CreateUser(user)
 	if err != nil {
-		users := h.GetUsers()
-		vctx := view.MakeViewCtx(view.MakeOpts().WithUsers(users).WithSelectedUser(user).WithOp(constants.OP_CREATE).WithErr(err))
+		vctx := view.MakeViewCtx(view.MakeOpts().WithUsers(h.GetUsers()).WithSelectedUser(user).WithOp(constants.OP_CREATE).WithErr(err))
 		return h.renderView(c, vctx.UsersLayout())
 	}
 
@@ -55,8 +60,7 @@ func (h *HandlerContext) UserUpdateInitHandler(c echo.Context) error {
 	if err != nil {
 		user = entity.User{}
 	}
-	users := h.GetUsers()
-	vctx := view.MakeViewCtx(view.MakeOpts().WithUsers(users).WithSelectedUser(user).WithOp(constants.OP_UPDATE))
+	vctx := view.MakeViewCtx(view.MakeOpts().WithUsers(h.GetUsers()).WithSelectedUser(user).WithOp(constants.OP_UPDATE))
 	return h.renderView(c, vctx.UsersLayout())
 }
 

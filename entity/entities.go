@@ -14,3 +14,18 @@ func NewUser(name, password, role string) User {
 		Role:           role,
 	}
 }
+
+type Member struct {
+	UUID        string
+	ID          string
+	Name        string
+	DateOfBirth string
+	Groups      []Group
+}
+
+type Group struct {
+	UUID    string
+	Name    string
+	Type    string
+	Members []Member
+}
