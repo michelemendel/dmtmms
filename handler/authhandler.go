@@ -36,7 +36,7 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 	if err != nil {
 		vctx = view.MakeViewCtx(view.MakeOpts().WithErr(e.InvalidCredentials))
 	}
-	return h.renderView(c, vctx.Members())
+	return h.renderView(c, vctx.AppRoot(""))
 }
 
 func (h *HandlerContext) LogoutHandler(c echo.Context) error {

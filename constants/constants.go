@@ -1,5 +1,7 @@
 package constants
 
+const DATE_FRMT = "2006-01-02"
+
 // Env keys
 const (
 	ENV_APP_ENV_KEY         = "APP_ENV"

@@ -55,3 +55,5 @@ func (r *Repo) DoesUsernameExist(username string) bool {
 	}
 	return true
 }
+
+// select m.id,m.name,mg.role,g.name as group_name,g.type as group_type from members as m join members_groups as mg on m.uuid = mg.member_uuid join groups as g on g.uuid=mg.group_uuid where m.name='mem2';

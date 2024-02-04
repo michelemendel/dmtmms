@@ -15,6 +15,7 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.POST(constants.ROUTE_LOGIN, hCtx.LoginHandler)
 	e.GET(constants.ROUTE_LOGOUT, hCtx.LogoutHandler)
 
+	//
 	e.GET(constants.ROUTE_INDEX, hCtx.MembersHandler)
 
 	// Members

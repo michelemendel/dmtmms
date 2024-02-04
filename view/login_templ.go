@@ -25,7 +25,7 @@ func (vctx *ViewCtx) Login(username string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"loginRoot\" class=\"bg-gray-100 flex justify-center items-center h-screen\"><div class=\"lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2\"><div class=\"text-1xl font-normal text-gray-600 mb-1\">DMT</div><div class=\"text-1xl font-normal text-gray-600 mb-4\">Member Register</div><h1 class=\"text-2xl font-semibold mb-4\">Login</h1><!-- Form --><form id=\"loginForm\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -33,7 +33,7 @@ func (vctx *ViewCtx) Login(username string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -41,7 +41,7 @@ func (vctx *ViewCtx) Login(username string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><!-- Username --><div class=\"mb-4\"><label for=\"username\" class=\"inline-block text-gray-600\">Username</label> <span class=\"relative\">*</span> <input value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -49,12 +49,12 @@ func (vctx *ViewCtx) Login(username string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" type=\"text\" id=\"username\" name=\"username\" required class=\"w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500\" placeholder=\"Joe\"></div><!-- Password --><div class=\"mb-4\"><label for=\"password\" class=\"inline-block text-gray-600\">Password</label> <span class=\"relative\">*</span> <input type=\"password\" id=\"password\" name=\"password\" required class=\"w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500\"></div><!-- Error -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if vctx.Err != nil {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mb-4\"><div class=\"block text-red-600\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -67,12 +67,12 @@ func (vctx *ViewCtx) Login(username string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Submit button --><button type=\"submit\" class=\"bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full\">Login</button></form></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

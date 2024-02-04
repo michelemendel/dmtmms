@@ -1,1 +1,0 @@
-<h1 class=\"mt-5 text-4xl font-bold underline\">Pong</h1>

@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	db := flag.String("db", "", "reset")
 	drop := flag.String("drop", "", "tables")
 	create := flag.String("create", "", "tables")
 	insert := flag.String("insert", "", "users, members_groups")
@@ -17,6 +18,20 @@ func main() {
 
 	repo := repo.NewRepo()
 	defer repo.Close()
+	// repo.DBConfig()
+
+	if *db != "" {
+		switch *db {
+		case "reset":
+			repo.DropTables()
+			repo.CreateTables()
+			repo.CreateIndexes()
+			repo.InsertUsers()
+			repo.InsertMembersGroups()
+		default:
+			fmt.Println("no op specified")
+		}
+	}
 
 	if *drop != "" {
 		switch *drop {
@@ -30,7 +45,6 @@ func main() {
 	if *create != "" {
 		switch *create {
 		case "tables":
-			repo.DBConfig()
 			repo.CreateTables()
 		default:
 			fmt.Println("no op specified")

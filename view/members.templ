@@ -1,16 +1,44 @@
 package view
 
 // import "github.com/michelemendel/dmtmms/constants"
-// templ Members() {
-// 	@AppRoot("") {
-// 		<p>
-// 			Members
-// 		</p>
-// 	}
-// }
-templ (vctx *ViewCtx) Members() {
+import "github.com/michelemendel/dmtmms/entity"
+import "github.com/michelemendel/dmtmms/constants"
+
+templ (vctx *ViewCtx) Members(members []entity.Member, group entity.Group) {
 	@vctx.AppRoot("")
-	<p>
-		Members
-	</p>
+	<div class="flex flex-row">
+		<div class="basis-3/4">
+			@vctx.MemberTable(members)
+		</div>
+		<div class="basis-1/4">groups</div>
+	</div>
+}
+
+templ (vctx *ViewCtx) MemberTable(members []entity.Member) {
+	<table>
+		<thead>
+			<tr>
+				<th>uuid</th>
+				<th>id</th>
+				<th>name</th>
+				<th>dob</th>
+				<th>email</th>
+				<th>mobile</th>
+				<th>status</th>
+			</tr>
+		</thead>
+		<tbody>
+			for _, member := range members {
+				<tr>
+					<td>{ member.UUID }</td>
+					<td>{ member.ID }</td>
+					<td>{ member.Name }</td>
+					<td>{ member.DOB.Format(constants.DATE_FRMT) }</td>
+					<td>{ member.Email }</td>
+					<td>{ member.Mobile }</td>
+					<td>{ string(member.Status) }</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 }
