@@ -95,7 +95,7 @@ func (vctx *ViewCtx) UserFormSelectType() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if vctx.Op == constants.OP_CREATE {
+		if vctx.UserOp == constants.OP_CREATE {
 			templ_7745c5c3_Err = vctx.UserCreateForm().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

@@ -3,42 +3,96 @@ package view
 // import "github.com/michelemendel/dmtmms/constants"
 import "github.com/michelemendel/dmtmms/entity"
 import "github.com/michelemendel/dmtmms/constants"
+import "github.com/michelemendel/dmtmms/util"
 
 templ (vctx *ViewCtx) Members(members []entity.Member, group entity.Group) {
 	@vctx.AppRoot("")
-	<div class="flex flex-row">
+	@vctx.MembersLayout(members, group)
+}
+
+templ (vctx *ViewCtx) MembersLayout(members []entity.Member, group entity.Group) {
+	<div id="members" class="flex flex-row">
 		<div class="basis-3/4">
-			@vctx.MemberTable(members)
+			@vctx.MembersTable(members)
 		</div>
-		<div class="basis-1/4">groups</div>
+		<div class="basis-1/4">
+			@vctx.MemberDetails(entity.Member{}, []entity.Group{})
+		</div>
 	</div>
 }
 
-templ (vctx *ViewCtx) MemberTable(members []entity.Member) {
-	<table>
-		<thead>
-			<tr>
-				<th>uuid</th>
-				<th>id</th>
-				<th>name</th>
-				<th>dob</th>
-				<th>email</th>
-				<th>mobile</th>
-				<th>status</th>
-			</tr>
-		</thead>
-		<tbody>
-			for _, member := range members {
+templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
+	<div id="membersTable">
+		<table>
+			<thead>
 				<tr>
-					<td>{ member.UUID }</td>
-					<td>{ member.ID }</td>
-					<td>{ member.Name }</td>
-					<td>{ member.DOB.Format(constants.DATE_FRMT) }</td>
-					<td>{ member.Email }</td>
-					<td>{ member.Mobile }</td>
-					<td>{ string(member.Status) }</td>
+					<th>id</th>
+					<th>name</th>
+					<th>dob</th>
 				</tr>
+			</thead>
+			<tbody>
+				for _, member := range members {
+					<tr
+						id={ "resetPW-" + member.UUID }
+						hx-get={ constants.ROUTE_MEMBER_DETAILS + "/" + member.UUID }
+						hx-target="#memberGroupDetails"
+						hx-swap={ "innerHTML" }
+					>
+						<td>{ member.ID }</td>
+						<td>{ member.Name }</td>
+						<td>{ util.Time2String(member.DOB) }</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+
+templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group) {
+	<div id="memberGroupDetails">
+		<div id="memberDetails" class="flex flex-col">
+			if member.UUID == "" {
+				<div>
+					<p>Click on a member to view details</p>
+				</div>
+			} else {
+				<div>
+					<h2>{ member.UUID }</h2>
+					<h2>{ member.Name }</h2>
+					<p>{ member.Email }</p>
+					<p>{ member.Mobile }</p>
+					<p>{ util.Time2String(member.DOB) }</p>
+					<p>{ string(member.Status) }</p>
+				</div>
+				<div id="groupsDetails" class="flex flex-col">
+					<h2>Groups</h2>
+					<ul>
+						<h3>--Family</h3>
+						for _, group := range groups {
+							if group.Type == entity.GroupTypeFamily {
+								<li
+									hx-get={ constants.ROUTE_MEMBERS_INTERNAL + "?guuid=" + group.UUID }
+									hx-target="#members"
+									hx-swap={ "outerHTML" }
+									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
+								>{ group.Name }</li>
+							}
+						}
+						<h3>--Organization</h3>
+						for _, group := range groups {
+							if group.Type == entity.GroupTypeOrg {
+								<li
+									hx-get={ constants.ROUTE_MEMBERS_INTERNAL + "?guuid=" + group.UUID }
+									hx-target="#members"
+									hx-swap={ "outerHTML" }
+									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
+								>{ group.Name }</li>
+							}
+						}
+					</ul>
+				</div>
 			}
-		</tbody>
-	</table>
+		</div>
+	</div>
 }

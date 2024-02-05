@@ -18,7 +18,7 @@ templ (vctx *ViewCtx) UsersLayout() {
 
 templ (vctx *ViewCtx) UserFormSelectType() {
 	<div id="userEdit">
-		if vctx.Op == constants.OP_CREATE {
+		if vctx.UserOp == constants.OP_CREATE {
 			@vctx.UserCreateForm()
 		} else {
 			@vctx.UserUpdateForm()

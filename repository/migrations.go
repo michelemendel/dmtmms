@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"strconv"
-	"time"
 
-	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/util"
 )
@@ -152,7 +150,7 @@ func (r *Repo) InsertMembersGroups() {
 	userId := 1
 	memberUUID := 10
 	var status entity.MemberStatus = entity.MemberStatusActive
-	dob, _ := time.Parse(constants.DATE_FRMT, "1965-07-22")
+	dob := util.String2Time("1965-07-22")
 	for _, member := range members {
 		_, err := memberStmt.Exec(strconv.Itoa(memberUUID), strconv.Itoa(userId), member.name, dob, member.email, member.mobile, status)
 		if err != nil {

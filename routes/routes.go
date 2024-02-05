@@ -20,7 +20,11 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 
 	// Members
 	e.GET(constants.ROUTE_MEMBERS, hCtx.MembersHandler)
+	e.GET(constants.ROUTE_MEMBERS_INTERNAL, hCtx.MembersInnerHandler)
+	e.GET(constants.ROUTE_MEMBERS, hCtx.MembersHandler)
 	e.GET(constants.ROUTE_MEMBER_EDIT, hCtx.MemberEditHandler)
+	e.GET(constants.ROUTE_MEMBER_DETAILS+"/:memberuuid", hCtx.MemberDetailsHandler)
+	// e.GET(constants.ROUTE_GROUPS+"/:memberuuid", hCtx.MemberEditHandler)
 
 	// Users
 	e.GET(constants.ROUTE_USERS, hCtx.UsersInitHandler)

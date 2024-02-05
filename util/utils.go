@@ -6,9 +6,11 @@ import (
 	"log/slog"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
+	"github.com/michelemendel/dmtmms/constants"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -49,4 +51,17 @@ func ValidatePassword(password, hash string) bool {
 func GeneratePassword() string {
 	aLongString := base64.StdEncoding.EncodeToString([]byte(GenerateUUID()))
 	return strings.ToLower(aLongString[0:8])
+}
+
+func Time2String(t time.Time) string {
+	return t.Format(constants.DATE_FRMT)
+}
+
+func String2Time(s string) time.Time {
+	t, err := time.Parse(constants.DATE_FRMT, s)
+	if err != nil {
+		slog.Error("Error parsing date", "error", err)
+		return time.Time{}
+	}
+	return t
 }

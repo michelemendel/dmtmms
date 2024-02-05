@@ -57,10 +57,10 @@ const (
 type Group struct {
 	UUID string
 	Name string
-	Type string
+	Type GroupType
 }
 
-func NewGroup(uuid, name, typ string) Group {
+func NewGroup(uuid, name string, typ GroupType) Group {
 	return Group{
 		UUID: uuid,
 		Name: name,

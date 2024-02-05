@@ -21,8 +21,9 @@ func MakeViewCtx(opts Opts) *ViewCtx {
 	}
 }
 
+// TODO: I think that some of this data belongs as regular args to the function, and not as part of the view context.
 type Opts struct {
-	Op                   string
+	UserOp               string
 	Users                []entity.User
 	SelectedUser         entity.User
 	Roles                []string
@@ -34,10 +35,10 @@ type Opts struct {
 
 func MakeOpts() Opts {
 	return Opts{
-		Op:                   constants.OP_NONE,
+		UserOp:               constants.OP_NONE,
 		Users:                []entity.User{},
 		SelectedUser:         entity.User{},
-		Roles:                []string{"read", "admin"},
+		Roles:                []string{"read", "edit", "admin"},
 		TempPassword:         "",
 		TempPasswordUserName: "",
 		Err:                  nil,
@@ -46,7 +47,7 @@ func MakeOpts() Opts {
 }
 
 func (o Opts) WithOp(op string) Opts {
-	o.Op = op
+	o.UserOp = op
 	return o
 }
 

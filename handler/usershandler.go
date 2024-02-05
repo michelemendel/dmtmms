@@ -12,6 +12,7 @@ import (
 	"github.com/michelemendel/dmtmms/view"
 )
 
+// TODO: Change the nav logic according to how's it done in the MembersHandler
 func (h *HandlerContext) UsersInitHandler(c echo.Context) error {
 	users := h.GetUsers()
 	vctx := view.MakeViewCtx(view.MakeOpts().WithUsers(users).WithOp(constants.OP_CREATE))

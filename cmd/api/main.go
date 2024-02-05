@@ -57,14 +57,12 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 		code = httpErr.Code
 	}
 
-	fmt.Printf("customHTTPErrorHandler:ok:%v, code:%v, err:%s\n", ok, code, httpErr.Message)
+	slog.Warn("httpError", "code", code, "errorMsg", httpErr.Message)
 
-	// c.Logger().Error(err)
-	// errorPage := fmt.Sprintf("%d.html", code)
-	// errorPage := "./public/errorPage.html"
-	// fileErr := c.File(errorPage)
-	// if fileErr != nil {
-	// 	c.Logger().Error(fileErr)
-	// 	// fmt.Println("customHTTPErrorHandler", fileErr)
-	// }
+	errorPage := fmt.Sprintf("./public/%d.html", code)
+	fileErr := c.File(errorPage)
+	if fileErr != nil {
+		c.Logger().Error(fileErr)
+		fmt.Println("customHTTPErrorHandler", fileErr)
+	}
 }
