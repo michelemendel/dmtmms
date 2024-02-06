@@ -1,0 +1,34 @@
+<div id=\"members\" class=\"flex flex-row\"><div class=\"basis-3/4\">
+</div><div class=\"basis-1/4\">
+</div></div>
+<div id=\"membersTable\"><table><thead><tr><th>id</th><th>name</th><th>dob</th></tr></thead> <tbody>
+<tr id=\"
+\" hx-get=\"
+\" hx-target=\"#memberGroupDetails\" hx-swap=\"
+\"><td>
+</td><td>
+</td><td>
+</td></tr>
+</tbody></table></div>
+<div id=\"memberGroupDetails\"><div id=\"memberDetails\" class=\"flex flex-col\">
+<div><p>Click on a member to view details</p></div>
+<div><h2>
+</h2><h2>
+</h2><p>
+</p><p>
+</p><p>
+</p><p>
+</p></div><div id=\"groupsDetails\" class=\"flex flex-col\"><h2>Groups</h2><ul><h3>--Family</h3>
+<li hx-get=\"
+\" hx-target=\"#members\" hx-swap=\"
+\" hx-push-url=\"
+\">
+</li>
+<h3>--Organization</h3>
+<li hx-get=\"
+\" hx-target=\"#members\" hx-swap=\"
+\" hx-push-url=\"
+\">
+</li>
+</ul></div>
+</div></div>

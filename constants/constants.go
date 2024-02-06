@@ -50,6 +50,7 @@ const (
 	ROUTE_GROUPS           = "/groups"
 	//
 	ROUTE_USERS           = "/users"
+	ROUTE_USERS_INTERNAL  = "/usersinternal"
 	ROUTE_USER_CREATE     = "/user/create"
 	ROUTE_USER_EDIT_CLOSE = "/user/editclose"
 	ROUTE_USER_DELETE     = "/user/delete"

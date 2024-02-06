@@ -20,7 +20,6 @@ func (h *HandlerContext) MembersInnerHandler(c echo.Context) error {
 }
 
 func (h *HandlerContext) Members(c echo.Context, component string) error {
-	vctx := view.MakeViewCtxDefault()
 	guuid := c.QueryParam("guuid")
 	fromStr := c.QueryParam("from")
 	if fromStr == "" {
@@ -45,15 +44,14 @@ func (h *HandlerContext) Members(c echo.Context, component string) error {
 	group := entity.Group{}
 
 	if component == "Members" {
-		return h.renderView(c, vctx.Members(members, group))
+		return h.renderView(c, h.ViewCtx.Members(members, group))
 	} else {
-		return h.renderView(c, vctx.MembersLayout(members, group))
+		return h.renderView(c, h.ViewCtx.MembersLayout(members, group))
 	}
 }
 
 func (h *HandlerContext) MemberDetailsHandler(c echo.Context) error {
 	memberUUID := c.Param("memberuuid")
-	vctx := view.MakeViewCtxDefault()
 
 	member, err := h.Repo.SelectMemberByUUID(memberUUID)
 	if err != nil {
@@ -67,10 +65,9 @@ func (h *HandlerContext) MemberDetailsHandler(c echo.Context) error {
 		return h.renderView(c, vctx.MemberDetails(entity.Member{}, []entity.Group{}))
 	}
 
-	return h.renderView(c, vctx.MemberDetails(member, groups))
+	return h.renderView(c, h.ViewCtx.MemberDetails(member, groups))
 }
 
 func (h *HandlerContext) MemberEditHandler(c echo.Context) error {
-	vctx := view.MakeViewCtxDefault()
-	return h.renderView(c, vctx.MemberEdit())
+	return h.renderView(c, h.ViewCtx.MemberEdit())
 }
