@@ -37,7 +37,8 @@
 \" hx-target=\"#users\" hx-swap=\"
 \" hx-trigger=\"confirmed\" onClick=\"
 \">Reset password</span> 
-<span>Copy the temporary password: 
+<span>The password 
+ has been copied to the clipboard
 </span>
 </li>
 </ul>

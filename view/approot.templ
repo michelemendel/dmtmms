@@ -10,22 +10,30 @@ templ (vctx *ViewCtx) AppRoot(title string) {
 			<title>{ title }</title>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<link rel="icon" type="image/x-icon" href="/public/favicon/favicon.ico"/>
+			// 
+			// HTMX
 			<script src="/public/htmx.min.js"></script>
-			<script src="/public/_hyperscript.min.js"></script>
+			// 
+			<!-- TW Elelments: Roboto font -->
+			<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet"/>
+			// 
+			// Tailwind output
+			<link href="/public/output.css" rel="stylesheet"/>
+			// 
 			<script src="/public/sweetalert2.min.js"></script>
 			<link href="/public/sweetalert2.min.css" rel="stylesheet"/>
-			// <script src="/public/app.js"></script>
-			// <link href="/public/style.css" rel="stylesheet"/>
-			<link href="/public/output.css" rel="stylesheet"/>
 		</head>
 		<body id="appRoot">
 			if ctx.Value(constants.CTX_IS_LOGGEDIN_KEY).(bool) == true {
 				@vctx.NavBar()
-				// { children... }
+				{ children... }
 			} else {
 				@vctx.Login("")
 			}
+			<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
+			// <script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>
 		</body>
 	</html>
 }

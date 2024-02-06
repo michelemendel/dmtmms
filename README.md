@@ -20,6 +20,12 @@ Macos
 - Node
 - Tailwind (CSS)
   - npm install -D tailwindcss
+- TW Elements (use Tailwind)
+  - https://tw-elements.com/
+  - There were some issues: This didn't work (Uncaught SyntaxError: Unexpected token '<' (at tw-elements.umd.min.js:1:1))
+  -	<script type="text/javascript" src="../node_modules/tw-elements/dist/js/tw-elements.umd.min.js"></script>
+  - This worked, i.e. I had to get the file from the node_modules folder and put it in the public folder.
+  - <script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>			
 - HTMX - download htmx.min.js from https://htmx.org/
 - templ 
   - https://github.com/a-h/templ
@@ -33,6 +39,8 @@ Macos
     - https://github.com/sweetalert2/sweetalert2/releases
       - sweetalert2.min.js
       - sweetalert2.min.css
+  
+Not used
 - https://hyperscript.org/docs/#install
   - Get the _hyperscript.min.js from https://github.com/bigskysoftware/_hyperscript/tree/master/dist
 

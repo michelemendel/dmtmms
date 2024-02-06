@@ -5,9 +5,15 @@ import "github.com/michelemendel/dmtmms/entity"
 import "github.com/michelemendel/dmtmms/constants"
 import "github.com/michelemendel/dmtmms/util"
 
+script cl(msg string) {
+	console.log(msg)
+}
+
 templ (vctx *ViewCtx) Members(members []entity.Member, group entity.Group) {
-	@vctx.AppRoot("")
-	@vctx.MembersLayout(members, group)
+	// @cl("members")
+	@vctx.AppRoot("") {
+		@vctx.MembersLayout(members, group)
+	}
 }
 
 templ (vctx *ViewCtx) MembersLayout(members []entity.Member, group entity.Group) {
@@ -19,10 +25,13 @@ templ (vctx *ViewCtx) MembersLayout(members []entity.Member, group entity.Group)
 			@vctx.MemberDetails(entity.Member{}, []entity.Group{})
 		</div>
 	</div>
+	// TODO: Have to do something about this. Also, see approot.
+	<script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 	<div id="membersTable">
+		@vctx.FilterBar()
 		<table>
 			<thead>
 				<tr>
@@ -46,6 +55,52 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 				}
 			</tbody>
 		</table>
+	</div>
+}
+
+templ (vctx *ViewCtx) FilterBar() {
+	// hx-get={ constants.ROUTE_MEMBERS_INTERNAL + "?guuid=" + guuid + "&from=" + "from" + "&to=" + "to"}
+	<form>
+		<div id="filterBar" class="flex flex-row">
+			@DatePicker("from")
+			@DatePicker("to")
+			<button
+				hx-get={ constants.ROUTE_MEMBERS_INTERNAL }
+				hx-include="[name='from'], [name='to']"
+				hx-target="#members"
+				hx-swap={ "innerHTML" }
+				type="button"
+				class="inline-block rounded bg-primary h-9 px-4 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+			>
+				Filter by dates
+			</button>
+		</div>
+	</form>
+}
+
+templ DatePicker(fromTo string) {
+	<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
+	<div
+		class="relative mb-3"
+		data-te-datepicker-init
+		data-te-input-wrapper-init
+		id="datepicker-close-without-confirmation"
+		data-te-inline="true"
+		data-te-format="yyyy-mm-dd"
+	>
+		<input
+			id={ fromTo }
+			name={ fromTo }
+			type="text"
+			class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+			placeholder={ fromTo + " (YYYY-MM-DD)" }
+			data-te-datepicker-toggle-ref
+			data-te-datepicker-toggle-button-ref
+		/>
+		<label
+			for="floatingInput"
+			class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
+		>{ fromTo } date</label>
 	</div>
 }
 

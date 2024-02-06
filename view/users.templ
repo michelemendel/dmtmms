@@ -6,8 +6,9 @@ import (
 )
 
 templ (vctx *ViewCtx) UsersInit(users []entity.User, selectedUser entity.User, op string) {
-	@vctx.AppRoot("")
-	@vctx.UsersLayout(users, selectedUser, op)
+	@vctx.AppRoot("") {
+		@vctx.UsersLayout(users, selectedUser, op)
+	}
 }
 
 templ (vctx *ViewCtx) UsersLayout(users []entity.User, selectedUser entity.User, op string) {
@@ -126,13 +127,18 @@ templ (vctx *ViewCtx) UserList(users []entity.User) {
 					</span>
 					if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
 						<span>
-							Copy the temporary password: { vctx.TempPassword }
+							The password { vctx.TempPassword } has been copied to the clipboard
+							@copyToClipboard(vctx.TempPassword)
 						</span>
 					}
 				}
 			</li>
 		}
 	</ul>
+}
+
+script copyToClipboard(txt string) {
+	navigator.clipboard.writeText(txt);
 }
 
 script deleteConfirm(username string) {
@@ -151,7 +157,7 @@ script deleteConfirm(username string) {
 }
 
 script resetPWConfirm(username string) {
-	msg = "By clicking ok, the password will be reset. Copy the password and send it to the user. You will not be able to see it again.";
+	msg = "By clicking ok, the password will be reset. The password will be copied for you to send to the user. You will not be able to see the password again.";
 	Swal.fire({
 		title: 'Reset password',
 		showCancelButton: true,

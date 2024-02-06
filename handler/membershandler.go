@@ -15,22 +15,26 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	return h.Members(c, "Members")
 }
 
-func (h *HandlerContext) MembersInnerHandler(c echo.Context) error {
+func (h *HandlerContext) MembersInternalHandler(c echo.Context) error {
 	return h.Members(c, "MembersLayout")
 }
 
-func (h *HandlerContext) Members(c echo.Context, component string) error {
+func (h *HandlerContext) Members(c echo.Context, componentName string) error {
 	guuid := c.QueryParam("guuid")
+
 	fromStr := c.QueryParam("from")
 	if fromStr == "" {
 		fromStr = "1000-01-01"
 	}
 	from := util.String2Time(fromStr)
+
 	toStr := c.QueryParam("to")
 	if toStr == "" {
 		toStr = "3000-01-01"
 	}
 	to := util.String2Time(toStr)
+
+	fmt.Println("fromStr:", fromStr, "toStr:", toStr, "from:", from, "to:", to)
 
 	filter := repo.MakeFilter(repo.MakeOpts().WithGroupUUID(guuid).WithFrom(from).WithTo(to))
 
@@ -38,15 +42,11 @@ func (h *HandlerContext) Members(c echo.Context, component string) error {
 	if err != nil {
 		return err
 	}
-	for _, m := range members {
-		fmt.Println(m)
-	}
-	group := entity.Group{}
 
-	if component == "Members" {
-		return h.renderView(c, h.ViewCtx.Members(members, group))
+	if componentName == "Members" {
+		return h.renderView(c, h.ViewCtx.Members(members, entity.Group{}))
 	} else {
-		return h.renderView(c, h.ViewCtx.MembersLayout(members, group))
+		return h.renderView(c, h.ViewCtx.MembersLayout(members, entity.Group{}))
 	}
 }
 
@@ -67,6 +67,9 @@ func (h *HandlerContext) MemberDetailsHandler(c echo.Context) error {
 
 	return h.renderView(c, h.ViewCtx.MemberDetails(member, groups))
 }
+
+//--------------------------------------------------------------------------------
+// Create and update member
 
 func (h *HandlerContext) MemberEditHandler(c echo.Context) error {
 	return h.renderView(c, h.ViewCtx.MemberEdit())
