@@ -10,43 +10,40 @@ import (
 	"github.com/michelemendel/dmtmms/view"
 )
 
-// queryParams: guuid, from, to
+func (h *HandlerContext) MembersPageHandler(c echo.Context) error {
+	return h.renderView(c, h.ViewCtx.MembersPage([]entity.Member{}, true))
+}
+
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
-	return h.Members(c, "Members")
+	return h.renderView(c, h.ViewCtx.Members([]entity.Member{}, true))
 }
 
-func (h *HandlerContext) MembersInternalHandler(c echo.Context) error {
-	return h.Members(c, "MembersLayout")
-}
+func (h *HandlerContext) MembersTableHandler(showNavbar bool) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		guuid := c.QueryParam("guuid")
 
-func (h *HandlerContext) Members(c echo.Context, componentName string) error {
-	guuid := c.QueryParam("guuid")
+		fromStr := c.QueryParam("from")
+		if fromStr == "" {
+			fromStr = "1000-01-01"
+		}
+		from := util.String2Time(fromStr)
 
-	fromStr := c.QueryParam("from")
-	if fromStr == "" {
-		fromStr = "1000-01-01"
-	}
-	from := util.String2Time(fromStr)
+		toStr := c.QueryParam("to")
+		if toStr == "" {
+			toStr = "3000-01-01"
+		}
+		to := util.String2Time(toStr)
 
-	toStr := c.QueryParam("to")
-	if toStr == "" {
-		toStr = "3000-01-01"
-	}
-	to := util.String2Time(toStr)
+		fmt.Println("fromStr:", fromStr, "toStr:", toStr, "from:", from, "to:", to)
 
-	fmt.Println("fromStr:", fromStr, "toStr:", toStr, "from:", from, "to:", to)
+		filter := repo.MakeFilter(repo.MakeOpts().WithGroupUUID(guuid).WithFrom(from).WithTo(to))
 
-	filter := repo.MakeFilter(repo.MakeOpts().WithGroupUUID(guuid).WithFrom(from).WithTo(to))
+		members, err := h.Repo.SelectMembersByFilter(*filter)
+		if err != nil {
+			return err
+		}
 
-	members, err := h.Repo.SelectMembersByFilter(*filter)
-	if err != nil {
-		return err
-	}
-
-	if componentName == "Members" {
-		return h.renderView(c, h.ViewCtx.Members(members, entity.Group{}))
-	} else {
-		return h.renderView(c, h.ViewCtx.MembersLayout(members, entity.Group{}))
+		return h.renderView(c, h.ViewCtx.MembersTable(members))
 	}
 }
 

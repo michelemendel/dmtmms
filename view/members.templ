@@ -9,24 +9,30 @@ script cl(msg string) {
 	console.log(msg)
 }
 
-templ (vctx *ViewCtx) Members(members []entity.Member, group entity.Group) {
-	// @cl("members")
-	@vctx.AppRoot("") {
-		@vctx.MembersLayout(members, group)
+templ (vctx *ViewCtx) MembersPage(members []entity.Member, showNavbar bool) {
+	@vctx.AppRoot("", showNavbar) {
+		<div id="members" class="flex flex-row">
+			<div class="basis-3/4">
+				@vctx.MembersTable(members)
+			</div>
+			<div class="basis-1/4">
+				@vctx.MemberDetails(entity.Member{}, []entity.Group{})
+			</div>
+		</div>
 	}
 }
 
-templ (vctx *ViewCtx) MembersLayout(members []entity.Member, group entity.Group) {
-	<div id="members" class="flex flex-row">
-		<div class="basis-3/4">
-			@vctx.MembersTable(members)
+templ (vctx *ViewCtx) Members(members []entity.Member, showNavbar bool) {
+	@vctx.AppRootInit() {
+		<div id="members" class="flex flex-row">
+			<div class="basis-3/4">
+				@vctx.MembersTable(members)
+			</div>
+			<div class="basis-1/4">
+				@vctx.MemberDetails(entity.Member{}, []entity.Group{})
+			</div>
 		</div>
-		<div class="basis-1/4">
-			@vctx.MemberDetails(entity.Member{}, []entity.Group{})
-		</div>
-	</div>
-	// TODO: Have to do something about this. Also, see approot.
-	<script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>
+	}
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
@@ -65,10 +71,11 @@ templ (vctx *ViewCtx) FilterBar() {
 			@DatePicker("from")
 			@DatePicker("to")
 			<button
-				hx-get={ constants.ROUTE_MEMBERS_INTERNAL }
+				hx-get={ constants.ROUTE_MEMBERS_TABLE }
 				hx-include="[name='from'], [name='to']"
-				hx-target="#members"
-				hx-swap={ "innerHTML" }
+				hx-target="#membersTable"
+				hx-swap={ "outerHTML" }
+				hx-push-url="true"
 				type="button"
 				class="inline-block rounded bg-primary h-9 px-4 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
 			>
@@ -127,10 +134,10 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 						for _, group := range groups {
 							if group.Type == entity.GroupTypeFamily {
 								<li
-									hx-get={ constants.ROUTE_MEMBERS_INTERNAL + "?guuid=" + group.UUID }
+									hx-get={ constants.ROUTE_MEMBERS_TABLE + "?guuid=" + group.UUID }
 									hx-target="#members"
 									hx-swap={ "outerHTML" }
-									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
+									hx-push-url={ constants.ROUTE_MEMBERS_PAGE + "?guuid=" + group.UUID }
 								>{ group.Name }</li>
 							}
 						}
@@ -138,10 +145,10 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 						for _, group := range groups {
 							if group.Type == entity.GroupTypeOrg {
 								<li
-									hx-get={ constants.ROUTE_MEMBERS_INTERNAL + "?guuid=" + group.UUID }
+									hx-get={ constants.ROUTE_MEMBERS_TABLE + "?guuid=" + group.UUID }
 									hx-target="#members"
 									hx-swap={ "outerHTML" }
-									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
+									hx-push-url={ constants.ROUTE_MEMBERS_PAGE + "?guuid=" + group.UUID }
 								>{ group.Name }</li>
 							}
 						}

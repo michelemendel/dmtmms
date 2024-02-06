@@ -17,7 +17,6 @@ func (h *HandlerContext) ViewLoginwHandler(c echo.Context) error {
 func (h *HandlerContext) LoginHandler(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
-	vctx := view.MakeViewCtxDefault()
 
 	user, err := h.Repo.SelectUser(username)
 	if err != nil {
@@ -34,9 +33,11 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 
 	err = h.Session.Login(c, username)
 	if err != nil {
-		vctx = view.MakeViewCtx(view.MakeOpts().WithErr(e.InvalidCredentials))
+		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(e.InvalidCredentials))
+		return h.renderView(c, vctx.AppRoot("", false))
 	}
-	return h.renderView(c, vctx.AppRoot(""))
+
+	return h.MembersHandler(c)
 }
 
 func (h *HandlerContext) LogoutHandler(c echo.Context) error {

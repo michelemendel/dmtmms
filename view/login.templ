@@ -11,12 +11,12 @@ templ (vctx *ViewCtx) Login(username string) {
 			<div class="text-1xl font-normal text-gray-600 mb-4">Member Register</div>
 			<h1 class="text-2xl font-semibold mb-4">Login</h1>
 			<!-- Form -->
+			// hx-push-url={ constants.ROUTE_LOGIN }
 			<form
 				id="loginForm"
 				hx-post={ constants.ROUTE_LOGIN }
 				hx-target="#appRoot"
 				hx-swap="innerHTML"
-				hx-push-url={ constants.ROUTE_LOGIN }
 			>
 				<!-- Username -->
 				<div class="mb-4">

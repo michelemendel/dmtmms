@@ -16,20 +16,19 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.GET(constants.ROUTE_LOGOUT, hCtx.LogoutHandler)
 
 	//
-	e.GET(constants.ROUTE_INDEX, hCtx.MembersHandler)
+	e.GET(constants.ROUTE_INDEX, hCtx.MembersPageHandler)
 
 	// Members
-	e.GET(constants.ROUTE_MEMBERS, hCtx.MembersHandler)
-	e.GET(constants.ROUTE_MEMBERS_INTERNAL, hCtx.MembersInternalHandler)
-	e.GET(constants.ROUTE_MEMBERS, hCtx.MembersHandler)
+	e.GET(constants.ROUTE_MEMBERS_PAGE, hCtx.MembersPageHandler)
+	e.GET(constants.ROUTE_MEMBERS_INTERNAL, hCtx.MembersHandler)
+	e.GET(constants.ROUTE_MEMBERS_TABLE, hCtx.MembersTableHandler(false))
 	e.GET(constants.ROUTE_MEMBER_EDIT, hCtx.MemberEditHandler)
 	e.GET(constants.ROUTE_MEMBER_DETAILS+"/:memberuuid", hCtx.MemberDetailsHandler)
-	// e.GET(constants.ROUTE_GROUPS+"/:memberuuid", hCtx.MemberEditHandler)
 
 	// Users
-	e.GET(constants.ROUTE_USERS, hCtx.UsersHandler)
-	e.GET(constants.ROUTE_USERS_INTERNAL, hCtx.UsersInternalHandler)
-	e.GET(constants.ROUTE_USERS+"/:op", hCtx.UsersHandler)
+	e.GET(constants.ROUTE_USERS, hCtx.UsersHandler(true))
+	e.GET(constants.ROUTE_USERS_INTERNAL, hCtx.UsersHandler(false))
+	e.GET(constants.ROUTE_USERS+"/:op", hCtx.UsersHandler(false))
 	e.POST(constants.ROUTE_USER_CREATE, hCtx.UserCreateHandler)
 	e.GET(constants.ROUTE_USER_UPDATE+"/:username", hCtx.UserUpdateInitHandler)
 	e.PUT(constants.ROUTE_USER_UPDATE, hCtx.UserUpdateHandler)

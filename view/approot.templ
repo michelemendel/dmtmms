@@ -3,7 +3,7 @@ package view
 import "github.com/michelemendel/dmtmms/constants"
 import "github.com/michelemendel/dmtmms/auth"
 
-templ (vctx *ViewCtx) AppRoot(title string) {
+templ (vctx *ViewCtx) AppRoot(title string, showNavbar bool) {
 	<!DOCTYPE html>
 	<html>
 		<head>
@@ -27,22 +27,30 @@ templ (vctx *ViewCtx) AppRoot(title string) {
 		</head>
 		<body id="appRoot">
 			if ctx.Value(constants.CTX_IS_LOGGEDIN_KEY).(bool) == true {
-				@vctx.NavBar()
+				// A hack to not get duplicate navbars when navigating inside e.g. inside members.
+				if showNavbar {
+					@vctx.NavBar()
+				}
 				{ children... }
 			} else {
 				@vctx.Login("")
 			}
 			<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
-			// <script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>
+			<script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>
 		</body>
 	</html>
+}
+
+templ (vctx *ViewCtx) AppRootInit() {
+	{ children... }
+	<script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>
 }
 
 templ (vctx *ViewCtx) NavBar() {
 	<nav>
 		<div id="mainLayout">
 			<span>
-				<button hx-get={ constants.ROUTE_MEMBERS } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">MEMBERS</button>
+				<button hx-get={ constants.ROUTE_MEMBERS_PAGE } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">MEMBERS</button>
 			</span>
 			if auth.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.AUTH_NAV_USERS) {
 				|

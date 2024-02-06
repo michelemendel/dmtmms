@@ -43,8 +43,9 @@ const (
 	//
 	ROUTE_INDEX = "/"
 	//
-	ROUTE_MEMBERS          = "/members"
+	ROUTE_MEMBERS_PAGE     = "/members"
 	ROUTE_MEMBERS_INTERNAL = "/membersinternal"
+	ROUTE_MEMBERS_TABLE    = "/memberstable"
 	ROUTE_MEMBER_EDIT      = "/member/edit"
 	ROUTE_MEMBER_DETAILS   = "/memberdetails"
 	ROUTE_GROUPS           = "/groups"

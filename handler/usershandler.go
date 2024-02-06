@@ -12,19 +12,16 @@ import (
 	"github.com/michelemendel/dmtmms/view"
 )
 
-func (h *HandlerContext) UsersHandler(c echo.Context) error {
-	users := h.GetUsers()
-	return h.renderView(c, h.ViewCtx.UsersInit(users, entity.User{}, constants.OP_CREATE))
-}
-
-func (h *HandlerContext) UsersInternalHandler(c echo.Context) error {
-	users := h.GetUsers()
-	return h.renderView(c, h.ViewCtx.UsersLayout(users, entity.User{}, constants.OP_CREATE))
+func (h *HandlerContext) UsersHandler(showNavbar bool) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		users := h.GetUsers()
+		return h.renderView(c, h.ViewCtx.Users(users, entity.User{}, constants.OP_CREATE, showNavbar))
+	}
 }
 
 func (h *HandlerContext) Users(c echo.Context, op string) error {
 	users := h.GetUsers()
-	return h.renderView(c, h.ViewCtx.UsersLayout(users, entity.User{}, op))
+	return h.renderView(c, h.ViewCtx.Users(users, entity.User{}, op, false))
 }
 
 func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
@@ -35,7 +32,7 @@ func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 
 	if username == "" || password == "" || role == "" {
 		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(fmt.Errorf("username, password, and role are required")))
-		return h.renderView(c, vctx.UsersLayout(users, entity.User{}, constants.OP_CREATE))
+		return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE, false))
 	}
 
 	hpw, _ := util.HashPassword(password)
@@ -47,7 +44,7 @@ func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 	err := h.Repo.CreateUser(user)
 	if err != nil {
 		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.UsersLayout(users, user, constants.OP_CREATE))
+		return h.renderView(c, vctx.Users(users, user, constants.OP_CREATE, false))
 	}
 
 	return h.Users(c, constants.OP_CREATE)
@@ -60,7 +57,7 @@ func (h *HandlerContext) UserUpdateInitHandler(c echo.Context) error {
 	if err != nil {
 		user = entity.User{}
 	}
-	return h.renderView(c, h.ViewCtx.UsersLayout(users, user, constants.OP_UPDATE))
+	return h.renderView(c, h.ViewCtx.Users(users, user, constants.OP_UPDATE, false))
 }
 
 func (h *HandlerContext) UserUpdateHandler(c echo.Context) error {
@@ -73,7 +70,7 @@ func (h *HandlerContext) UserUpdateHandler(c echo.Context) error {
 	err := h.Repo.UpdateUser(user)
 	if err != nil {
 		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.UsersLayout([]entity.User{}, user, constants.OP_UPDATE))
+		return h.renderView(c, vctx.Users([]entity.User{}, user, constants.OP_UPDATE, false))
 	}
 	return h.Users(c, constants.OP_CREATE)
 }
@@ -84,7 +81,7 @@ func (h *HandlerContext) UserDeleteHandler(c echo.Context) error {
 	if err != nil {
 		users := h.GetUsers()
 		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.UsersLayout(users, entity.User{}, constants.OP_CREATE))
+		return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE, false))
 	}
 
 	return h.Users(c, constants.OP_CREATE)
@@ -103,7 +100,7 @@ func (h *HandlerContext) ResetPasswordHandler(c echo.Context) error {
 
 	users := h.GetUsers()
 	vctx := view.MakeViewCtx(view.MakeOpts().WithTempPW(newPW, username))
-	return h.renderView(c, vctx.UsersLayout(users, entity.User{}, constants.OP_CREATE))
+	return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE, false))
 }
 
 func (h *HandlerContext) SetPasswordInitHandler(c echo.Context) error {
