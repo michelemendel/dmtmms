@@ -5,11 +5,13 @@ import (
 	"github.com/michelemendel/dmtmms/entity"
 )
 
-templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op string, showNavbar bool) {
-	@vctx.AppRoot("", showNavbar) {
+templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op string) {
+	@vctx.AppRoot("") {
 		<div id="users">
 			@vctx.UserFormSelectType(selectedUser, op)
 			@vctx.UserList(users)
+			// @loadLibs("Users")
+			// <script> loadLibs("Users") </script>
 		</div>
 	}
 }
@@ -29,6 +31,7 @@ templ (vctx *ViewCtx) UserCreateForm(selectedUser entity.User) {
 		<form
 			hx-post={ constants.ROUTE_USER_CREATE }
 			hx-target="#users"
+			hx-select="#users"
 			hx-swap="outerHTML"
 		>
 			<input type="text" required name="username" value={ selectedUser.Name } placeholder="name"/>
@@ -36,7 +39,7 @@ templ (vctx *ViewCtx) UserCreateForm(selectedUser entity.User) {
 			@vctx.roleOptions(selectedUser)
 			<input type="submit" value="Add User"/>
 			<input
-				hx-get={ constants.ROUTE_USERS_INTERNAL }
+				hx-get={ constants.ROUTE_USERS }
 				hx-target="#users"
 				hx-swap="innerHTML"
 				type="submit"
@@ -56,14 +59,15 @@ templ (vctx *ViewCtx) UserUpdateForm(selectedUser entity.User) {
 		<form
 			hx-put={ constants.ROUTE_USER_UPDATE }
 			hx-target="#users"
-			hx-swap="innerHTML"
+			hx-select="#users"
+			hx-swap="outerHTML"
 		>
 			<input type="hidden" name="username" value={ selectedUser.Name }/>
 			<span>{ selectedUser.Name }</span>
 			@vctx.roleOptions(selectedUser)
 			<input type="submit" value="Update User"/>
 			<input
-				hx-get={ constants.ROUTE_USERS_INTERNAL }
+				hx-get={ constants.ROUTE_USERS }
 				hx-target="#users"
 				hx-swap="innerHTML"
 				type="submit"
@@ -95,7 +99,8 @@ templ (vctx *ViewCtx) UserList(users []entity.User) {
 				<span
 					hx-get={ constants.ROUTE_USER_UPDATE + "/" + user.Name }
 					hx-target="#users"
-					hx-swap="innerHTML"
+					hx-select="#users"
+					hx-swap="outerHTML"
 				>
 					Edit
 				</span>
@@ -105,7 +110,8 @@ templ (vctx *ViewCtx) UserList(users []entity.User) {
 						id={ "delete-" + user.Name }
 						hx-delete={ constants.ROUTE_USER_DELETE + "/" + user.Name }
 						hx-target="#users"
-						hx-swap="innerHTML"
+						hx-select="#users"
+						hx-swap="outerHTML"
 						hx-trigger="confirmed"
 						onClick={ deleteConfirm(user.Name) }
 					>
@@ -115,7 +121,8 @@ templ (vctx *ViewCtx) UserList(users []entity.User) {
 						id={ "resetPW-" + user.Name }
 						hx-get={ constants.ROUTE_USER_RESET_PW + "/" + user.Name }
 						hx-target="#users"
-						hx-swap={ "innerHTML" }
+						hx-select="#users"
+						hx-swap={ "outerHTML" }
 						hx-trigger="confirmed"
 						onClick={ resetPWConfirm(user.Name) }
 					>

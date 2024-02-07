@@ -10,41 +10,33 @@ import (
 	"github.com/michelemendel/dmtmms/view"
 )
 
-func (h *HandlerContext) MembersPageHandler(c echo.Context) error {
-	return h.renderView(c, h.ViewCtx.MembersPage([]entity.Member{}, true))
-}
-
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
-	return h.renderView(c, h.ViewCtx.Members([]entity.Member{}, true))
-}
+	guuid := c.QueryParam("guuid")
 
-func (h *HandlerContext) MembersTableHandler(showNavbar bool) func(c echo.Context) error {
-	return func(c echo.Context) error {
-		guuid := c.QueryParam("guuid")
-
-		fromStr := c.QueryParam("from")
-		if fromStr == "" {
-			fromStr = "1000-01-01"
-		}
-		from := util.String2Time(fromStr)
-
-		toStr := c.QueryParam("to")
-		if toStr == "" {
-			toStr = "3000-01-01"
-		}
-		to := util.String2Time(toStr)
-
-		fmt.Println("fromStr:", fromStr, "toStr:", toStr, "from:", from, "to:", to)
-
-		filter := repo.MakeFilter(repo.MakeOpts().WithGroupUUID(guuid).WithFrom(from).WithTo(to))
-
-		members, err := h.Repo.SelectMembersByFilter(*filter)
-		if err != nil {
-			return err
-		}
-
-		return h.renderView(c, h.ViewCtx.MembersTable(members))
+	fromStr := c.QueryParam("from")
+	if fromStr == "" {
+		fromStr = "1000-01-01"
 	}
+	from := util.String2Time(fromStr)
+
+	toStr := c.QueryParam("to")
+	if toStr == "" {
+		toStr = "3000-01-01"
+	}
+	to := util.String2Time(toStr)
+
+	// fmt.Println("fromStr:", fromStr, "toStr:", toStr, "from:", from, "to:", to)
+
+	filter := repo.MakeFilter(repo.MakeOpts().WithGroupUUID(guuid).WithFrom(from).WithTo(to))
+
+	members, err := h.Repo.SelectMembersByFilter(*filter)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("MembersHandler")
+	c.Response().Header().Set("HX-Trigger", "twe")
+	return h.renderView(c, h.ViewCtx.Members(members))
 }
 
 func (h *HandlerContext) MemberDetailsHandler(c echo.Context) error {

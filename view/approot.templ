@@ -3,71 +3,86 @@ package view
 import "github.com/michelemendel/dmtmms/constants"
 import "github.com/michelemendel/dmtmms/auth"
 
-templ (vctx *ViewCtx) AppRoot(title string, showNavbar bool) {
+templ (vctx *ViewCtx) AppRoot(title string) {
 	<!DOCTYPE html>
 	<html>
-		<head>
-			<title>{ title }</title>
-			<meta charset="UTF-8"/>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-			<link rel="icon" type="image/x-icon" href="/public/favicon/favicon.ico"/>
-			// 
-			// HTMX
-			<script src="/public/htmx.min.js"></script>
-			// 
-			<!-- TW Elelments: Roboto font -->
-			<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet"/>
-			// 
-			// Tailwind output
-			<link href="/public/output.css" rel="stylesheet"/>
-			// 
-			<script src="/public/sweetalert2.min.js"></script>
-			<link href="/public/sweetalert2.min.css" rel="stylesheet"/>
-		</head>
+		@vctx.Head(title)
 		<body id="appRoot">
 			if ctx.Value(constants.CTX_IS_LOGGEDIN_KEY).(bool) == true {
-				// A hack to not get duplicate navbars when navigating inside e.g. inside members.
-				if showNavbar {
-					@vctx.NavBar()
-				}
+				@vctx.NavBar()
 				{ children... }
 			} else {
-				@vctx.Login("")
+				@vctx.Login("", nil)
 			}
+			// This doesn't work for the following two reasons:
+			// 1. The library has to loaded after receiving the html fragments. It's not enough to load it in the body once.
+			// 2. It can only be loaded once, because loading more than once will cause a buggy behavior of the TW Elements.
+			// Solution (but hacky): See LoadLibs() below.
 			<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
-			<script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>
+			<!-- <script type="text/javascript" src="/public/tw-elements.umd.min.js"></script> -->
+			// <script> loadLibs("AppRoot") </script>
 		</body>
 	</html>
 }
 
-templ (vctx *ViewCtx) AppRootInit() {
-	{ children... }
-	<script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>
+script loadLibs(src string) {
+	url = ("/public/tw-elements.umd.min.js")
+	// console.log("Loading libraries");
+	// TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com
+
+	// We need to load the TW Elements library, and it needs to be done only once.
+	// This is a hacky, beacause we need to call it from well suited places in the templ files (the components).
+	// https://github.com/mdbootstrap/TW-Elements/discussions/1819
+
+	var body = document.body;
+	var script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.src = url;
+	body.appendChild(script);
+}
+
+templ (vctx *ViewCtx) Head(title string) {
+	<head>
+		<title>{ title }</title>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<link rel="icon" type="image/x-icon" href="/public/favicon/favicon.ico"/>
+		// 
+		<script src="/public/app.js"></script>
+		// 
+		// HTMX
+		<script src="/public/htmx.min.js"></script>
+		// 
+		// Tailwind output
+		<link href="/public/output.css" rel="stylesheet"/>
+		// TODO: Maybe remove and instead use TW Elements?
+		<script src="/public/sweetalert2.min.js"></script>
+		<link href="/public/sweetalert2.min.css" rel="stylesheet"/>
+	</head>
 }
 
 templ (vctx *ViewCtx) NavBar() {
-	<nav>
-		<div id="mainLayout">
-			<span>
-				<button hx-get={ constants.ROUTE_MEMBERS_PAGE } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">MEMBERS</button>
-			</span>
-			if auth.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.AUTH_NAV_USERS) {
-				|
-				<span>
-					<button hx-get={ constants.ROUTE_USERS } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">USERS</button>
-				</span>
-			}
+	<nav id="navbar">
+		<span>
+			<button hx-get={ constants.ROUTE_MEMBERS } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">MEMBERS</button>
+		</span>
+		if auth.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.AUTH_NAV_USERS) {
 			|
 			<span>
-				<button hx-get={ constants.ROUTE_LOGOUT } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="/">LOGOUT</button>
+				<button hx-get={ constants.ROUTE_USERS } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">USERS</button>
 			</span>
-			|
-			<span>
-				<button hx-get={ constants.ROUTE_USER_SET_PW } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">
-					{ ctx.Value(constants.CTX_USER_NAME_KEY).(string) } ({ ctx.Value(constants.CTX_USER_ROLE_KEY).(string) })
-				</button>
-			</span>
-		</div>
+		}
+		|
+		<span>
+			<button hx-get={ constants.ROUTE_LOGOUT } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="/">LOGOUT</button>
+		</span>
+		|
+		<span>
+			<button hx-get={ constants.ROUTE_USER_SET_PW } hx-target="#appRoot" hx-swap="innerHTML" hx-push-url="true">
+				{ ctx.Value(constants.CTX_USER_NAME_KEY).(string) } ({ ctx.Value(constants.CTX_USER_ROLE_KEY).(string) })
+			</button>
+		</span>
+		// @DatePicker("bobo")
 	</nav>
 }

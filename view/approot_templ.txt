@@ -1,10 +1,10 @@
-<!doctype html><html><head><title>
-</title><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><link rel=\"icon\" type=\"image/x-icon\" href=\"/public/favicon/favicon.ico\"><script src=\"/public/htmx.min.js\"></script><!-- TW Elelments: Roboto font --><link href=\"https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&amp;display=swap\" rel=\"stylesheet\"><link href=\"/public/output.css\" rel=\"stylesheet\"><script src=\"/public/sweetalert2.min.js\"></script><link href=\"/public/sweetalert2.min.css\" rel=\"stylesheet\"></head><body id=\"appRoot\">
+<!doctype html><html>
+<body id=\"appRoot\">
  
- 
-<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com --><script type=\"text/javascript\" src=\"/public/tw-elements.umd.min.js\"></script></body></html>
-<script type=\"text/javascript\" src=\"/public/tw-elements.umd.min.js\"></script>
-<nav><div id=\"mainLayout\"><span><button hx-get=\"
+<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com --><!-- <script type=\"text/javascript\" src=\"/public/tw-elements.umd.min.js\"></script> --></body></html>
+<head><title>
+</title><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><link rel=\"icon\" type=\"image/x-icon\" href=\"/public/favicon/favicon.ico\"><script src=\"/public/app.js\"></script><script src=\"/public/htmx.min.js\"></script><link href=\"/public/output.css\" rel=\"stylesheet\"><script src=\"/public/sweetalert2.min.js\"></script><link href=\"/public/sweetalert2.min.css\" rel=\"stylesheet\"></head>
+<nav id=\"navbar\"><span><button hx-get=\"
 \" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">MEMBERS</button></span> 
 | <span><button hx-get=\"
 \" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">USERS</button></span>
@@ -12,4 +12,4 @@
 \" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"/\">LOGOUT</button></span> | <span><button hx-get=\"
 \" hx-target=\"#appRoot\" hx-swap=\"innerHTML\" hx-push-url=\"true\">
  (
-)</button></span></div></nav>
+)</button></span></nav>

@@ -2,16 +2,15 @@ package handler
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/e"
 	"github.com/michelemendel/dmtmms/util"
-	"github.com/michelemendel/dmtmms/view"
 )
 
 func (h *HandlerContext) ViewLoginwHandler(c echo.Context) error {
-	vctx := view.MakeViewCtxDefault()
-	return h.renderView(c, vctx.Login(""))
+	return h.renderView(c, h.ViewCtx.Login("", nil))
 }
 
 func (h *HandlerContext) LoginHandler(c echo.Context) error {
@@ -20,21 +19,18 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 
 	user, err := h.Repo.SelectUser(username)
 	if err != nil {
-		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(e.InvalidCredentials))
-		return h.renderView(c, vctx.Login(username))
+		return h.renderView(c, h.ViewCtx.Login(username, e.ErrInvalidCredentials))
 	}
 
 	isAuthed := util.ValidatePassword(password, user.HashedPassword)
-	fmt.Println("[LOGINHANDLER]:isAuthed:", isAuthed)
 	if !isAuthed {
-		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(e.InvalidCredentials))
-		return h.renderView(c, vctx.Login(username))
+		return h.renderView(c, h.ViewCtx.Login(username, e.ErrInvalidCredentials))
 	}
 
 	err = h.Session.Login(c, username)
 	if err != nil {
-		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(e.InvalidCredentials))
-		return h.renderView(c, vctx.AppRoot("", false))
+		slog.Error("LoginHandler", "error", e.ErrSystem)
+		return h.renderView(c, h.ViewCtx.Login(username, e.ErrSystem))
 	}
 
 	return h.MembersHandler(c)
@@ -43,6 +39,5 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 func (h *HandlerContext) LogoutHandler(c echo.Context) error {
 	fmt.Println("[LOGOUTHANDLER]")
 	h.Session.Logout(c)
-	vctx := view.MakeViewCtxDefault()
-	return h.renderView(c, vctx.Login(""))
+	return h.renderView(c, h.ViewCtx.Login("", nil))
 }

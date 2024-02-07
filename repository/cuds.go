@@ -13,7 +13,7 @@ func (r *Repo) CreateUser(user entity.User) error {
 	fmt.Println("[REPO]:AddUser", "result:", result, "err:", err)
 	if err != nil {
 		slog.Error(err.Error(), "name", user.Name)
-		return e.UserExists
+		return e.ErrUserExists
 	}
 	return nil
 }

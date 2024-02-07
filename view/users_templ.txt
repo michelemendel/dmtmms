@@ -3,7 +3,7 @@
 <div id=\"userEdit\">
 </div>
 <div id=\"userForm\"><form hx-post=\"
-\" hx-target=\"#users\" hx-swap=\"outerHTML\"><input type=\"text\" required name=\"username\" value=\"
+\" hx-target=\"#users\" hx-select=\"#users\" hx-swap=\"outerHTML\"><input type=\"text\" required name=\"username\" value=\"
 \" placeholder=\"name\"> <input type=\"text\" required name=\"password\" placeholder=\"password\">
 <input type=\"submit\" value=\"Add User\"> <input hx-get=\"
 \" hx-target=\"#users\" hx-swap=\"innerHTML\" type=\"submit\" value=\"Cancel\"></form>
@@ -11,7 +11,7 @@
 </div></div>
 </div>
 <div><form hx-put=\"
-\" hx-target=\"#users\" hx-swap=\"innerHTML\"><input type=\"hidden\" name=\"username\" value=\"
+\" hx-target=\"#users\" hx-select=\"#users\" hx-swap=\"outerHTML\"><input type=\"hidden\" name=\"username\" value=\"
 \"> <span>
 </span>
 <input type=\"submit\" value=\"Update User\"> <input hx-get=\"
@@ -27,14 +27,14 @@
 <li><span>
 </span> <span>
 </span> <span hx-get=\"
-\" hx-target=\"#users\" hx-swap=\"innerHTML\">Edit</span>
+\" hx-target=\"#users\" hx-select=\"#users\" hx-swap=\"outerHTML\">Edit</span>
 <span id=\"
 \" hx-delete=\"
-\" hx-target=\"#users\" hx-swap=\"innerHTML\" hx-trigger=\"confirmed\" onClick=\"
+\" hx-target=\"#users\" hx-select=\"#users\" hx-swap=\"outerHTML\" hx-trigger=\"confirmed\" onClick=\"
 \">Delete</span> 
 <span id=\"
 \" hx-get=\"
-\" hx-target=\"#users\" hx-swap=\"
+\" hx-target=\"#users\" hx-select=\"#users\" hx-swap=\"
 \" hx-trigger=\"confirmed\" onClick=\"
 \">Reset password</span> 
 <span>The password 

@@ -9,9 +9,10 @@ script cl(msg string) {
 	console.log(msg)
 }
 
-templ (vctx *ViewCtx) MembersPage(members []entity.Member, showNavbar bool) {
-	@vctx.AppRoot("", showNavbar) {
+templ (vctx *ViewCtx) Members(members []entity.Member) {
+	@vctx.AppRoot("") {
 		<div id="members" class="flex flex-row">
+			// @LoadLibs()
 			<div class="basis-3/4">
 				@vctx.MembersTable(members)
 			</div>
@@ -19,19 +20,17 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, showNavbar bool) {
 				@vctx.MemberDetails(entity.Member{}, []entity.Group{})
 			</div>
 		</div>
-	}
-}
-
-templ (vctx *ViewCtx) Members(members []entity.Member, showNavbar bool) {
-	@vctx.AppRootInit() {
-		<div id="members" class="flex flex-row">
-			<div class="basis-3/4">
-				@vctx.MembersTable(members)
-			</div>
-			<div class="basis-1/4">
-				@vctx.MemberDetails(entity.Member{}, []entity.Group{})
-			</div>
-		</div>
+		// <div
+		// 	hx-get={ constants.ROUTE_PING }
+		// 	hx-target="#ping"
+		// 	hx-boost="true"
+		// 	hx-trigger="twe from:body"
+		// >
+		// 	PING
+		// </div>
+		// <div
+		// 	id="ping"
+		// ></div>
 	}
 }
 
@@ -49,7 +48,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 			<tbody>
 				for _, member := range members {
 					<tr
-						id={ "resetPW-" + member.UUID }
+						id={ "member-" + member.UUID }
 						hx-get={ constants.ROUTE_MEMBER_DETAILS + "/" + member.UUID }
 						hx-target="#memberGroupDetails"
 						hx-swap={ "innerHTML" }
@@ -65,15 +64,15 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 }
 
 templ (vctx *ViewCtx) FilterBar() {
-	// hx-get={ constants.ROUTE_MEMBERS_INTERNAL + "?guuid=" + guuid + "&from=" + "from" + "&to=" + "to"}
 	<form>
 		<div id="filterBar" class="flex flex-row">
 			@DatePicker("from")
 			@DatePicker("to")
 			<button
-				hx-get={ constants.ROUTE_MEMBERS_TABLE }
+				hx-get={ constants.ROUTE_MEMBERS }
 				hx-include="[name='from'], [name='to']"
-				hx-target="#membersTable"
+				hx-target="#members"
+				hx-select="#members"
 				hx-swap={ "outerHTML" }
 				hx-push-url="true"
 				type="button"
@@ -113,12 +112,15 @@ templ DatePicker(fromTo string) {
 
 templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group) {
 	<div id="memberGroupDetails">
+		@loadLibs("MemberDetails")
+		// <script> loadLibs("MemberDetails") </script>
 		<div id="memberDetails" class="flex flex-col">
 			if member.UUID == "" {
 				<div>
 					<p>Click on a member to view details</p>
 				</div>
 			} else {
+				@DatePicker("dobbie")
 				<div>
 					<h2>{ member.UUID }</h2>
 					<h2>{ member.Name }</h2>
@@ -134,10 +136,11 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 						for _, group := range groups {
 							if group.Type == entity.GroupTypeFamily {
 								<li
-									hx-get={ constants.ROUTE_MEMBERS_TABLE + "?guuid=" + group.UUID }
+									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
 									hx-target="#members"
+									hx-select="#members"
 									hx-swap={ "outerHTML" }
-									hx-push-url={ constants.ROUTE_MEMBERS_PAGE + "?guuid=" + group.UUID }
+									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
 								>{ group.Name }</li>
 							}
 						}
@@ -145,10 +148,11 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 						for _, group := range groups {
 							if group.Type == entity.GroupTypeOrg {
 								<li
-									hx-get={ constants.ROUTE_MEMBERS_TABLE + "?guuid=" + group.UUID }
+									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
 									hx-target="#members"
+									hx-select="#members"
 									hx-swap={ "outerHTML" }
-									hx-push-url={ constants.ROUTE_MEMBERS_PAGE + "?guuid=" + group.UUID }
+									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
 								>{ group.Name }</li>
 							}
 						}
