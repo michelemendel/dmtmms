@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/entity"
 	repo "github.com/michelemendel/dmtmms/repository"
@@ -34,8 +32,6 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 		return err
 	}
 
-	fmt.Println("MembersHandler")
-	c.Response().Header().Set("HX-Trigger", "twe")
 	return h.renderView(c, h.ViewCtx.Members(members))
 }
 

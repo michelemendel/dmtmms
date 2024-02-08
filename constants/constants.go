@@ -67,3 +67,11 @@ const (
 	OP_CREATE = "create"
 	OP_UPDATE = "update"
 )
+
+// Roles
+const (
+	ROLE_ROOT  = "root"
+	ROLE_ADMIN = "admin"
+	ROLE_EDIT  = "edit"
+	ROLE_READ  = "read"
+)

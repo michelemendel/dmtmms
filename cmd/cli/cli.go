@@ -46,6 +46,7 @@ func main() {
 		switch *create {
 		case "tables":
 			repo.CreateTables()
+			repo.CreateIndexes()
 		default:
 			fmt.Println("no op specified")
 		}

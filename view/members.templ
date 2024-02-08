@@ -12,7 +12,6 @@ script cl(msg string) {
 templ (vctx *ViewCtx) Members(members []entity.Member) {
 	@vctx.AppRoot("") {
 		<div id="members" class="flex flex-row">
-			// @LoadLibs()
 			<div class="basis-3/4">
 				@vctx.MembersTable(members)
 			</div>
@@ -20,17 +19,6 @@ templ (vctx *ViewCtx) Members(members []entity.Member) {
 				@vctx.MemberDetails(entity.Member{}, []entity.Group{})
 			</div>
 		</div>
-		// <div
-		// 	hx-get={ constants.ROUTE_PING }
-		// 	hx-target="#ping"
-		// 	hx-boost="true"
-		// 	hx-trigger="twe from:body"
-		// >
-		// 	PING
-		// </div>
-		// <div
-		// 	id="ping"
-		// ></div>
 	}
 }
 
@@ -85,7 +73,6 @@ templ (vctx *ViewCtx) FilterBar() {
 }
 
 templ DatePicker(fromTo string) {
-	<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
 	<div
 		class="relative mb-3"
 		data-te-datepicker-init
@@ -112,8 +99,6 @@ templ DatePicker(fromTo string) {
 
 templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group) {
 	<div id="memberGroupDetails">
-		@loadLibs("MemberDetails")
-		// <script> loadLibs("MemberDetails") </script>
 		<div id="memberDetails" class="flex flex-col">
 			if member.UUID == "" {
 				<div>

@@ -149,7 +149,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string) templ
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_INDEX))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_MEMBERS))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

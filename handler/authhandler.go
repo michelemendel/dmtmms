@@ -33,6 +33,7 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 		return h.renderView(c, h.ViewCtx.Login(username, e.ErrSystem))
 	}
 
+	c.Response().Header().Set("hx-refresh", "true")
 	return h.MembersHandler(c)
 }
 

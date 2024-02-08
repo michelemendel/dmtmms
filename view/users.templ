@@ -10,8 +10,6 @@ templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op st
 		<div id="users">
 			@vctx.UserFormSelectType(selectedUser, op)
 			@vctx.UserList(users)
-			// @loadLibs("Users")
-			// <script> loadLibs("Users") </script>
 		</div>
 	}
 }

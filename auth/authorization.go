@@ -13,6 +13,11 @@ func IsAuthorized(loggedInUserRole string, target string) bool {
 		case constants.AUTH_NAV_USERS:
 			return true
 		}
+	case "edit":
+		switch target {
+		case constants.AUTH_NAV_USERS:
+			return false
+		}
 	case "read":
 		switch target {
 		case constants.AUTH_NAV_USERS:

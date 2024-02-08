@@ -65,9 +65,6 @@ func (r *Repo) CreateTables() {
 		updated_at INTEGER
 	); `
 
-	sqlStmts["create_index_members_uuid"] = `
-	CREATE UNIQUE INDEX IF NOT EXISTS idx_members_uuid ON members(uuid);`
-
 	sqlStmts["create_groups"] = `
 	CREATE TABLE IF NOT EXISTS groups (
 		uuid TEXT PRIMARY KEY,
@@ -76,8 +73,6 @@ func (r *Repo) CreateTables() {
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER
 	);`
-	sqlStmts["create_index_groups_uuid"] = `
-	CREATE UNIQUE INDEX IF NOT EXISTS idx_groups_uuid ON groups(uuid);`
 
 	// many-to-many between members and groups
 	sqlStmts["create_members_groups"] = `
@@ -91,8 +86,6 @@ func (r *Repo) CreateTables() {
 		FOREIGN KEY(member_uuid) REFERENCES members(uuid),
 		FOREIGN KEY(group_uuid) REFERENCES groups(uuid)
 	); `
-	sqlStmts["create_index_members_groups"] = `
-	CREATE UNIQUE INDEX IF NOT EXISTS idx_members_groups ON members_groups(member_uuid, group_uuid);`
 
 	r.runStatements(sqlStmts)
 }
@@ -114,15 +107,28 @@ func (r *Repo) CreateIndexes() {
 //--------------------------------------------------------------------------------
 // DML
 
+type user struct {
+	name string
+	pw   string
+	role string
+}
+
 func (r *Repo) InsertUsers() {
 	stmt, err := r.DB.Prepare("INSERT INTO users(name,password,role) values(?, ?, ?)")
 	if err != nil {
 		slog.Error(err.Error())
 	}
 
-	for _, user := range []string{"root", "abe", "bob"} {
-		hpw, _ := util.HashPassword(user)
-		_, err = stmt.Exec(user, hpw, "admin")
+	users := []user{
+		{"root", "root", "root"},
+		{"abe", "abe", "admin"},
+		{"eve", "eve", "edit"},
+		{"ron", "ron", "read"},
+	}
+
+	for _, user := range users {
+		hpw, _ := util.HashPassword(user.pw)
+		_, err = stmt.Exec(user.name, hpw, user.role)
 		if err != nil {
 			slog.Error(err.Error())
 		}
