@@ -12,9 +12,11 @@ script cl(msg string) {
 templ (vctx *ViewCtx) Members(members []entity.Member) {
 	@vctx.AppRoot("") {
 		<div id="members" class="flex flex-row">
-			<div class="basis-3/4">
+			// Members table
+			<div class="basis-3/4 px-4 py-4">
 				@vctx.MembersTable(members)
 			</div>
+			// Member details
 			<div class="basis-1/4">
 				@vctx.MemberDetails(entity.Member{}, []entity.Group{})
 			</div>
@@ -23,31 +25,246 @@ templ (vctx *ViewCtx) Members(members []entity.Member) {
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
-	<div id="membersTable">
-		@vctx.FilterBar()
-		<table>
-			<thead>
-				<tr>
-					<th>id</th>
-					<th>name</th>
-					<th>dob</th>
-				</tr>
-			</thead>
-			<tbody>
-				for _, member := range members {
-					<tr
-						id={ "member-" + member.UUID }
-						hx-get={ constants.ROUTE_MEMBER_DETAILS + "/" + member.UUID }
-						hx-target="#memberGroupDetails"
-						hx-swap={ "innerHTML" }
-					>
-						<td>{ member.ID }</td>
-						<td>{ member.Name }</td>
-						<td>{ util.Time2String(member.DOB) }</td>
+	@vctx.FilterBar()
+	// <div id="datatable" data-te-max-height="60" class="flex flex-col">
+	<div class="flex flex-col max-h-[50rem]">
+		// <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+		// <div class="overflow-x-auto h-screen sm:-mx-6 lg:-mx-8">
+		<div class="flex-grow overflow-auto">
+			// <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+			// <div class="overflow-hidden">
+			<table class="w-full text-left text-sm font-light">
+				<thead class="border-b font-medium dark:border-neutral-500">
+					<tr>
+						<th scope="col" class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">#</th>
+						<th scope="col" class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">Name</th>
+						<th scope="col" class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">DOB</th>
 					</tr>
-				}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					for _, member := range members {
+						<tr
+							id={ "member-" + member.UUID }
+							hx-get={ constants.ROUTE_MEMBER_DETAILS + "/" + member.UUID }
+							hx-target="#memberGroupDetails"
+							hx-swap={ "innerHTML" }
+							class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
+						>
+							<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
+							<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
+							<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) }</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+			// </div>
+			// </div>
+		</div>
+	</div>
+}
+
+templ (vctx *ViewCtx) MembersTableX(members []entity.Member) {
+	<!-- component -->
+	<div class="flex flex-col h-screen">
+		<div class="flex-grow overflow-auto">
+			<table class="relative w-full border">
+				<thead>
+					<tr>
+						<th class="sticky top-0 px-6 py-3 text-red-900 bg-red-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-red-900 bg-red-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-red-900 bg-red-300">Header</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y bg-red-100">
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<th class="sticky top-0 px-6 py-3 text-green-900 bg-green-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-green-900 bg-green-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-green-900 bg-green-300">Header</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y bg-green-100">
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<th class="sticky top-0 px-6 py-3 text-blue-900 bg-blue-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-blue-900 bg-blue-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-blue-900 bg-blue-300">Header</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y bg-blue-100">
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<th class="sticky top-0 px-6 py-3 text-yellow-900 bg-yellow-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-yellow-900 bg-yellow-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-yellow-900 bg-yellow-300">Header</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y bg-yellow-100">
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<th class="sticky top-0 px-6 py-3 text-purple-900 bg-purple-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-purple-900 bg-purple-300">Header</th>
+						<th class="sticky top-0 px-6 py-3 text-purple-900 bg-purple-300">Header</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y bg-purple-100">
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+					<tr>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+						<td class="px-6 py-4 text-center">Column</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 }
 
@@ -105,7 +322,6 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 					<p>Click on a member to view details</p>
 				</div>
 			} else {
-				@DatePicker("dobbie")
 				<div>
 					<h2>{ member.UUID }</h2>
 					<h2>{ member.Name }</h2>

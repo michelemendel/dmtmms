@@ -140,29 +140,23 @@ func (r *Repo) InsertMembersGroups() {
 	groupStmt, _ := r.DB.Prepare("INSERT INTO groups(uuid, name, type) values(?, ?, ?)")
 	memberGroupStmt, _ := r.DB.Prepare("INSERT INTO members_groups(member_uuid, group_uuid, role) values(?, ?, ?)")
 
-	type member struct {
-		name   string
-		email  string
-		mobile string
-	}
-
-	members := []member{
-		{"mem1", "mem1@t.c", "12377891"},
-		{"mem2", "mem2@t.c", "12377892"},
-		{"mem3", "mem3@t.c", "12377893"},
-		{"mem4", "mem4@t.c", "12377894"},
-	}
-
-	userId := 1
+	memberIdPrefix := "99"
+	namePrefix := "mem"
+	phonePrefix := "12377"
+	nrStart := 100
 	memberUUID := 10
+	nofMembers := 100
 	var status entity.MemberStatus = entity.MemberStatusActive
-	dob := util.String2Time("1965-07-22")
-	for _, member := range members {
-		_, err := memberStmt.Exec(strconv.Itoa(memberUUID), strconv.Itoa(userId), member.name, dob, member.email, member.mobile, status)
+	dob := util.String2Time("1980-02-01")
+	for i := 0; i < nofMembers; i++ {
+		memberId := memberIdPrefix + strconv.Itoa(nrStart+i)
+		name := namePrefix + strconv.Itoa(nrStart+i)
+		email := name + "@test.com"
+		mobile := phonePrefix + strconv.Itoa(nrStart+i)
+		_, err := memberStmt.Exec(strconv.Itoa(memberUUID), memberId, name, dob, email, mobile, status)
 		if err != nil {
 			slog.Error(err.Error())
 		}
-		userId++
 		memberUUID++
 		dob = dob.AddDate(0, 1, 1)
 	}
