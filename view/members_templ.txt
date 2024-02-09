@@ -1,6 +1,7 @@
-<div id=\"members\" class=\"flex flex-row\"><div class=\"basis-3/4 px-4 py-4\">
-</div><div class=\"basis-1/4\">
-</div></div>
+<div class=\"basis-3/4 px-4 py-4\">
+<div id=\"members\" class=\"flex flex-row\"><div class=\"basis-3/4\">
+</div><div class=\"basis-1/4 mx-2\">
+</div></div></div>
 <div class=\"flex flex-col max-h-[50rem]\"><div class=\"flex-grow overflow-auto\"><table class=\"w-full text-left text-sm font-light\"><thead class=\"border-b font-medium dark:border-neutral-500\"><tr><th scope=\"col\" class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\">#</th><th scope=\"col\" class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\">Name</th><th scope=\"col\" class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\">DOB</th></tr></thead> <tbody>
 <tr id=\"
 \" hx-get=\"
@@ -14,27 +15,26 @@
 \" hx-include=\"[name=&#39;from&#39;], [name=&#39;to&#39;]\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" type=\"button\" class=\"inline-block rounded bg-primary h-9 px-4 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]\">Filter by dates</button></div></form>
 <div id=\"memberGroupDetails\"><div id=\"memberDetails\" class=\"flex flex-col\">
 <div><p>Click on a member to view details</p></div>
-<div><h2>
-</h2><h2>
-</h2><p>
-</p><p>
-</p><p>
-</p><p>
-</p></div><div id=\"groupsDetails\" class=\"flex flex-col\"><h2>Groups</h2><ul><h3>--Family</h3>
+<ul class=\"w-96 text-sm\"><li class=\"w-full text-xs font-semibold dark:border-opacity-50\">Name</li><li class=\"w-full pt-0.25 dark:border-opacity-50\">
+</li><li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Email</li><li class=\"w-full pt-0.25 dark:border-opacity-50\">
+</li><li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Mobile</li><li class=\"w-full pt-0.25 dark:border-opacity-50\">
+</li><li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Date of Birth</li><li class=\"w-full pt-0.25 dark:border-opacity-50\">
+</li><li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Status</li><li class=\"w-full pt-0.25 dark:border-opacity-50\">
+</li><li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Family</li><li class=\"w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer\"><ul class=\"w-96 text-sm\">
 <li hx-get=\"
 \" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"
 \">
 </li>
-<h3>--Organization</h3>
+</ul></li><li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Organizations</li><li class=\"w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer\"><ul class=\"w-96 text-sm\">
 <li hx-get=\"
-\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"
-\" hx-push-url=\"
+\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"
 \">
 </li>
-</ul></div>
+</ul></li></ul>
 </div></div>
 <div class=\"relative mb-3\" data-te-datepicker-init data-te-input-wrapper-init id=\"datepicker-close-without-confirmation\" data-te-inline=\"true\" data-te-format=\"yyyy-mm-dd\"><input id=\"
 \" name=\"
+\" value=\"
 \" type=\"text\" class=\"peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&amp;:not([data-te-input-placeholder-active])]:placeholder:opacity-0\" placeholder=\"
 \" data-te-datepicker-toggle-ref data-te-datepicker-toggle-button-ref> <label for=\"floatingInput\" class=\"pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary\">
  date</label></div>

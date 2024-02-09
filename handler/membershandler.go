@@ -12,7 +12,7 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	members, err := h.MembersFiltered(c)
 	if err != nil {
 		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Members([]entity.Member{}, entity.Member{}, []entity.Group{}))
+		return h.renderView(c, vctx.Members([]entity.Member{}, entity.Member{}, []entity.Group{}, "", "", ""))
 	}
 
 	var member entity.Member
@@ -24,7 +24,15 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 		groups = []entity.Group{}
 	}
 
-	return h.renderView(c, h.ViewCtx.Members(members, member, groups))
+	fromVal, toVal, _ := h.FromTo(c)
+	guuid := c.QueryParam("guuid")
+	return h.renderView(c, h.ViewCtx.Members(members, member, groups, guuid, fromVal, toVal))
+}
+
+func (h *HandlerContext) FromTo(c echo.Context) (string, string, error) {
+	fromVal := c.QueryParam("from")
+	toVal := c.QueryParam("to")
+	return fromVal, toVal, nil
 }
 
 func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error) {

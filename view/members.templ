@@ -9,23 +9,23 @@ script cl(msg string) {
 	console.log(msg)
 }
 
-templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, groups []entity.Group) {
+templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, groups []entity.Group, guuid, fromVal, toVal string) {
 	@vctx.AppRoot("") {
-		<div id="members" class="flex flex-row">
-			// Members table
-			<div class="basis-3/4 px-4 py-4">
-				@vctx.MembersTable(members)
-			</div>
-			// Member details
-			<div class="basis-1/4">
-				@vctx.MemberDetails(member, groups)
+		<div class="basis-3/4 px-4 py-4">
+			@vctx.FilterBar(fromVal, toVal)
+			<div id="members" class="flex flex-row">
+				<div class="basis-3/4">
+					@vctx.MembersTable(members, guuid, fromVal, toVal)
+				</div>
+				<div class="basis-1/4 mx-2">
+					@vctx.MemberDetails(member, groups)
+				</div>
 			</div>
 		</div>
 	}
 }
 
-templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
-	@vctx.FilterBar()
+templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVal string) {
 	<div class="flex flex-col max-h-[50rem]">
 		<div class="flex-grow overflow-auto">
 			<table class="w-full text-left text-sm font-light">
@@ -40,7 +40,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 					for _, member := range members {
 						<tr
 							id={ "member-" + member.UUID }
-							hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID }
+							hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + guuid + "&from=" + fromVal + "&to=" + toVal }
 							hx-target="#members"
 							hx-select="#members"
 							hx-swap="outerHTML"
@@ -58,11 +58,11 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 	</div>
 }
 
-templ (vctx *ViewCtx) FilterBar() {
+templ (vctx *ViewCtx) FilterBar(fromVal, toVal string) {
 	<form>
 		<div id="filterBar" class="flex flex-row">
-			@DatePicker("from")
-			@DatePicker("to")
+			@vctx.DatePicker("from", fromVal)
+			@vctx.DatePicker("to", toVal)
 			<button
 				hx-get={ constants.ROUTE_MEMBERS }
 				hx-include="[name='from'], [name='to']"
@@ -87,49 +87,80 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 					<p>Click on a member to view details</p>
 				</div>
 			} else {
-				<div>
-					<h2>{ member.UUID }</h2>
-					<h2>{ member.Name }</h2>
-					<p>{ member.Email }</p>
-					<p>{ member.Mobile }</p>
-					<p>{ util.Time2String(member.DOB) }</p>
-					<p>{ string(member.Status) }</p>
-				</div>
-				<div id="groupsDetails" class="flex flex-col">
-					<h2>Groups</h2>
-					<ul>
-						<h3>--Family</h3>
-						for _, group := range groups {
-							if group.Type == entity.GroupTypeFamily {
-								<li
-									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-									hx-target="#members"
-									hx-select="#members"
-									hx-swap="outerHTML"
-									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-								>{ group.Name }</li>
+				<ul class="w-96 text-sm">
+					<li class="w-full text-xs font-semibold dark:border-opacity-50">
+						Name
+					</li>
+					<li class="w-full pt-0.25 dark:border-opacity-50">
+						{ member.Name }
+					</li>
+					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+						Email
+					</li>
+					<li class="w-full pt-0.25 dark:border-opacity-50">
+						{ member.Email }
+					</li>
+					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+						Mobile
+					</li>
+					<li class="w-full pt-0.25 dark:border-opacity-50">
+						{ member.Mobile }
+					</li>
+					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+						Date of Birth
+					</li>
+					<li class="w-full pt-0.25 dark:border-opacity-50">
+						{ util.Time2String(member.DOB) }
+					</li>
+					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+						Status
+					</li>
+					<li class="w-full pt-0.25 dark:border-opacity-50">
+						{ string(member.Status) }
+					</li>
+					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+						Family
+					</li>
+					<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
+						<ul class="w-96 text-sm">
+							for _, group := range groups {
+								if group.Type == entity.GroupTypeFamily {
+									<li
+										hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
+										hx-target="#members"
+										hx-select="#members"
+										hx-swap="outerHTML"
+										hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
+									>{ group.Name }</li>
+								}
 							}
-						}
-						<h3>--Organization</h3>
-						for _, group := range groups {
-							if group.Type == entity.GroupTypeOrg {
-								<li
-									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-									hx-target="#members"
-									hx-select="#members"
-									hx-swap={ "outerHTML" }
-									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-								>{ group.Name }</li>
+						</ul>
+					</li>
+					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+						Organizations
+					</li>
+					<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
+						<ul class="w-96 text-sm">
+							for _, group := range groups {
+								if group.Type == entity.GroupTypeOrg {
+									<li
+										hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
+										hx-target="#members"
+										hx-select="#members"
+										hx-swap="outerHTML"
+										hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
+									>{ group.Name }</li>
+								}
 							}
-						}
-					</ul>
-				</div>
+						</ul>
+					</li>
+				</ul>
 			}
 		</div>
 	</div>
 }
 
-templ DatePicker(fromTo string) {
+templ (vctx *ViewCtx) DatePicker(fromTo, fromToVal string) {
 	<div
 		class="relative mb-3"
 		data-te-datepicker-init
@@ -141,6 +172,7 @@ templ DatePicker(fromTo string) {
 		<input
 			id={ fromTo }
 			name={ fromTo }
+			value={ fromToVal }
 			type="text"
 			class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
 			placeholder={ fromTo + " (YYYY-MM-DD)" }
