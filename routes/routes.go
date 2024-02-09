@@ -9,6 +9,7 @@ import (
 func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	// Static files
 	e.Static("/public", "public")
+	e.Static("/node_modules/tw-elements/dist/js", "node_modules/tw-elements/dist/js/")
 
 	// Auth
 	e.GET(constants.ROUTE_LOGIN, hCtx.ViewLoginwHandler)
@@ -20,7 +21,6 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 
 	// Members
 	e.GET(constants.ROUTE_MEMBERS, hCtx.MembersHandler)
-	e.GET(constants.ROUTE_MEMBER_DETAILS+"/:memberuuid", hCtx.MemberDetailsHandler)
 	e.GET(constants.ROUTE_MEMBER_EDIT, hCtx.MemberEditHandler)
 
 	// Users

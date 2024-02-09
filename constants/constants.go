@@ -44,11 +44,9 @@ const (
 	ROUTE_INDEX = "/"
 	//
 	// ROUTE_MEMBERS_PAGE   = "/memberspage"
-	ROUTE_MEMBERS        = "/members"
-	ROUTE_MEMBERS_TABLE  = "/memberstable"
-	ROUTE_MEMBER_EDIT    = "/member/edit"
-	ROUTE_MEMBER_DETAILS = "/memberdetails"
-	ROUTE_GROUPS         = "/groups"
+	ROUTE_MEMBERS     = "/members"
+	ROUTE_MEMBER_EDIT = "/member/edit"
+	ROUTE_GROUPS      = "/groups"
 	//
 	ROUTE_USERS           = "/users"
 	ROUTE_USER_CREATE     = "/user/create"

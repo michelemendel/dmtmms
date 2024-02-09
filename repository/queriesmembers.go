@@ -2,7 +2,6 @@ package repo
 
 import (
 	"database/sql"
-	"fmt"
 	"log/slog"
 	"time"
 
@@ -34,7 +33,7 @@ func (r *Repo) SelectMembers() ([]entity.Member, error) {
 // SELECT m.uuid, m.id, m.name  FROM members as m JOIN members_groups as mg on m.uuid = mg.member_uuid WHERE mg.group_uuid=10;
 
 func (r *Repo) SelectMembersByGroupUUID(groupUUID string) ([]entity.Member, error) {
-	fmt.Println("SelectMembersByGroupUUID", groupUUID)
+	// fmt.Println("SelectMembersByGroupUUID", groupUUID)
 	// SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status
 	query := `
 	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status

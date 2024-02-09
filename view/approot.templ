@@ -42,13 +42,13 @@ templ (vctx *ViewCtx) Head(title string) {
 		// HTMX
 		<script src="/public/htmx.min.js"></script>
 		// 
+		<script type="text/javascript" src="/public/app.js"></script>
 		<script>
+			// Callback when new content is added to the DOM			
 			htmx.onLoad(function(content) {
-				console.log("[LOAD_LIBS_CONTENT]:", content);
 				loadLibs();
 			});
 		</script>
-		<script src="/public/app.js"></script>
 		// 
 		// Tailwind output
 		<link href="/public/output.css" rel="stylesheet"/>
@@ -130,7 +130,7 @@ templ (vctx *ViewCtx) NavBar() {
 							</svg>
 						</span>
 						<span class="ml-1">
-							{ ctx.Value(constants.CTX_USER_NAME_KEY).(string) } ({ ctx.Value(constants.CTX_USER_ROLE_KEY).(string) })
+							{ ctx.Value(constants.CTX_USER_NAME_KEY).(string) }
 						</span>
 					</div>
 				</a>

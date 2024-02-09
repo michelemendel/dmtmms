@@ -9,7 +9,7 @@ script cl(msg string) {
 	console.log(msg)
 }
 
-templ (vctx *ViewCtx) Members(members []entity.Member) {
+templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, groups []entity.Group) {
 	@vctx.AppRoot("") {
 		<div id="members" class="flex flex-row">
 			// Members table
@@ -18,7 +18,7 @@ templ (vctx *ViewCtx) Members(members []entity.Member) {
 			</div>
 			// Member details
 			<div class="basis-1/4">
-				@vctx.MemberDetails(entity.Member{}, []entity.Group{})
+				@vctx.MemberDetails(member, groups)
 			</div>
 		</div>
 	}
@@ -26,13 +26,8 @@ templ (vctx *ViewCtx) Members(members []entity.Member) {
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 	@vctx.FilterBar()
-	// <div id="datatable" data-te-max-height="60" class="flex flex-col">
 	<div class="flex flex-col max-h-[50rem]">
-		// <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-		// <div class="overflow-x-auto h-screen sm:-mx-6 lg:-mx-8">
 		<div class="flex-grow overflow-auto">
-			// <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-			// <div class="overflow-hidden">
 			<table class="w-full text-left text-sm font-light">
 				<thead class="border-b font-medium dark:border-neutral-500">
 					<tr>
@@ -45,9 +40,11 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 					for _, member := range members {
 						<tr
 							id={ "member-" + member.UUID }
-							hx-get={ constants.ROUTE_MEMBER_DETAILS + "/" + member.UUID }
-							hx-target="#memberGroupDetails"
-							hx-swap={ "innerHTML" }
+							hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID }
+							hx-target="#members"
+							hx-select="#members"
+							hx-swap="outerHTML"
+							hx-push-url="true"
 							class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
 						>
 							<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
@@ -55,213 +52,6 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member) {
 							<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) }</td>
 						</tr>
 					}
-				</tbody>
-			</table>
-			// </div>
-			// </div>
-		</div>
-	</div>
-}
-
-templ (vctx *ViewCtx) MembersTableX(members []entity.Member) {
-	<!-- component -->
-	<div class="flex flex-col h-screen">
-		<div class="flex-grow overflow-auto">
-			<table class="relative w-full border">
-				<thead>
-					<tr>
-						<th class="sticky top-0 px-6 py-3 text-red-900 bg-red-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-red-900 bg-red-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-red-900 bg-red-300">Header</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y bg-red-100">
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-				</tbody>
-				<thead>
-					<tr>
-						<th class="sticky top-0 px-6 py-3 text-green-900 bg-green-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-green-900 bg-green-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-green-900 bg-green-300">Header</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y bg-green-100">
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-				</tbody>
-				<thead>
-					<tr>
-						<th class="sticky top-0 px-6 py-3 text-blue-900 bg-blue-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-blue-900 bg-blue-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-blue-900 bg-blue-300">Header</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y bg-blue-100">
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-				</tbody>
-				<thead>
-					<tr>
-						<th class="sticky top-0 px-6 py-3 text-yellow-900 bg-yellow-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-yellow-900 bg-yellow-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-yellow-900 bg-yellow-300">Header</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y bg-yellow-100">
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-				</tbody>
-				<thead>
-					<tr>
-						<th class="sticky top-0 px-6 py-3 text-purple-900 bg-purple-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-purple-900 bg-purple-300">Header</th>
-						<th class="sticky top-0 px-6 py-3 text-purple-900 bg-purple-300">Header</th>
-					</tr>
-				</thead>
-				<tbody class="divide-y bg-purple-100">
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
-					<tr>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-						<td class="px-6 py-4 text-center">Column</td>
-					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -278,7 +68,7 @@ templ (vctx *ViewCtx) FilterBar() {
 				hx-include="[name='from'], [name='to']"
 				hx-target="#members"
 				hx-select="#members"
-				hx-swap={ "outerHTML" }
+				hx-swap="outerHTML"
 				hx-push-url="true"
 				type="button"
 				class="inline-block rounded bg-primary h-9 px-4 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
@@ -287,31 +77,6 @@ templ (vctx *ViewCtx) FilterBar() {
 			</button>
 		</div>
 	</form>
-}
-
-templ DatePicker(fromTo string) {
-	<div
-		class="relative mb-3"
-		data-te-datepicker-init
-		data-te-input-wrapper-init
-		id="datepicker-close-without-confirmation"
-		data-te-inline="true"
-		data-te-format="yyyy-mm-dd"
-	>
-		<input
-			id={ fromTo }
-			name={ fromTo }
-			type="text"
-			class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-			placeholder={ fromTo + " (YYYY-MM-DD)" }
-			data-te-datepicker-toggle-ref
-			data-te-datepicker-toggle-button-ref
-		/>
-		<label
-			for="floatingInput"
-			class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-		>{ fromTo } date</label>
-	</div>
 }
 
 templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group) {
@@ -337,11 +102,11 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 						for _, group := range groups {
 							if group.Type == entity.GroupTypeFamily {
 								<li
-									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
+									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
 									hx-target="#members"
 									hx-select="#members"
-									hx-swap={ "outerHTML" }
-									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
+									hx-swap="outerHTML"
+									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
 								>{ group.Name }</li>
 							}
 						}
@@ -349,11 +114,11 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 						for _, group := range groups {
 							if group.Type == entity.GroupTypeOrg {
 								<li
-									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
+									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
 									hx-target="#members"
 									hx-select="#members"
 									hx-swap={ "outerHTML" }
-									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID }
+									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
 								>{ group.Name }</li>
 							}
 						}
@@ -361,5 +126,30 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 				</div>
 			}
 		</div>
+	</div>
+}
+
+templ DatePicker(fromTo string) {
+	<div
+		class="relative mb-3"
+		data-te-datepicker-init
+		data-te-input-wrapper-init
+		id="datepicker-close-without-confirmation"
+		data-te-inline="true"
+		data-te-format="yyyy-mm-dd"
+	>
+		<input
+			id={ fromTo }
+			name={ fromTo }
+			type="text"
+			class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+			placeholder={ fromTo + " (YYYY-MM-DD)" }
+			data-te-datepicker-toggle-ref
+			data-te-datepicker-toggle-button-ref
+		/>
+		<label
+			for="floatingInput"
+			class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
+		>{ fromTo } date</label>
 	</div>
 }
