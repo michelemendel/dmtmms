@@ -12,7 +12,6 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.Static("/node_modules/tw-elements/dist/js", "node_modules/tw-elements/dist/js/")
 
 	// Auth
-	e.GET(constants.ROUTE_LOGIN, hCtx.ViewLoginwHandler)
 	e.POST(constants.ROUTE_LOGIN, hCtx.LoginHandler)
 	e.GET(constants.ROUTE_LOGOUT, hCtx.LogoutHandler)
 

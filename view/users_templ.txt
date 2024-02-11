@@ -1,28 +1,32 @@
-<div id=\"users\">
+<div id=\"users\" class=\"px-4 py-5 sm:px-6\">
 </div>
-<div id=\"userEdit\">
-</div>
-<div id=\"userForm\"><form hx-post=\"
-\" hx-target=\"#users\" hx-select=\"#users\" hx-swap=\"outerHTML\"><input type=\"text\" required name=\"username\" value=\"
-\" placeholder=\"name\"> <input type=\"text\" required name=\"password\" placeholder=\"password\">
-<input type=\"submit\" value=\"Add User\"> <input hx-get=\"
-\" hx-target=\"#users\" hx-swap=\"innerHTML\" type=\"submit\" value=\"Cancel\"></form>
+<div id=\"userEdit\" class=\"w-1/2\"><form
+ hx-post=\"
+\"
+ hx-put=\"
+\"
+ hx-target=\"#users\" hx-select=\"#users\" hx-swap=\"outerHTML\"><div id=\"userForm\" class=\"relative flex flex-wrap\"><!-- Username -->
+<input type=\"text\" required name=\"username\" value=\"
+\" placeholder=\"name\" aria-label=\"username\" class=\"mr-1 rounded relative m-0 block w-[1px] min-w-0 flex-auto border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary\">
+<input type=\"hidden\" name=\"username\" value=\"
+\"> <span class=\"mr-1\">
+</span>
+<!-- Password -->
+<input type=\"text\" required name=\"password\" placeholder=\"password\" aria-label=\"password\" class=\"mr-1 rounded relative m-0 block w-[1px] min-w-0 flex-auto border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary\">
+<button class=\"z-[2] inline-block mr-1 rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:z-[3] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]\" type=\"submit\" data-te-ripple-init>
+Create user
+Update user
+</button> <button hx-get=\"
+\" hx-target=\"#users\" hx-swap=\"outerHTML\" class=\"z-[2] inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:z-[3] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]\" type=\"button\" data-te-ripple-init>Cancel</button></div></form></div>
 <div class=\"mb-4\"><div class=\"block text-red-600\">
 </div></div>
-</div>
-<div><form hx-put=\"
-\" hx-target=\"#users\" hx-select=\"#users\" hx-swap=\"outerHTML\"><input type=\"hidden\" name=\"username\" value=\"
-\"> <span>
-</span>
-<input type=\"submit\" value=\"Update User\"> <input hx-get=\"
-\" hx-target=\"#users\" hx-swap=\"innerHTML\" type=\"submit\" value=\"Cancel\"></form></div>
-<label for=\"role\">Role</label> <select name=\"role\" id=\"role\">
+<div class=\"mr-1\"><select id=\"role\" name=\"role\" data-te-select-init data-te-select-size=\"lg\">
 <option value=\"
 \"
  selected
 >
 </option>
-</select>
+</select> <label data-te-select-label-ref>Role</label></div>
 <ul>
 <li><span>
 </span> <span>

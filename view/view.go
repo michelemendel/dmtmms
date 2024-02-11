@@ -1,18 +1,23 @@
 package view
 
+import "github.com/michelemendel/dmtmms/auth"
+
 type ViewCtx struct {
 	Opts
+	Session *auth.Session
 }
 
-func MakeViewCtxDefault() *ViewCtx {
+func MakeViewCtxDefault(session *auth.Session) *ViewCtx {
 	return &ViewCtx{
-		Opts: MakeOpts(),
+		Opts:    MakeOpts(),
+		Session: session,
 	}
 }
 
-func MakeViewCtx(opts Opts) *ViewCtx {
+func MakeViewCtx(session *auth.Session, opts Opts) *ViewCtx {
 	return &ViewCtx{
-		Opts: opts,
+		Opts:    opts,
+		Session: session,
 	}
 }
 

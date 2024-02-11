@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
@@ -38,7 +37,6 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 }
 
 func (h *HandlerContext) LogoutHandler(c echo.Context) error {
-	fmt.Println("[LOGOUTHANDLER]")
 	h.Session.Logout(c)
 	return h.renderView(c, h.ViewCtx.Login("", nil))
 }

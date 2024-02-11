@@ -16,11 +16,11 @@ type HandlerContext struct {
 	ViewCtx *view.ViewCtx
 }
 
-func NewHandlerContext(echo *echo.Echo, auth *auth.Session, repo *repo.Repo) *HandlerContext {
+func NewHandlerContext(echo *echo.Echo, session *auth.Session, repo *repo.Repo) *HandlerContext {
 	return &HandlerContext{
 		Ctx:     context.Background(),
-		Session: auth,
+		Session: session,
 		Repo:    repo,
-		ViewCtx: view.MakeViewCtxDefault(),
+		ViewCtx: view.MakeViewCtxDefault(session),
 	}
 }

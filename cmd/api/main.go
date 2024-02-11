@@ -35,16 +35,17 @@ func main() {
 		slog.SetDefault(util.StdOutLogger())
 	}
 
+	r := repo.NewRepo()
+	defer r.DB.Close()
+	s := auth.NewSession(r)
+
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.ENV_SESSION_KEY_KEY)))))
+	e.Use(s.Authorize)
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
-	a := auth.NewSession()
-	r := repo.NewRepo()
-	defer r.DB.Close()
-
-	hCtx := handler.NewHandlerContext(e, a, r)
+	hCtx := handler.NewHandlerContext(e, s, r)
 	routes.Routes(e, hCtx)
 	slog.Debug("Starting server", "port", webServerPort)
 	e.Logger.Fatal(e.Start(":" + webServerPort))

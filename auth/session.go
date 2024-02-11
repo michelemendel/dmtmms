@@ -7,16 +7,24 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	consts "github.com/michelemendel/dmtmms/constants"
+	repo "github.com/michelemendel/dmtmms/repository"
 	"github.com/michelemendel/dmtmms/util"
 )
 
+type TokenType string
+type UserSession struct {
+	Name  string
+	Token TokenType
+}
 type Session struct {
 	LoggedInUsers map[TokenType]UserSession
+	Repo          *repo.Repo
 }
 
-func NewSession() *Session {
+func NewSession(repo *repo.Repo) *Session {
 	return &Session{
 		LoggedInUsers: make(map[TokenType]UserSession),
+		Repo:          repo,
 	}
 }
 

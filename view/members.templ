@@ -11,9 +11,9 @@ script cl(msg string) {
 
 templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, groups []entity.Group, guuid, fromVal, toVal string) {
 	@vctx.AppRoot("") {
-		<div class="basis-3/4 px-4 py-4">
+		<div id="members" class="basis-3/4 px-4 py-4">
 			@vctx.FilterBar(fromVal, toVal)
-			<div id="members" class="flex flex-row">
+			<div class="flex flex-row">
 				<div class="basis-3/4">
 					@vctx.MembersTable(members, guuid, fromVal, toVal)
 				</div>

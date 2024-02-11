@@ -7,81 +7,110 @@ import (
 
 templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op string) {
 	@vctx.AppRoot("") {
-		<div id="users">
-			@vctx.UserFormSelectType(selectedUser, op)
+		<div
+			id="users"
+			class="px-4 py-5 sm:px-6"
+		>
+			@vctx.UserForm(selectedUser, op)
 			@vctx.UserList(users)
 		</div>
 	}
 }
 
-templ (vctx *ViewCtx) UserFormSelectType(selectedUser entity.User, op string) {
-	<div id="userEdit">
-		if op == constants.OP_CREATE {
-			@vctx.UserCreateForm(selectedUser)
-		} else {
-			@vctx.UserUpdateForm(selectedUser)
-		}
-	</div>
-}
-
-templ (vctx *ViewCtx) UserCreateForm(selectedUser entity.User) {
-	<div id="userForm">
+templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
+	<div id="userEdit" class="w-1/2">
 		<form
-			hx-post={ constants.ROUTE_USER_CREATE }
+			if op == constants.OP_CREATE {
+				hx-post={ constants.ROUTE_USER_CREATE }
+			} else {
+				hx-put={ constants.ROUTE_USER_UPDATE }
+			}
 			hx-target="#users"
 			hx-select="#users"
 			hx-swap="outerHTML"
 		>
-			<input type="text" required name="username" value={ selectedUser.Name } placeholder="name"/>
-			<input type="text" required name="password" placeholder="password"/>
-			@vctx.roleOptions(selectedUser)
-			<input type="submit" value="Add User"/>
-			<input
-				hx-get={ constants.ROUTE_USERS }
-				hx-target="#users"
-				hx-swap="innerHTML"
-				type="submit"
-				value="Cancel"
-			/>
-		</form>
-		if vctx.Err != nil {
-			<div class="mb-4">
-				<div class="block text-red-600">{ vctx.Err.Error() }</div>
+			<div
+				id="userForm"
+				class="relative flex flex-wrap"
+			>
+				<!-- Username -->
+				if op == constants.OP_CREATE {
+					<input
+						type="text"
+						required
+						name="username"
+						value={ selectedUser.Name }
+						placeholder="name"
+						aria-label="username"
+						class="mr-1 rounded relative m-0 block w-[1px] min-w-0 flex-auto border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+					/>
+				} else {
+					<input type="hidden" name="username" value={ selectedUser.Name }/>
+					<span
+						class="mr-1"
+					>
+						{ selectedUser.Name }
+					</span>
+				}
+				<!-- Password -->
+				if op == constants.OP_CREATE {
+					<input
+						type="text"
+						required
+						name="password"
+						placeholder="password"
+						aria-label="password"
+						class="mr-1 rounded relative m-0 block w-[1px] min-w-0 flex-auto border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+					/>
+				}
+				@vctx.roleOptions(selectedUser)
+				<button
+					class="z-[2] inline-block mr-1 rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:z-[3] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+					type="submit"
+					data-te-ripple-init
+				>
+					if op == constants.OP_CREATE {
+						Create user
+					} else {
+						Update user
+					}
+				</button>
+				<button
+					hx-get={ constants.ROUTE_USERS }
+					hx-target="#users"
+					hx-swap="outerHTML"
+					class="z-[2] inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:z-[3] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+					type="button"
+					data-te-ripple-init
+				>
+					Cancel
+				</button>
 			</div>
-		}
-	</div>
-}
-
-templ (vctx *ViewCtx) UserUpdateForm(selectedUser entity.User) {
-	<div>
-		<form
-			hx-put={ constants.ROUTE_USER_UPDATE }
-			hx-target="#users"
-			hx-select="#users"
-			hx-swap="outerHTML"
-		>
-			<input type="hidden" name="username" value={ selectedUser.Name }/>
-			<span>{ selectedUser.Name }</span>
-			@vctx.roleOptions(selectedUser)
-			<input type="submit" value="Update User"/>
-			<input
-				hx-get={ constants.ROUTE_USERS }
-				hx-target="#users"
-				hx-swap="innerHTML"
-				type="submit"
-				value="Cancel"
-			/>
 		</form>
 	</div>
+	if vctx.Err != nil {
+		<div class="mb-4">
+			<div class="block text-red-600">{ vctx.Err.Error() }</div>
+		</div>
+	}
 }
 
 templ (vctx *ViewCtx) roleOptions(selectedUser entity.User) {
-	<label for="role">Role</label>
-	<select name="role" id="role">
-		for _, role := range vctx.Roles {
-			<option value={ role } selected?={ role == selectedUser.Role }>{ role }</option>
-		}
-	</select>
+	<div
+		class="mr-1"
+	>
+		<select
+			id="role"
+			name="role"
+			data-te-select-init
+			data-te-select-size="lg"
+		>
+			for _, role := range vctx.Roles {
+				<option value={ role } selected?={ role == selectedUser.Role }>{ role }</option>
+			}
+		</select>
+		<label data-te-select-label-ref>Role</label>
+	</div>
 }
 
 templ (vctx *ViewCtx) UserList(users []entity.User) {

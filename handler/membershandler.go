@@ -11,7 +11,7 @@ import (
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	members, err := h.MembersFiltered(c)
 	if err != nil {
-		vctx := view.MakeViewCtx(view.MakeOpts().WithErr(err))
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
 		return h.renderView(c, vctx.Members([]entity.Member{}, entity.Member{}, []entity.Group{}, "", "", ""))
 	}
 

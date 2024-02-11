@@ -6,6 +6,6 @@ import (
 )
 
 func (h *HandlerContext) PingHandler(c echo.Context) error {
-	vctx := view.MakeViewCtxDefault()
+	vctx := view.MakeViewCtxDefault(h.Session)
 	return h.renderView(c, vctx.Ping())
 }
