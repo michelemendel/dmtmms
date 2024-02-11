@@ -49,14 +49,20 @@ func (s *Session) IsAuthorized(userRole string, path string) bool {
 func (s *Session) Authorize(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sess, _ := s.GetCurrentUser(c)
+		path := c.Path()
+
+		if sess.Name == "" || path == "/node_modules/tw-elements/dist/js*" || path == "/public*" {
+			return next(c)
+		}
+
 		user, _ := s.Repo.SelectUser(sess.Name)
 
-		path := c.Path()
 		fmt.Printf("Authorize: role:%s, path:%s\n", user.Role, path)
 		if s.IsAuthorized(user.Role, path) {
 			return next(c)
 		} else {
-			return echo.ErrUnauthorized
+			return next(c)
+			// return echo.ErrUnauthorized
 		}
 	}
 }

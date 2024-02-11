@@ -11,13 +11,13 @@ script cl(msg string) {
 
 templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, groups []entity.Group, guuid, fromVal, toVal string) {
 	@vctx.AppRoot("") {
-		<div id="members" class="basis-3/4 px-4 py-4">
+		<div id="members" class="px-4 py-4">
 			@vctx.FilterBar(fromVal, toVal)
 			<div class="flex flex-row">
-				<div class="basis-3/4">
+				<div class="flex-auto w-4/5">
 					@vctx.MembersTable(members, guuid, fromVal, toVal)
 				</div>
-				<div class="basis-1/4 mx-2">
+				<div class="flex-auto w-1/5 px-4">
 					@vctx.MemberDetails(member, groups)
 				</div>
 			</div>
@@ -26,36 +26,44 @@ templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, gro
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVal string) {
-	<div class="flex flex-col max-h-[50rem]">
-		<div class="flex-grow overflow-auto">
-			<table class="w-full text-left text-sm font-light">
-				<thead class="border-b font-medium dark:border-neutral-500">
-					<tr>
-						<th scope="col" class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">#</th>
-						<th scope="col" class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">Name</th>
-						<th scope="col" class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">DOB</th>
-					</tr>
-				</thead>
-				<tbody>
-					for _, member := range members {
-						<tr
-							id={ "member-" + member.UUID }
-							hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + guuid + "&from=" + fromVal + "&to=" + toVal }
-							hx-target="#members"
-							hx-select="#members"
-							hx-swap="outerHTML"
-							hx-push-url="true"
-							class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
-						>
-							<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
-							<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
-							<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) }</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		</div>
+	<div class="flex flex-grow overflow-auto flex-col max-h-[50rem]">
+		<table class="w-full text-left text-sm font-light">
+			<thead class="border-1 font-medium dark:border-neutral-500">
+				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">#</th>
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Name</th>
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">DOB</th>
+					// <th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Family</th>
+				</tr>
+			</thead>
+			<tbody>
+				for _, member := range members {
+					@vctx.tableRow(member, guuid, fromVal, toVal)
+				}
+			</tbody>
+		</table>
 	</div>
+}
+
+templ (vctx *ViewCtx) tableRow(member entity.Member, guuid, fromVal, toVal string) {
+	<tr
+		id={ "member-" + member.UUID }
+		hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + guuid + "&from=" + fromVal + "&to=" + toVal }
+		hx-target="#members"
+		hx-select="#members"
+		hx-swap="outerHTML"
+		hx-push-url="true"
+		class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
+	>
+		<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
+		<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
+		<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) }</td>
+		// if member.GroupType == "fam" {
+		// <td class="whitespace-nowrap px-6 py-4">{ member.GroupName }</td>
+		// } else {
+		// <td class="whitespace-nowrap px-6 py-4">-</td>
+		// }
+	</tr>
 }
 
 templ (vctx *ViewCtx) FilterBar(fromVal, toVal string) {
@@ -80,83 +88,81 @@ templ (vctx *ViewCtx) FilterBar(fromVal, toVal string) {
 }
 
 templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group) {
-	<div id="memberGroupDetails">
-		<div id="memberDetails" class="flex flex-col">
-			if member.UUID == "" {
-				<div>
-					<p>Click on a member to view details</p>
-				</div>
-			} else {
-				<ul class="w-96 text-sm">
-					<li class="w-full text-xs font-semibold dark:border-opacity-50">
-						Name
-					</li>
-					<li class="w-full pt-0.25 dark:border-opacity-50">
-						{ member.Name }
-					</li>
-					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-						Email
-					</li>
-					<li class="w-full pt-0.25 dark:border-opacity-50">
-						{ member.Email }
-					</li>
-					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-						Mobile
-					</li>
-					<li class="w-full pt-0.25 dark:border-opacity-50">
-						{ member.Mobile }
-					</li>
-					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-						Date of Birth
-					</li>
-					<li class="w-full pt-0.25 dark:border-opacity-50">
-						{ util.Time2String(member.DOB) }
-					</li>
-					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-						Status
-					</li>
-					<li class="w-full pt-0.25 dark:border-opacity-50">
-						{ string(member.Status) }
-					</li>
-					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-						Family
-					</li>
-					<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
-						<ul class="w-96 text-sm">
-							for _, group := range groups {
-								if group.Type == entity.GroupTypeFamily {
-									<li
-										hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-										hx-target="#members"
-										hx-select="#members"
-										hx-swap="outerHTML"
-										hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-									>{ group.Name }</li>
-								}
+	<div id="memberDetails" class="">
+		if member.UUID == "" {
+			<div>
+				<p>Click on a member to view details</p>
+			</div>
+		} else {
+			<ul class="w-96 text-sm">
+				<li class="w-full text-xs font-semibold dark:border-opacity-50">
+					Name
+				</li>
+				<li class="w-full pt-0.25 dark:border-opacity-50">
+					{ member.Name }
+				</li>
+				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+					Email
+				</li>
+				<li class="w-full pt-0.25 dark:border-opacity-50">
+					{ member.Email }
+				</li>
+				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+					Mobile
+				</li>
+				<li class="w-full pt-0.25 dark:border-opacity-50">
+					{ member.Mobile }
+				</li>
+				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+					Date of Birth
+				</li>
+				<li class="w-full pt-0.25 dark:border-opacity-50">
+					{ util.Time2String(member.DOB) }
+				</li>
+				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+					Status
+				</li>
+				<li class="w-full pt-0.25 dark:border-opacity-50">
+					{ string(member.Status) }
+				</li>
+				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+					Family
+				</li>
+				<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
+					<ul class="w-96 text-sm">
+						for _, group := range groups {
+							if group.Type == entity.GroupTypeFamily {
+								<li
+									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
+									hx-target="#members"
+									hx-select="#members"
+									hx-swap="outerHTML"
+									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
+								>{ group.Name }</li>
 							}
-						</ul>
-					</li>
-					<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-						Organizations
-					</li>
-					<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
-						<ul class="w-96 text-sm">
-							for _, group := range groups {
-								if group.Type == entity.GroupTypeOrg {
-									<li
-										hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-										hx-target="#members"
-										hx-select="#members"
-										hx-swap="outerHTML"
-										hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-									>{ group.Name }</li>
-								}
+						}
+					</ul>
+				</li>
+				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+					Organizations
+				</li>
+				<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
+					<ul class="w-96 text-sm">
+						for _, group := range groups {
+							if group.Type == entity.GroupTypeOrg {
+								<li
+									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
+									hx-target="#members"
+									hx-select="#members"
+									hx-swap="outerHTML"
+									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
+								>{ group.Name }</li>
 							}
-						</ul>
-					</li>
-				</ul>
-			}
-		</div>
+						}
+					</ul>
+				</li>
+			</ul>
+		}
 	</div>
 }
 

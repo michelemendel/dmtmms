@@ -12,51 +12,45 @@ import (
 //--------------------------------------------------------------------------------
 // Focus on members
 
+const (
+	queryMembers = `
+	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status, g.name, g.type
+	FROM members as m 
+	JOIN members_groups as mg on m.uuid = mg.member_uuid 
+	JOIN groups as g on mg.group_uuid = g.uuid	
+	GROUP BY m.uuid
+	`
+)
+
 func (r *Repo) SelectMembersByFilter(filter Filter) ([]entity.Member, error) {
 	if filter.GroupUUID != "" {
 		return r.SelectMembersByGroupUUID(filter.GroupUUID)
 	}
+
+	// TODO: Fix, since this is always true
 	if !filter.From.IsZero() && !filter.To.IsZero() {
 		return r.SelectMembersByDOBInterval(filter.From, filter.To)
 	}
+
 	return r.SelectMembers()
 }
 
 func (r *Repo) SelectMembers() ([]entity.Member, error) {
-	query := `
-	SELECT uuid, id, name, date(dob), email, mobile, status 
-	FROM members;
-	`
-	return r.ExecuteQuery(query)
+	return r.ExecuteQuery(queryMembers + ";")
 }
 
-// SELECT m.uuid, m.id, m.name  FROM members as m JOIN members_groups as mg on m.uuid = mg.member_uuid WHERE mg.group_uuid=10;
-
 func (r *Repo) SelectMembersByGroupUUID(groupUUID string) ([]entity.Member, error) {
-	// fmt.Println("SelectMembersByGroupUUID", groupUUID)
-	// SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status
-	query := `
-	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status
-	FROM members as m 
-	JOIN members_groups as mg on m.uuid = mg.member_uuid 
-	JOIN groups as g on mg.group_uuid = g.uuid
-	WHERE g.uuid = ?;
-	`
+	query := queryMembers + " WHERE g.uuid = ?;"
 	return r.ExecuteQuery(query, groupUUID)
 }
 
-// SELECT uuid, id, name, date(dob) FROM members WHERE dob BETWEEN julianday(2020-07-10) AND julianday(?);
-
 func (r *Repo) SelectMembersByDOBInterval(from time.Time, to time.Time) ([]entity.Member, error) {
-	query := `
-	SELECT uuid, id, name, date(dob), email, mobile, status 
-	FROM members 
-	WHERE dob BETWEEN julianday(?) AND julianday(?);
-	`
+	query := queryMembers + " WHERE m.dob BETWEEN julianday(?) AND julianday(?);"
 	return r.ExecuteQuery(query, util.Time2String(from), util.Time2String(to))
 }
 
 func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member, error) {
+	// fmt.Println("ExecuteQuery", query, args)
 	rows, err := r.DB.Query(query, args...)
 	if err != nil {
 		slog.Error(err.Error())
@@ -69,6 +63,7 @@ func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member,
 func (r *Repo) SQLMembers(rows *sql.Rows) ([]entity.Member, error) {
 	defer rows.Close()
 	var members []entity.Member
+	//
 	var mUUID string
 	var mId string
 	var mName string
@@ -76,14 +71,16 @@ func (r *Repo) SQLMembers(rows *sql.Rows) ([]entity.Member, error) {
 	var mEmail string
 	var mMobile string
 	var mStatus string
+	var gGroupName string
+	var gGroupType string
 	for rows.Next() {
-		err := rows.Scan(&mUUID, &mId, &mName, &mDOB, &mEmail, &mMobile, &mStatus)
+		err := rows.Scan(&mUUID, &mId, &mName, &mDOB, &mEmail, &mMobile, &mStatus, &gGroupName, &gGroupType)
 		if err != nil {
 			slog.Error(err.Error())
 			return members, err
 		}
 		mDOB := util.String2Time(mDOB)
-		members = append(members, entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus)))
+		members = append(members, entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus), gGroupName, gGroupType))
 	}
 	err := rows.Err()
 	if err != nil {
@@ -97,11 +94,8 @@ func (r *Repo) SQLMembers(rows *sql.Rows) ([]entity.Member, error) {
 // Member
 
 func (r *Repo) SelectMemberByUUID(memberUUID string) (entity.Member, error) {
-	query := `
-	SELECT uuid, id, name, date(dob), email, mobile, status
-	FROM members
-	WHERE uuid = ?;
-	`
+	query := queryMembers + " AND m.uuid = ?;"
+
 	var mUUID string
 	var mId string
 	var mName string
@@ -109,14 +103,16 @@ func (r *Repo) SelectMemberByUUID(memberUUID string) (entity.Member, error) {
 	var mEmail string
 	var mMobile string
 	var mStatus string
-	err := r.DB.QueryRow(query, memberUUID).Scan(&mUUID, &mId, &mName, &mDOBStr, &mEmail, &mMobile, &mStatus)
+	var gGroupName string
+	var gGroupType string
+	err := r.DB.QueryRow(query, memberUUID).Scan(&mUUID, &mId, &mName, &mDOBStr, &mEmail, &mMobile, &mStatus, &gGroupName, &gGroupType)
 	if err != nil {
 		slog.Error("Couldn't find member", "uuid", memberUUID, "error", err.Error())
 		return entity.Member{}, err
 	}
 
 	mDOB := util.String2Time(mDOBStr)
-	return entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus)), nil
+	return entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus), gGroupName, gGroupType), nil
 }
 
 //--------------------------------------------------------------------------------

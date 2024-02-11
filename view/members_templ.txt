@@ -1,19 +1,19 @@
-<div id=\"members\" class=\"basis-3/4 px-4 py-4\">
-<div class=\"flex flex-row\"><div class=\"basis-3/4\">
-</div><div class=\"basis-1/4 mx-2\">
+<div id=\"members\" class=\"px-4 py-4\">
+<div class=\"flex flex-row\"><div class=\"flex-auto w-4/5\">
+</div><div class=\"flex-auto w-1/5 px-4\">
 </div></div></div>
-<div class=\"flex flex-col max-h-[50rem]\"><div class=\"flex-grow overflow-auto\"><table class=\"w-full text-left text-sm font-light\"><thead class=\"border-b font-medium dark:border-neutral-500\"><tr><th scope=\"col\" class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\">#</th><th scope=\"col\" class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\">Name</th><th scope=\"col\" class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\">DOB</th></tr></thead> <tbody>
+<div class=\"flex flex-grow overflow-auto flex-col max-h-[50rem]\"><table class=\"w-full text-left text-sm font-light\"><thead class=\"border-1 font-medium dark:border-neutral-500\"><tr class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\"><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">#</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Name</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">DOB</th></tr></thead> <tbody>
+</tbody></table></div>
 <tr id=\"
 \" hx-get=\"
 \" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" class=\"border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer\"><td class=\"whitespace-nowrap px-6 py-4 font-medium\">
 </td><td class=\"whitespace-nowrap px-6 py-4\">
 </td><td class=\"whitespace-nowrap px-6 py-4\">
 </td></tr>
-</tbody></table></div></div>
 <form><div id=\"filterBar\" class=\"flex flex-row\">
 <button hx-get=\"
 \" hx-include=\"[name=&#39;from&#39;], [name=&#39;to&#39;]\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" type=\"button\" class=\"inline-block rounded bg-primary h-9 px-4 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]\">Filter by dates</button></div></form>
-<div id=\"memberGroupDetails\"><div id=\"memberDetails\" class=\"flex flex-col\">
+<div id=\"memberDetails\" class=\"\">
 <div><p>Click on a member to view details</p></div>
 <ul class=\"w-96 text-sm\"><li class=\"w-full text-xs font-semibold dark:border-opacity-50\">Name</li><li class=\"w-full pt-0.25 dark:border-opacity-50\">
 </li><li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Email</li><li class=\"w-full pt-0.25 dark:border-opacity-50\">
@@ -31,7 +31,7 @@
 \">
 </li>
 </ul></li></ul>
-</div></div>
+</div>
 <div class=\"relative mb-3\" data-te-datepicker-init data-te-input-wrapper-init id=\"datepicker-close-without-confirmation\" data-te-inline=\"true\" data-te-format=\"yyyy-mm-dd\"><input id=\"
 \" name=\"
 \" value=\"

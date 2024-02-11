@@ -473,42 +473,42 @@ func copyToClipboard(txt string) templ.ComponentScript {
 
 func deleteConfirm(username string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_deleteConfirm_7543`,
-		Function: `function __templ_deleteConfirm_7543(username){msg = "Are you sure you want to delete the user? This action cannot be undone.";
+		Name: `__templ_deleteConfirm_47fe`,
+		Function: `function __templ_deleteConfirm_47fe(username){msg = "Are you sure you want to delete the user? This action cannot be undone.";
 	Swal.fire({
-		title: 'Delete user',
-		showCancelButton: true,
-		text: msg,
-		})
-		.then(function(result){
-        if(result.isConfirmed){
-			// console.log('confirmed');
-			htmx.trigger("#delete-"+username, "confirmed");
-		}
+	title: 'Delete user',
+	showCancelButton: true,
+	text: msg,
+	})
+	.then(function(result){
+    if(result.isConfirmed){
+	// console.log('confirmed');
+	htmx.trigger("#delete-"+username, "confirmed");
+	}
 	})
 }`,
-		Call:       templ.SafeScript(`__templ_deleteConfirm_7543`, username),
-		CallInline: templ.SafeScriptInline(`__templ_deleteConfirm_7543`, username),
+		Call:       templ.SafeScript(`__templ_deleteConfirm_47fe`, username),
+		CallInline: templ.SafeScriptInline(`__templ_deleteConfirm_47fe`, username),
 	}
 }
 
 func resetPWConfirm(username string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_resetPWConfirm_1ff2`,
-		Function: `function __templ_resetPWConfirm_1ff2(username){msg = "By clicking ok, the password will be reset. The password will be copied for you to send to the user. You will not be able to see the password again.";
+		Name: `__templ_resetPWConfirm_4d6b`,
+		Function: `function __templ_resetPWConfirm_4d6b(username){msg = "By clicking ok, the password will be reset. The password will be copied for you to send to the user. You will not be able to see the password again.";
 	Swal.fire({
-		title: 'Reset password',
-		showCancelButton: true,
-		text: msg,
-		})
-		.then(function(result){
-        if(result.isConfirmed){
-			// console.log('confirmed');
-			htmx.trigger("#resetPW-"+username, "confirmed");
-		}
+	title: 'Reset password',
+	showCancelButton: true,
+	text: msg,
+	})
+	.then(function(result){
+    if(result.isConfirmed){
+	// console.log('confirmed');
+	htmx.trigger("#resetPW-"+username, "confirmed");
+	}
 	})
 }`,
-		Call:       templ.SafeScript(`__templ_resetPWConfirm_1ff2`, username),
-		CallInline: templ.SafeScriptInline(`__templ_resetPWConfirm_1ff2`, username),
+		Call:       templ.SafeScript(`__templ_resetPWConfirm_4d6b`, username),
+		CallInline: templ.SafeScriptInline(`__templ_resetPWConfirm_4d6b`, username),
 	}
 }

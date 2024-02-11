@@ -18,9 +18,6 @@ function loadLibs() {
     script.type = 'text/javascript';
 
     for (var i = 0; i < ids.length; i++) {
-    };
-
-    for (var i = 0; i < ids.length; i++) {
         // Unload libs
         var els = document.querySelectorAll(`#${ids[i]}`);
         els.forEach(function (el) {

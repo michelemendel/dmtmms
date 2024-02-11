@@ -18,7 +18,7 @@ templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op st
 }
 
 templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
-	<div id="userEdit" class="w-1/2">
+	<div id="userEdit" class="w-2/3 max-w-2xl">
 		<form
 			if op == constants.OP_CREATE {
 				hx-post={ constants.ROUTE_USER_CREATE }
@@ -97,7 +97,7 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 
 templ (vctx *ViewCtx) roleOptions(selectedUser entity.User) {
 	<div
-		class="mr-1"
+		class="mr-1 rounded w-1/5"
 	>
 		<select
 			id="role"
@@ -174,29 +174,29 @@ script copyToClipboard(txt string) {
 script deleteConfirm(username string) {
 	msg = "Are you sure you want to delete the user? This action cannot be undone.";
 	Swal.fire({
-		title: 'Delete user',
-		showCancelButton: true,
-		text: msg,
-		})
-		.then(function(result){
-        if(result.isConfirmed){
-			// console.log('confirmed');
-			htmx.trigger("#delete-"+username, "confirmed");
-		}
+	title: 'Delete user',
+	showCancelButton: true,
+	text: msg,
+	})
+	.then(function(result){
+    if(result.isConfirmed){
+	// console.log('confirmed');
+	htmx.trigger("#delete-"+username, "confirmed");
+	}
 	})
 }
 
 script resetPWConfirm(username string) {
 	msg = "By clicking ok, the password will be reset. The password will be copied for you to send to the user. You will not be able to see the password again.";
 	Swal.fire({
-		title: 'Reset password',
-		showCancelButton: true,
-		text: msg,
-		})
-		.then(function(result){
-        if(result.isConfirmed){
-			// console.log('confirmed');
-			htmx.trigger("#resetPW-"+username, "confirmed");
-		}
+	title: 'Reset password',
+	showCancelButton: true,
+	text: msg,
+	})
+	.then(function(result){
+    if(result.isConfirmed){
+	// console.log('confirmed');
+	htmx.trigger("#resetPW-"+username, "confirmed");
+	}
 	})
 }

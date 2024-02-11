@@ -21,7 +21,6 @@ func MakeViewCtx(session *auth.Session, opts Opts) *ViewCtx {
 	}
 }
 
-// TODO: I think that some of this data belongs as regular args to the function, and not as part of the view context.
 type Opts struct {
 	Roles                []string
 	TempPassword         string
