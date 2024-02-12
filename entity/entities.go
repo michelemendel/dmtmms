@@ -26,28 +26,24 @@ const (
 )
 
 type Member struct {
-	UUID      string
-	ID        string
-	Name      string
-	DOB       time.Time
-	Email     string
-	Mobile    string
-	Status    MemberStatus
-	GroupName string
-	GroupType string
+	UUID   string
+	ID     string
+	Name   string
+	DOB    time.Time
+	Email  string
+	Mobile string
+	Status MemberStatus
 }
 
-func NewMember(uuid, id, name string, dob time.Time, email, mobile string, status MemberStatus, groupName, groupType string) Member {
+func NewMember(uuid, id, name string, dob time.Time, email, mobile string, status MemberStatus) Member {
 	return Member{
-		UUID:      uuid,
-		ID:        id,
-		Name:      name,
-		DOB:       dob,
-		Email:     email,
-		Mobile:    mobile,
-		Status:    status,
-		GroupName: groupName,
-		GroupType: groupType,
+		UUID:   uuid,
+		ID:     id,
+		Name:   name,
+		DOB:    dob,
+		Email:  email,
+		Mobile: mobile,
+		Status: status,
 	}
 }
 

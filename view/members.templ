@@ -58,11 +58,7 @@ templ (vctx *ViewCtx) tableRow(member entity.Member, guuid, fromVal, toVal strin
 		<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
 		<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
 		<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) }</td>
-		// if member.GroupType == "fam" {
 		// <td class="whitespace-nowrap px-6 py-4">{ member.GroupName }</td>
-		// } else {
-		// <td class="whitespace-nowrap px-6 py-4">-</td>
-		// }
 	</tr>
 }
 

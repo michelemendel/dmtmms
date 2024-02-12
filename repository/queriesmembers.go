@@ -2,8 +2,8 @@ package repo
 
 import (
 	"database/sql"
+	"fmt"
 	"log/slog"
-	"time"
 
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/util"
@@ -13,89 +13,56 @@ import (
 // Focus on members
 
 const (
-	queryMembers = `
-	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status, g.name, g.type
+	_ = `
+	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status
 	FROM members as m 
-	JOIN members_groups as mg on m.uuid = mg.member_uuid 
-	JOIN groups as g on mg.group_uuid = g.uuid	
-	GROUP BY m.uuid
+	`
+
+	queryMembersGroups = `
+	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status
+	FROM members as m 
+	LEFT JOIN members_groups as mg on m.uuid = mg.member_uuid 
+	LEFT JOIN groups as g on mg.group_uuid = g.uuid
+	WHERE m.dob BETWEEN julianday(?) AND julianday(?)
 	`
 )
 
 func (r *Repo) SelectMembersByFilter(filter Filter) ([]entity.Member, error) {
+	q := queryMembersGroups
+	args := []any{
+		filter.From,
+		filter.To,
+	}
+
 	if filter.GroupUUID != "" {
-		return r.SelectMembersByGroupUUID(filter.GroupUUID)
+		q = q + "AND g.uuid=?"
+		args = append(args, filter.GroupUUID)
 	}
 
-	// TODO: Fix, since this is always true
-	if !filter.From.IsZero() && !filter.To.IsZero() {
-		return r.SelectMembersByDOBInterval(filter.From, filter.To)
+	if filter.MemberUUID != "" {
+		q = q + "AND m.uuid=?"
+		args = append(args, filter.MemberUUID)
 	}
 
-	return r.SelectMembers()
-}
-
-func (r *Repo) SelectMembers() ([]entity.Member, error) {
-	return r.ExecuteQuery(queryMembers + ";")
-}
-
-func (r *Repo) SelectMembersByGroupUUID(groupUUID string) ([]entity.Member, error) {
-	query := queryMembers + " WHERE g.uuid = ?;"
-	return r.ExecuteQuery(query, groupUUID)
-}
-
-func (r *Repo) SelectMembersByDOBInterval(from time.Time, to time.Time) ([]entity.Member, error) {
-	query := queryMembers + " WHERE m.dob BETWEEN julianday(?) AND julianday(?);"
-	return r.ExecuteQuery(query, util.Time2String(from), util.Time2String(to))
+	q = q + " GROUP BY m.uuid ORDER BY m.name;"
+	return r.ExecuteQuery(q, args...)
 }
 
 func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member, error) {
-	// fmt.Println("ExecuteQuery", query, args)
+	fmt.Println("ExecuteQuery", query, args)
 	rows, err := r.DB.Query(query, args...)
 	if err != nil {
 		slog.Error(err.Error())
 		return []entity.Member{}, err
 	}
-	return r.SQLMembers(rows)
+	return r.MakeMemberList(rows)
 }
 
 // Run select on members
-func (r *Repo) SQLMembers(rows *sql.Rows) ([]entity.Member, error) {
+func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 	defer rows.Close()
 	var members []entity.Member
 	//
-	var mUUID string
-	var mId string
-	var mName string
-	var mDOB string
-	var mEmail string
-	var mMobile string
-	var mStatus string
-	var gGroupName string
-	var gGroupType string
-	for rows.Next() {
-		err := rows.Scan(&mUUID, &mId, &mName, &mDOB, &mEmail, &mMobile, &mStatus, &gGroupName, &gGroupType)
-		if err != nil {
-			slog.Error(err.Error())
-			return members, err
-		}
-		mDOB := util.String2Time(mDOB)
-		members = append(members, entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus), gGroupName, gGroupType))
-	}
-	err := rows.Err()
-	if err != nil {
-		slog.Error(err.Error())
-		return members, err
-	}
-	return members, nil
-}
-
-//--------------------------------------------------------------------------------
-// Member
-
-func (r *Repo) SelectMemberByUUID(memberUUID string) (entity.Member, error) {
-	query := queryMembers + " AND m.uuid = ?;"
-
 	var mUUID string
 	var mId string
 	var mName string
@@ -103,16 +70,21 @@ func (r *Repo) SelectMemberByUUID(memberUUID string) (entity.Member, error) {
 	var mEmail string
 	var mMobile string
 	var mStatus string
-	var gGroupName string
-	var gGroupType string
-	err := r.DB.QueryRow(query, memberUUID).Scan(&mUUID, &mId, &mName, &mDOBStr, &mEmail, &mMobile, &mStatus, &gGroupName, &gGroupType)
-	if err != nil {
-		slog.Error("Couldn't find member", "uuid", memberUUID, "error", err.Error())
-		return entity.Member{}, err
+	for rows.Next() {
+		err := rows.Scan(&mUUID, &mId, &mName, &mDOBStr, &mEmail, &mMobile, &mStatus)
+		if err != nil {
+			slog.Error(err.Error())
+			return members, err
+		}
+		mDOB := util.String2Time(mDOBStr)
+		members = append(members, entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus)))
 	}
-
-	mDOB := util.String2Time(mDOBStr)
-	return entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus), gGroupName, gGroupType), nil
+	err := rows.Err()
+	if err != nil {
+		slog.Error(err.Error())
+		return members, err
+	}
+	return members, nil
 }
 
 //--------------------------------------------------------------------------------

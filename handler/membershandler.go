@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/entity"
 	repo "github.com/michelemendel/dmtmms/repository"
-	"github.com/michelemendel/dmtmms/util"
 	"github.com/michelemendel/dmtmms/view"
 )
 
@@ -24,33 +25,24 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 		groups = []entity.Group{}
 	}
 
-	fromVal, toVal, _ := h.FromTo(c)
+	fromVal, toVal := h.FromTo(c)
 	guuid := c.QueryParam("guuid")
 	return h.renderView(c, h.ViewCtx.Members(members, member, groups, guuid, fromVal, toVal))
 }
 
-func (h *HandlerContext) FromTo(c echo.Context) (string, string, error) {
+func (h *HandlerContext) FromTo(c echo.Context) (string, string) {
 	fromVal := c.QueryParam("from")
 	toVal := c.QueryParam("to")
-	return fromVal, toVal, nil
+	return fromVal, toVal
 }
 
 func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error) {
+	fmt.Println("MembersFiltered")
 	guuid := c.QueryParam("guuid")
-
 	fromStr := c.QueryParam("from")
-	if fromStr == "" {
-		fromStr = "1000-01-01"
-	}
-	from := util.String2Time(fromStr)
-
 	toStr := c.QueryParam("to")
-	if toStr == "" {
-		toStr = "3000-01-01"
-	}
-	to := util.String2Time(toStr)
 
-	filter := repo.MakeFilter(repo.MakeOpts().WithGroupUUID(guuid).WithFrom(from).WithTo(to))
+	filter := repo.MakeFilter(repo.MakeOpts().WithGroupUUID(guuid).WithFrom(fromStr).WithTo(toStr))
 	members, err := h.Repo.SelectMembersByFilter(*filter)
 	if err != nil {
 		return []entity.Member{}, err
@@ -59,9 +51,16 @@ func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error
 }
 
 func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.Group, error) {
+	fmt.Println("MemberDetails")
 	memberUUID := c.QueryParam("muuid")
+	if memberUUID == "" {
+		return entity.Member{}, nil, nil
+	}
 
-	member, err := h.Repo.SelectMemberByUUID(memberUUID)
+	filter := repo.MakeFilter(repo.MakeOpts().WithMemberUUID(memberUUID))
+	members, err := h.Repo.SelectMembersByFilter(*filter)
+
+	// member, err := h.Repo.SelectMemberByUUID(memberUUID)
 	if err != nil {
 		return entity.Member{}, []entity.Group{}, err
 	}
@@ -70,8 +69,11 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 	if err != nil {
 		return entity.Member{}, []entity.Group{}, err
 	}
-
-	return member, groups, nil
+	if len(members) > 0 {
+		return members[0], groups, nil
+	} else {
+		return entity.Member{}, groups, nil
+	}
 }
 
 //--------------------------------------------------------------------------------
