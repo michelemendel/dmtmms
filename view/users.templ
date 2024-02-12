@@ -12,11 +12,95 @@ templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op st
 			class="px-4 py-5 sm:px-6"
 		>
 			@vctx.UserForm(selectedUser, op)
-			@vctx.UserList(users)
+			<div class="pt-2">
+				@vctx.UserTable(users)
+			</div>
 		</div>
 	}
 }
 
+//--------------------------------------------------------------------------------
+// User table
+templ (vctx *ViewCtx) UserTable(users []entity.User) {
+	<div class="flex flex-grow overflow-auto flex-col max-h-[50rem]">
+		<table class="w-1/2 text-left text-sm font-light">
+			<thead class="border-1 font-medium dark:border-neutral-500">
+				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">UserName</th>
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Role</th>
+					<th scope="col" class="py-2 text-slate-200 bg-slate-500"></th>
+					<th scope="col" class="py-2 text-slate-200 bg-slate-500"></th>
+					<th scope="col" class="py-2 text-slate-200 bg-slate-500"></th>
+				</tr>
+			</thead>
+			<tbody>
+				for _, user := range users {
+					@vctx.userTableRow(user)
+				}
+			</tbody>
+		</table>
+	</div>
+}
+
+templ (vctx *ViewCtx) userTableRow(user entity.User) {
+	<tr
+		class="border-b dark:border-neutral-500 hover:bg-neutral-100"
+	>
+		<td class="whitespace-nowrap px-6 py-4">{ user.Name }</td>
+		<td class="whitespace-nowrap px-6 py-4">{ user.Role }</td>
+		<td
+			hx-get={ constants.ROUTE_USER_UPDATE + "/" + user.Name }
+			hx-target="#users"
+			hx-select="#users"
+			hx-swap="outerHTML"
+			class="w-3 font-medium cursor-pointer whitespace-nowrap py-4"
+		>
+			<span class="[&>svg]:w-5">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+					<path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"></path>
+				</svg>
+			</span>
+		</td>
+		if user.Name != ctx.Value(constants.CTX_USER_NAME_KEY).(string) {
+			<td
+				id={ "delete-" + user.Name }
+				hx-delete={ constants.ROUTE_USER_DELETE + "/" + user.Name }
+				hx-target="#users"
+				hx-select="#users"
+				hx-swap="outerHTML"
+				hx-trigger="confirmed"
+				onClick={ userDeleteConfirm(user.Name) }
+				class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
+			>
+				<span class="[&>svg]:w-5">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+						<path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"></path>
+					</svg>
+				</span>
+			</td>
+			<td
+				id={ "resetPW-" + user.Name }
+				hx-get={ constants.ROUTE_USER_RESET_PW + "/" + user.Name }
+				hx-target="#users"
+				hx-select="#users"
+				hx-swap={ "outerHTML" }
+				hx-trigger="confirmed"
+				onClick={ userResetPWConfirm(user.Name) }
+				class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
+			>
+				if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
+					<span class="italic">The password has been copied to the clipboard</span>
+					@copyToClipboard(vctx.TempPassword)
+				} else {
+					ResetPW
+				}
+			</td>
+		}
+	</tr>
+}
+
+//--------------------------------------------------------------------------------
+// User form
 templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 	<div id="userEdit" class="w-2/3 max-w-2xl">
 		<form
@@ -46,11 +130,11 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 					/>
 				} else {
 					<input type="hidden" name="username" value={ selectedUser.Name }/>
-					<span
-						class="mr-1"
-					>
-						{ selectedUser.Name }
-					</span>
+					<div class="flex items-center justify-center w-32">
+						<p>
+							{ selectedUser.Name }
+						</p>
+					</div>
 				}
 				<!-- Password -->
 				if op == constants.OP_CREATE {
@@ -113,65 +197,10 @@ templ (vctx *ViewCtx) roleOptions(selectedUser entity.User) {
 	</div>
 }
 
-templ (vctx *ViewCtx) UserList(users []entity.User) {
-	<ul>
-		for _, user := range users {
-			<li>
-				<span>
-					{ user.Name }
-				</span>
-				<span>
-					{ user.Role }
-				</span>
-				<span
-					hx-get={ constants.ROUTE_USER_UPDATE + "/" + user.Name }
-					hx-target="#users"
-					hx-select="#users"
-					hx-swap="outerHTML"
-				>
-					Edit
-				</span>
-				// Don't show delete and reset password for the current user
-				if user.Name != ctx.Value(constants.CTX_USER_NAME_KEY).(string) {
-					<span
-						id={ "delete-" + user.Name }
-						hx-delete={ constants.ROUTE_USER_DELETE + "/" + user.Name }
-						hx-target="#users"
-						hx-select="#users"
-						hx-swap="outerHTML"
-						hx-trigger="confirmed"
-						onClick={ deleteConfirm(user.Name) }
-					>
-						Delete
-					</span>
-					<span
-						id={ "resetPW-" + user.Name }
-						hx-get={ constants.ROUTE_USER_RESET_PW + "/" + user.Name }
-						hx-target="#users"
-						hx-select="#users"
-						hx-swap={ "outerHTML" }
-						hx-trigger="confirmed"
-						onClick={ resetPWConfirm(user.Name) }
-					>
-						Reset password
-					</span>
-					if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
-						<span>
-							The password { vctx.TempPassword } has been copied to the clipboard
-							@copyToClipboard(vctx.TempPassword)
-						</span>
-					}
-				}
-			</li>
-		}
-	</ul>
-}
+//--------------------------------------------------------------------------------
+// Confirm dialogs
 
-script copyToClipboard(txt string) {
-	navigator.clipboard.writeText(txt);
-}
-
-script deleteConfirm(username string) {
+script userDeleteConfirm(username string) {
 	msg = "Are you sure you want to delete the user? This action cannot be undone.";
 	Swal.fire({
 	title: 'Delete user',
@@ -186,7 +215,7 @@ script deleteConfirm(username string) {
 	})
 }
 
-script resetPWConfirm(username string) {
+script userResetPWConfirm(username string) {
 	msg = "By clicking ok, the password will be reset. The password will be copied for you to send to the user. You will not be able to see the password again.";
 	Swal.fire({
 	title: 'Reset password',
@@ -199,4 +228,11 @@ script resetPWConfirm(username string) {
 	htmx.trigger("#resetPW-"+username, "confirmed");
 	}
 	})
+}
+
+//--------------------------------------------------------------------------------
+// Helpers
+
+script copyToClipboard(txt string) {
+	navigator.clipboard.writeText(txt);
 }
