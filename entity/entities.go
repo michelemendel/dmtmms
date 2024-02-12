@@ -26,24 +26,28 @@ const (
 )
 
 type Member struct {
-	UUID   string
-	ID     string
-	Name   string
-	DOB    time.Time
-	Email  string
-	Mobile string
-	Status MemberStatus
+	UUID       string
+	ID         string
+	Name       string
+	DOB        time.Time
+	Email      string
+	Mobile     string
+	Status     MemberStatus
+	FamilyUUID string
+	FamilyName string
 }
 
-func NewMember(uuid, id, name string, dob time.Time, email, mobile string, status MemberStatus) Member {
+func NewMember(uuid, id, name string, dob time.Time, email, mobile string, status MemberStatus, familyUUID, familyName string) Member {
 	return Member{
-		UUID:   uuid,
-		ID:     id,
-		Name:   name,
-		DOB:    dob,
-		Email:  email,
-		Mobile: mobile,
-		Status: status,
+		UUID:       uuid,
+		ID:         id,
+		Name:       name,
+		DOB:        dob,
+		Email:      email,
+		Mobile:     mobile,
+		Status:     status,
+		FamilyUUID: familyUUID,
+		FamilyName: familyName,
 	}
 }
 
@@ -57,14 +61,12 @@ const (
 type Group struct {
 	UUID string
 	Name string
-	Type GroupType
 }
 
-func NewGroup(uuid, name string, typ GroupType) Group {
+func NewGroup(uuid, name string) Group {
 	return Group{
 		UUID: uuid,
 		Name: name,
-		Type: typ,
 	}
 }
 
@@ -78,11 +80,10 @@ type MemberGroupDTO struct {
 	Status MemberStatus
 	GUUID  string
 	GName  string
-	GType  GroupType
 	MGRole string
 }
 
-func NewMemberGroupDTO(uuid, id, name string, dob time.Time, Email, Mobile string, status MemberStatus, guuid, gname string, gtype GroupType, mgRole string) MemberGroupDTO {
+func NewMemberGroupDTO(uuid, id, name string, dob time.Time, Email, Mobile string, status MemberStatus, guuid, gname string, mgRole string) MemberGroupDTO {
 	return MemberGroupDTO{
 		UUID:   uuid,
 		ID:     id,
@@ -93,7 +94,6 @@ func NewMemberGroupDTO(uuid, id, name string, dob time.Time, Email, Mobile strin
 		Status: status,
 		GUUID:  guuid,
 		GName:  gname,
-		GType:  gtype,
 		MGRole: mgRole,
 	}
 }

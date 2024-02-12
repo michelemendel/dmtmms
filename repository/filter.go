@@ -26,6 +26,7 @@ func MakeFilter(opts Opts) *Filter {
 type Opts struct {
 	From       time.Time
 	To         time.Time
+	FamilyUUID string
 	GroupUUID  string
 	MemberUUID string
 }
@@ -51,6 +52,11 @@ func (o Opts) WithTo(toStr string) Opts {
 		toStr = constants.DATE_MAX
 	}
 	o.To = util.String2Time(toStr)
+	return o
+}
+
+func (o Opts) WithFamilyUUID(familyUUID string) Opts {
+	o.FamilyUUID = familyUUID
 	return o
 }
 

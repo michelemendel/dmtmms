@@ -2,7 +2,6 @@ package repo
 
 import (
 	"database/sql"
-	"fmt"
 	"log/slog"
 
 	"github.com/michelemendel/dmtmms/entity"
@@ -18,10 +17,17 @@ const (
 	FROM members as m 
 	`
 
-	queryMembersGroups = `
-	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status
+	queryMembersFamilies = `
+	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status, f.name 
 	FROM members as m 
-	LEFT JOIN members_groups as mg on m.uuid = mg.member_uuid 
+	LEFT JOIN families as f ON m.family_uuid=f.uuid;
+	`
+
+	queryMembersGroups = `
+	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status, IFNULL(f.uuid, ""), IFNULL(f.name, "")
+	FROM members as m
+	LEFT JOIN families as f ON m.family_uuid=f.uuid
+	LEFT JOIN members_groups as mg on m.uuid = mg.member_uuid
 	LEFT JOIN groups as g on mg.group_uuid = g.uuid
 	WHERE m.dob BETWEEN julianday(?) AND julianday(?)
 	`
@@ -32,6 +38,11 @@ func (r *Repo) SelectMembersByFilter(filter Filter) ([]entity.Member, error) {
 	args := []any{
 		filter.From,
 		filter.To,
+	}
+
+	if filter.FamilyUUID != "" {
+		q = q + "AND f.uuid=?"
+		args = append(args, filter.FamilyUUID)
 	}
 
 	if filter.GroupUUID != "" {
@@ -49,7 +60,7 @@ func (r *Repo) SelectMembersByFilter(filter Filter) ([]entity.Member, error) {
 }
 
 func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member, error) {
-	fmt.Println("ExecuteQuery", query, args)
+	// fmt.Println("ExecuteQuery", query, args)
 	rows, err := r.DB.Query(query, args...)
 	if err != nil {
 		slog.Error(err.Error())
@@ -70,14 +81,16 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 	var mEmail string
 	var mMobile string
 	var mStatus string
+	var mFamilyUUID string
+	var mFamilyName string
 	for rows.Next() {
-		err := rows.Scan(&mUUID, &mId, &mName, &mDOBStr, &mEmail, &mMobile, &mStatus)
+		err := rows.Scan(&mUUID, &mId, &mName, &mDOBStr, &mEmail, &mMobile, &mStatus, &mFamilyUUID, &mFamilyName)
 		if err != nil {
 			slog.Error(err.Error())
 			return members, err
 		}
 		mDOB := util.String2Time(mDOBStr)
-		members = append(members, entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus)))
+		members = append(members, entity.NewMember(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus), mFamilyUUID, mFamilyName))
 	}
 	err := rows.Err()
 	if err != nil {
@@ -108,7 +121,7 @@ func (r *Repo) SelectGroups() ([]entity.Group, error) {
 			slog.Error(err.Error())
 			return groups, err
 		}
-		groups = append(groups, entity.NewGroup(gUUID, gName, entity.GroupType(gType)))
+		groups = append(groups, entity.NewGroup(gUUID, gName))
 	}
 	err = rows.Err()
 	if err != nil {
@@ -123,9 +136,8 @@ func (r *Repo) SelectGroupsByMember(memberUUID string) ([]entity.Group, error) {
 	var groups []entity.Group
 	var gUUID string
 	var gName string
-	var gType string
 	rows, err := r.DB.Query(`
-	SELECT g.uuid, g.name, g.type 
+	SELECT g.uuid, g.name
 	FROM groups as g 
 	JOIN members_groups as mg on g.uuid = mg.group_uuid 
 	WHERE mg.member_uuid = ?;
@@ -136,12 +148,12 @@ func (r *Repo) SelectGroupsByMember(memberUUID string) ([]entity.Group, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&gUUID, &gName, &gType)
+		err := rows.Scan(&gUUID, &gName)
 		if err != nil {
 			slog.Error(err.Error())
 			return groups, err
 		}
-		groups = append(groups, entity.NewGroup(gUUID, gName, entity.GroupType(gType)))
+		groups = append(groups, entity.NewGroup(gUUID, gName))
 	}
 	err = rows.Err()
 	if err != nil {
@@ -168,12 +180,11 @@ func (r *Repo) SelectMembersWithGroups() ([]entity.MemberGroupDTO, error) {
 	// Group
 	var gUUID string
 	var gName string
-	var gType string
 	// Relationship
 	var mgRole string
 
 	rows, err := r.DB.Query(`
-	SELECT m.uuid, m.id, m.name, m.dob, m.status, g.uuid, g.name, g.type, mg.role 
+	SELECT m.uuid, m.id, m.name, m.dob, m.status, g.uuid, g.name, mg.role 
 	FROM members as m 
 	JOIN members_groups as mg on m.uuid = mg.member_uuid 
 	JOIN groups as g on mg.group_uuid=g.uuid;
@@ -190,7 +201,7 @@ func (r *Repo) SelectMembersWithGroups() ([]entity.MemberGroupDTO, error) {
 			return membersGroups, err
 		}
 		mDOB := util.String2Time(mDOB)
-		membersGroups = append(membersGroups, entity.NewMemberGroupDTO(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus), gUUID, gName, entity.GroupType(gType), mgRole))
+		membersGroups = append(membersGroups, entity.NewMemberGroupDTO(mUUID, mId, mName, mDOB, mEmail, mMobile, entity.MemberStatus(mStatus), gUUID, gName, mgRole))
 	}
 	err = rows.Err()
 	if err != nil {

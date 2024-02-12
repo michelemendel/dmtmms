@@ -30,8 +30,9 @@ func (r *Repo) runStatements(sqlStmts map[string]string) {
 func (r *Repo) DropTables() {
 	var sqlStmts = make(map[string]string)
 
-	sqlStmts["drop_user"] = `DROP TABLE IF EXISTS users;`
+	sqlStmts["drop_users"] = `DROP TABLE IF EXISTS users;`
 	sqlStmts["drop_members"] = `DROP TABLE IF EXISTS members;`
+	sqlStmts["drop_families"] = `DROP TABLE IF EXISTS families;`
 	sqlStmts["drop_groups"] = `DROP TABLE IF EXISTS groups;`
 	sqlStmts["drop_members_groups"] = `DROP TABLE IF EXISTS members_groups;`
 
@@ -55,6 +56,7 @@ func (r *Repo) CreateTables() {
 	sqlStmts["create_members"] = `
 	CREATE TABLE IF NOT EXISTS members (
 		uuid TEXT PRIMARY KEY,
+		family_uuid TEXT,
 		id TEXT NOT NULL UNIQUE,
 		name TEXT NOT NULL,
 		dob REAL,
@@ -62,14 +64,22 @@ func (r *Repo) CreateTables() {
 		mobile TEXT,
 		status TEXT NOT NULL,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
-		updated_at INTEGER
+		updated_at INTEGER,
+		FOREIGN KEY(family_uuid) REFERENCES families(uuid)
 	); `
+
+	sqlStmts["create_families"] = `
+	CREATE TABLE IF NOT EXISTS families (
+		uuid TEXT PRIMARY KEY,
+		name TEXT NOT NULL,
+		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
+		updated_at INTEGER
+	);`
 
 	sqlStmts["create_groups"] = `
 	CREATE TABLE IF NOT EXISTS groups (
 		uuid TEXT PRIMARY KEY,
 		name TEXT NOT NULL,
-		type TEXT NOT NULL,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER
 	);`
@@ -79,10 +89,10 @@ func (r *Repo) CreateTables() {
 	CREATE TABLE IF NOT EXISTS members_groups (
 		member_uuid TEXT NOT NULL,
 		group_uuid TEXT NOT NULL,
-		role TEXT NOT NULL,
+		role TEXT,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER,
-		primary key (member_uuid, group_uuid)
+		primary key (member_uuid, group_uuid),
 		FOREIGN KEY(member_uuid) REFERENCES members(uuid),
 		FOREIGN KEY(group_uuid) REFERENCES groups(uuid)
 	); `
@@ -94,6 +104,9 @@ func (r *Repo) CreateIndexes() {
 
 	sqlStmts["create_index_members_uuid"] = `
 	CREATE UNIQUE INDEX IF NOT EXISTS idx_members_uuid ON members(uuid);`
+
+	sqlStmts["create_index_families_uuid"] = `
+	CREATE UNIQUE INDEX IF NOT EXISTS idx_families_uuid ON families(uuid);`
 
 	sqlStmts["create_index_groups_uuid"] = `
 	CREATE UNIQUE INDEX IF NOT EXISTS idx_groups_uuid ON groups(uuid);`
@@ -135,22 +148,24 @@ func (r *Repo) InsertUsers() {
 	}
 }
 
+// Members
+
 func (r *Repo) InsertMembersGroups() {
 	memberStmt, _ := r.DB.Prepare("INSERT INTO members(uuid, id, name, dob, email, mobile, status) values(?, ?, ?, julianday(?), ?, ?, ?)")
-	groupStmt, _ := r.DB.Prepare("INSERT INTO groups(uuid, name, type) values(?, ?, ?)")
-	memberGroupStmt, _ := r.DB.Prepare("INSERT INTO members_groups(member_uuid, group_uuid, role) values(?, ?, ?)")
+	familyStmt, _ := r.DB.Prepare("INSERT INTO families(uuid, name) values(?, ?)")
+	groupStmt, _ := r.DB.Prepare("INSERT INTO groups(uuid, name) values(?, ?)")
 
 	memberIdPrefix := "99"
 	namePrefix := "mem"
 	phonePrefix := "12377"
 	nrStart := 100
-	memberUUID := 10
-	nofMembers := 100
+	memberUUID := 11
+	nofMembers := 50
 	var status entity.MemberStatus = entity.MemberStatusActive
 	dob := util.String2Time("1980-02-01")
 	for i := 0; i < nofMembers; i++ {
 		memberId := memberIdPrefix + strconv.Itoa(nrStart+i)
-		name := namePrefix + strconv.Itoa(nrStart+i)
+		name := namePrefix + strconv.Itoa(memberUUID)
 		email := name + "@test.com"
 		mobile := phonePrefix + strconv.Itoa(nrStart+i)
 		_, err := memberStmt.Exec(strconv.Itoa(memberUUID), memberId, name, dob, email, mobile, status)
@@ -161,36 +176,59 @@ func (r *Repo) InsertMembersGroups() {
 		dob = dob.AddDate(0, 1, 1)
 	}
 
-	groupUUID := 100
-	type group struct {
-		name string
-		typ  string
+	// Families
+
+	familyUUID := 101
+	families := []string{"fam1", "fam2"}
+	for _, familyName := range families {
+		_, err := familyStmt.Exec(familyUUID, familyName)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+		familyUUID++
 	}
-	groups := []group{
-		{"fam1", "fam"},
-		{"fam2", "fam"},
-		{"org1", "org"},
-		{"org2", "org"},
-	}
-	for _, group := range groups {
-		_, err := groupStmt.Exec(groupUUID, group.name, group.typ)
+
+	// Groups
+
+	groupUUID := 1001
+	groups := []string{"org1", "org2", "org3"}
+	for _, groupName := range groups {
+		_, err := groupStmt.Exec(groupUUID, groupName)
 		if err != nil {
 			slog.Error(err.Error())
 		}
 		groupUUID++
 	}
 
+	// Family relationships
+
+	// Update members family relation
+	famUpdStmt, err := r.DB.Prepare("UPDATE members SET family_uuid=? WHERE uuid=?")
+
+	if err != nil {
+		fmt.Println("error in prepared stmt for update", err.Error())
+	}
 	// mem1,mem2 is in fam1
-	_, _ = memberGroupStmt.Exec(10, 100, "parent")
-	_, _ = memberGroupStmt.Exec(11, 100, "child")
+	famUpdStmt.Exec(101, 11)
+	famUpdStmt.Exec(101, 12)
 	// mem3,mem4 is in fam2
-	_, _ = memberGroupStmt.Exec(12, 101, "parent")
-	_, _ = memberGroupStmt.Exec(13, 101, "child")
+	famUpdStmt.Exec(102, 13)
+	famUpdStmt.Exec(102, 14)
+
+	// Group relationships
+	memberGroupStmt, _ := r.DB.Prepare("INSERT INTO members_groups(member_uuid, group_uuid) values(?, ?)")
+
 	// mem1,mem3 is in org1 and org2
-	_, _ = memberGroupStmt.Exec(10, 102, "leader")
-	_, _ = memberGroupStmt.Exec(10, 103, "finance")
-	_, _ = memberGroupStmt.Exec(12, 102, "house")
-	_, _ = memberGroupStmt.Exec(12, 103, "children's activities")
+	_, _ = memberGroupStmt.Exec(11, 1001)
+	_, _ = memberGroupStmt.Exec(11, 1002)
+	_, _ = memberGroupStmt.Exec(13, 1001)
+	_, _ = memberGroupStmt.Exec(13, 1002)
+	// mem4 is in org2 and org3
+	_, _ = memberGroupStmt.Exec(14, 1002)
+	_, _ = memberGroupStmt.Exec(14, 1003)
+	// mem5 is in org2 and org3
+	_, _ = memberGroupStmt.Exec(15, 1002)
+	_, _ = memberGroupStmt.Exec(15, 1003)
 }
 
 func (r *Repo) ShowUsers() error {

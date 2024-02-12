@@ -22,6 +22,8 @@ func (s *Session) IsAuthorized(userRole string, path string) bool {
 		return true
 	case "admin":
 		switch path {
+		case constants.ROUTE_FAMILIES:
+			return true
 		case constants.ROUTE_GROUPS:
 			return true
 		case constants.ROUTE_USERS:
@@ -29,13 +31,17 @@ func (s *Session) IsAuthorized(userRole string, path string) bool {
 		}
 	case "edit":
 		switch path {
+		case constants.ROUTE_FAMILIES:
+			return true
 		case constants.ROUTE_GROUPS:
-			return false
+			return true
 		case constants.ROUTE_USERS:
 			return false
 		}
 	case "read":
 		switch path {
+		case constants.ROUTE_FAMILIES:
+			return false
 		case constants.ROUTE_GROUPS:
 			return false
 		case constants.ROUTE_USERS:

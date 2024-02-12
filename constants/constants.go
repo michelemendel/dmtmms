@@ -50,6 +50,7 @@ const (
 	// ROUTE_MEMBERS_PAGE   = "/memberspage"
 	ROUTE_MEMBERS     = "/members"
 	ROUTE_MEMBER_EDIT = "/member/edit"
+	ROUTE_FAMILIES    = "/families"
 	ROUTE_GROUPS      = "/groups"
 	//
 	ROUTE_USERS           = "/users"

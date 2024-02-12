@@ -38,11 +38,12 @@ func (h *HandlerContext) FromTo(c echo.Context) (string, string) {
 
 func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error) {
 	fmt.Println("MembersFiltered")
+	fuuid := c.QueryParam("fuuid")
 	guuid := c.QueryParam("guuid")
 	fromStr := c.QueryParam("from")
 	toStr := c.QueryParam("to")
 
-	filter := repo.MakeFilter(repo.MakeOpts().WithGroupUUID(guuid).WithFrom(fromStr).WithTo(toStr))
+	filter := repo.MakeFilter(repo.MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithFrom(fromStr).WithTo(toStr))
 	members, err := h.Repo.SelectMembersByFilter(*filter)
 	if err != nil {
 		return []entity.Member{}, err
@@ -59,16 +60,24 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 
 	filter := repo.MakeFilter(repo.MakeOpts().WithMemberUUID(memberUUID))
 	members, err := h.Repo.SelectMembersByFilter(*filter)
-
 	// member, err := h.Repo.SelectMemberByUUID(memberUUID)
 	if err != nil {
 		return entity.Member{}, []entity.Group{}, err
+	}
+	fmt.Println("--- members")
+	for _, m := range members {
+		fmt.Println(m)
 	}
 
 	groups, err := h.Repo.SelectGroupsByMember(memberUUID)
 	if err != nil {
 		return entity.Member{}, []entity.Group{}, err
 	}
+	fmt.Println("--- groups")
+	for _, g := range groups {
+		fmt.Println(g)
+	}
+
 	if len(members) > 0 {
 		return members[0], groups, nil
 	} else {

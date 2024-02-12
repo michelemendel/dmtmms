@@ -12,8 +12,10 @@ script cl(msg string) {
 templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, groups []entity.Group, guuid, fromVal, toVal string) {
 	@vctx.AppRoot("") {
 		<div id="members" class="px-4 py-4">
-			@vctx.FilterBar(fromVal, toVal)
-			<div class="flex flex-row">
+			<div class="">
+				@vctx.FilterBar(fromVal, toVal)
+			</div>
+			<div class="flex flex-row mt-2">
 				<div class="flex-auto w-4/5">
 					@vctx.MembersTable(members, guuid, fromVal, toVal)
 				</div>
@@ -33,6 +35,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">#</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Name</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">DOB</th>
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Family</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500"></th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500"></th>
 				</tr>
@@ -59,6 +62,7 @@ templ (vctx *ViewCtx) memberTableRow(member entity.Member, guuid, fromVal, toVal
 		<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
 		<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
 		<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) }</td>
+		<td class="whitespace-nowrap px-6 py-4">{ member.FamilyName }</td>
 		<td
 			class="w-3 font-medium cursor-pointer whitespace-nowrap py-4"
 		>
@@ -98,23 +102,62 @@ script memberDeleteConfirm(memberUUID string) {
 
 templ (vctx *ViewCtx) FilterBar(fromVal, toVal string) {
 	<form>
-		<div id="filterBar" class="flex flex-row">
-			@vctx.DatePicker("from", fromVal)
-			@vctx.DatePicker("to", toVal)
-			<button
-				hx-get={ constants.ROUTE_MEMBERS }
-				hx-include="[name='from'], [name='to']"
-				hx-target="#members"
-				hx-select="#members"
-				hx-swap="outerHTML"
-				hx-push-url="true"
-				type="button"
-				class="inline-block rounded bg-primary h-9 px-4 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-			>
-				Filter by dates
-			</button>
+		<div
+			id="filterBar"
+			class="flex flex-row"
+		>
+			<div>
+				@vctx.DatePicker("from", fromVal)
+			</div>
+			<div class="ml-2">
+				@vctx.DatePicker("to", toVal)
+			</div>
+			<div class="ml-2">
+				<button
+					hx-get={ constants.ROUTE_MEMBERS }
+					hx-include="[name='from'], [name='to']"
+					hx-target="#members"
+					hx-select="#members"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+					type="button"
+					class="inline-block rounded bg-primary px-4 pb-[5px] pt-[6px] text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+				>
+					Filter by dates
+				</button>
+			</div>
 		</div>
 	</form>
+}
+
+templ (vctx *ViewCtx) DatePicker(fromTo, fromToVal string) {
+	<div
+		id="datepicker-close-without-confirmation"
+		data-te-inline="true"
+		data-te-format="yyyy-mm-dd"
+		data-te-datepicker-init
+		data-te-input-wrapper-init
+		class="relative"
+	>
+		<input
+			type="text"
+			id={ fromTo }
+			name={ fromTo }
+			value={ fromToVal }
+			type="text"
+			placeholder={ fromTo + " (YYYY-MM-DD)" }
+			data-te-datepicker-toggle-ref
+			data-te-datepicker-toggle-button-ref
+			placeholder="Form control sm"
+			class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+		/>
+		<label
+			for={ fromTo }
+			class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] text-xs leading-[1.5] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.75rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.75rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
+		>
+			{ fromTo } date
+		</label>
+	</div>
 }
 
 templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group) {
@@ -158,20 +201,15 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
 					Family
 				</li>
-				<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
-					<ul class="w-96 text-sm">
-						for _, group := range groups {
-							if group.Type == entity.GroupTypeFamily {
-								<li
-									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-									hx-target="#members"
-									hx-select="#members"
-									hx-swap="outerHTML"
-									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-								>{ group.Name }</li>
-							}
-						}
-					</ul>
+				<li
+					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&fuuid=" + member.FamilyUUID }
+					hx-target="#members"
+					hx-select="#members"
+					hx-swap="outerHTML"
+					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&fuuid=" + member.FamilyUUID }
+					class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer"
+				>
+					{ string(member.FamilyName) }
 				</li>
 				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
 					Organizations
@@ -179,45 +217,17 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 				<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
 					<ul class="w-96 text-sm">
 						for _, group := range groups {
-							if group.Type == entity.GroupTypeOrg {
-								<li
-									hx-get={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-									hx-target="#members"
-									hx-select="#members"
-									hx-swap="outerHTML"
-									hx-push-url={ constants.ROUTE_MEMBERS + "?guuid=" + group.UUID + "&muuid=" + member.UUID }
-								>{ group.Name }</li>
-							}
+							<li
+								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + group.UUID }
+								hx-target="#members"
+								hx-select="#members"
+								hx-swap="outerHTML"
+								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + group.UUID }
+							>{ group.Name }</li>
 						}
 					</ul>
 				</li>
 			</ul>
 		}
-	</div>
-}
-
-templ (vctx *ViewCtx) DatePicker(fromTo, fromToVal string) {
-	<div
-		class="relative mb-3"
-		data-te-datepicker-init
-		data-te-input-wrapper-init
-		id="datepicker-close-without-confirmation"
-		data-te-inline="true"
-		data-te-format="yyyy-mm-dd"
-	>
-		<input
-			id={ fromTo }
-			name={ fromTo }
-			value={ fromToVal }
-			type="text"
-			class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-			placeholder={ fromTo + " (YYYY-MM-DD)" }
-			data-te-datepicker-toggle-ref
-			data-te-datepicker-toggle-button-ref
-		/>
-		<label
-			for="floatingInput"
-			class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-		>{ fromTo } date</label>
 	</div>
 }
