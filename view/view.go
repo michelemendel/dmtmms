@@ -21,11 +21,25 @@ func MakeViewCtx(session *auth.Session, opts Opts) *ViewCtx {
 	}
 }
 
+type ErrType string
+
+const (
+	ErrTypeNone     ErrType = ""
+	ErrTypeOnCreate ErrType = "onCreate"
+	ErrTypeOnUpdate ErrType = "onUpdate"
+	ErrTypeOnDelete ErrType = "onDelete"
+)
+
+type ViewError struct {
+	ErrType ErrType
+	Err     error
+}
+
 type Opts struct {
 	Roles                []string
 	TempPassword         string
 	TempPasswordUserName string
-	Err                  error
+	ViewError            ViewError
 	Msg                  string
 }
 
@@ -34,7 +48,7 @@ func MakeOpts() Opts {
 		Roles:                []string{"read", "edit", "admin"},
 		TempPassword:         "",
 		TempPasswordUserName: "",
-		Err:                  nil,
+		ViewError:            ViewError{},
 		Msg:                  "",
 	}
 }
@@ -51,7 +65,12 @@ func (o Opts) WithTempPW(password string, username string) Opts {
 }
 
 func (o Opts) WithErr(err error) Opts {
-	o.Err = err
+	o.ViewError = ViewError{Err: err}
+	return o
+}
+
+func (o Opts) WithErrType(err error, errType ErrType) Opts {
+	o.ViewError = ViewError{Err: err, ErrType: errType}
 	return o
 }
 

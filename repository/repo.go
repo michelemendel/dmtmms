@@ -30,7 +30,16 @@ func NewRepo() *Repo {
 	if err != nil {
 		slog.Error(err.Error())
 	}
-	return &Repo{db}
+	r := &Repo{db}
+	r.DBConfig()
+	return r
+}
+
+func (r *Repo) DBConfig() {
+	r.DB.Exec("PRAGMA journal_mode = WAL")
+	r.DB.Exec("PRAGMA foreign_keys = ON")
+	// This doesn't work
+	r.DB.Exec("PRAGMA busy_timeout = 5000")
 }
 
 func (r *Repo) Close() {

@@ -9,13 +9,6 @@ import (
 	"github.com/michelemendel/dmtmms/util"
 )
 
-func (r *Repo) DBConfig() {
-	r.DB.Exec("PRAGMA journal_mode = WAL")
-	r.DB.Exec("PRAGMA foreign_keys = ON")
-	// This doesn't work
-	r.DB.Exec("PRAGMA busy_timeout = 5000")
-}
-
 func (r *Repo) runStatements(sqlStmts map[string]string) {
 	for name, sqlStmt := range sqlStmts {
 		_, err := r.DB.Exec(sqlStmt)
@@ -52,6 +45,7 @@ func (r *Repo) CreateTables() {
 	); `
 
 	// id - this is an id shared by dmt and tripletex
+	// https://mail.google.com/mail/u/0/#search/from%3Aadm%40dmt.oslo.no/FMfcgzGwJcbCTnSbdzxfhHXlFLZCXDGZ?projector=1&messagePartId=0.1
 	// state = [active, archived, tobedeleted]
 	sqlStmts["create_members"] = `
 	CREATE TABLE IF NOT EXISTS members (
@@ -60,9 +54,16 @@ func (r *Repo) CreateTables() {
 		id TEXT NOT NULL UNIQUE,
 		name TEXT NOT NULL,
 		dob REAL,
+		personnummer TEXT,
 		email TEXT,
 		mobile TEXT,
+		address1 TEXT,
+		address2 TEXT,
+		postnummer TEXT,
+		poststed TEXT,
 		status TEXT NOT NULL,
+		receive_email BOOLEAN,
+		receive_mail BOOLEAN,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER,
 		FOREIGN KEY(family_uuid) REFERENCES families(uuid)
@@ -71,7 +72,7 @@ func (r *Repo) CreateTables() {
 	sqlStmts["create_families"] = `
 	CREATE TABLE IF NOT EXISTS families (
 		uuid TEXT PRIMARY KEY,
-		name TEXT NOT NULL,
+		name TEXT NOT NULL UNIQUE,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER
 	);`
@@ -79,7 +80,7 @@ func (r *Repo) CreateTables() {
 	sqlStmts["create_groups"] = `
 	CREATE TABLE IF NOT EXISTS groups (
 		uuid TEXT PRIMARY KEY,
-		name TEXT NOT NULL,
+		name TEXT NOT NULL UNIQUE,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER
 	);`
@@ -151,24 +152,32 @@ func (r *Repo) InsertUsers() {
 // Members
 
 func (r *Repo) InsertMembersGroups() {
-	memberStmt, _ := r.DB.Prepare("INSERT INTO members(uuid, id, name, dob, email, mobile, status) values(?, ?, ?, julianday(?), ?, ?, ?)")
+	// 12 values
+	memberStmt, _ := r.DB.Prepare(`
+	INSERT INTO members(uuid, id, name, dob, personnummer, email, mobile, address1, address2, postnummer, poststed, status) 
+	VALUES(?, ?, ?, julianday(?), ?, ?, ?, ?, ?, ?, ?, ?)`)
 	familyStmt, _ := r.DB.Prepare("INSERT INTO families(uuid, name) values(?, ?)")
 	groupStmt, _ := r.DB.Prepare("INSERT INTO groups(uuid, name) values(?, ?)")
 
 	memberIdPrefix := "99"
 	namePrefix := "mem"
 	phonePrefix := "12377"
+	address1 := ""
+	address2 := ""
+	postnummer := ""
+	poststed := ""
 	nrStart := 100
 	memberUUID := 11
 	nofMembers := 50
 	var status entity.MemberStatus = entity.MemberStatusActive
 	dob := util.String2Time("1980-02-01")
+	personnummer := "12345"
 	for i := 0; i < nofMembers; i++ {
 		memberId := memberIdPrefix + strconv.Itoa(nrStart+i)
 		name := namePrefix + strconv.Itoa(memberUUID)
 		email := name + "@test.com"
 		mobile := phonePrefix + strconv.Itoa(nrStart+i)
-		_, err := memberStmt.Exec(strconv.Itoa(memberUUID), memberId, name, dob, email, mobile, status)
+		_, err := memberStmt.Exec(strconv.Itoa(memberUUID), memberId, name, dob, personnummer, email, mobile, address1, address2, postnummer, poststed, status)
 		if err != nil {
 			slog.Error(err.Error())
 		}
@@ -180,8 +189,8 @@ func (r *Repo) InsertMembersGroups() {
 
 	familyUUID := 101
 	families := []string{"fam1", "fam2"}
-	for _, familyName := range families {
-		_, err := familyStmt.Exec(familyUUID, familyName)
+	for _, familyGroup := range families {
+		_, err := familyStmt.Exec(familyUUID, familyGroup)
 		if err != nil {
 			slog.Error(err.Error())
 		}

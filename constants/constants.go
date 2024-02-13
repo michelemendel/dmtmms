@@ -16,6 +16,7 @@ const (
 	ENV_DEV_DB_DIR_KEY      = "DEV_DB_DIR"
 	ENV_PROD_DB_DIR_KEY     = "PROD_DB_DIR"
 	ENV_DB_NAME_KEY         = "DB_NAME"
+	ENV_BYPASS_LOGIN        = "BYPASS_LOGIN"
 )
 
 // Log output types
@@ -47,19 +48,32 @@ const (
 	//
 	ROUTE_INDEX = "/"
 	//
-	// ROUTE_MEMBERS_PAGE   = "/memberspage"
-	ROUTE_MEMBERS     = "/members"
-	ROUTE_MEMBER_EDIT = "/member/edit"
-	ROUTE_FAMILIES    = "/families"
-	ROUTE_GROUPS      = "/groups"
-	//
+	// Users
 	ROUTE_USERS           = "/users"
 	ROUTE_USER_CREATE     = "/user/create"
-	ROUTE_USER_EDIT_CLOSE = "/user/editclose"
 	ROUTE_USER_DELETE     = "/user/delete"
 	ROUTE_USER_UPDATE     = "/user/update"
 	ROUTE_USER_RESET_PW   = "/user/resetpw"
 	ROUTE_USER_SET_PW     = "/user/setpw"
+	ROUTE_USER_EDIT_CLOSE = "/user/editclose"
+	//
+	// Members
+	ROUTE_MEMBERS     = "/members"
+	ROUTE_MEMBER_EDIT = "/member/edit"
+	//
+	// Groups
+	ROUTE_GROUPS           = "/groups"
+	ROUTE_GROUP_CREATE     = "/group/create"
+	ROUTE_GROUP_DELETE     = "/group/delete"
+	ROUTE_GROUP_UPDATE     = "/group/update"
+	ROUTE_GROUP_EDIT_CLOSE = "/group/editclose"
+	//
+	// Families
+	ROUTE_FAMILIES          = "/families"
+	ROUTE_FAMILY_CREATE     = "/family/create"
+	ROUTE_FAMILY_DELETE     = "/family/delete"
+	ROUTE_FAMILY_UPDATE     = "/family/update"
+	ROUTE_FAMILY_EDIT_CLOSE = "/family/editclose"
 	//
 	ROUTE_PING = "/ping"
 )

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"os"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
@@ -25,11 +26,12 @@ func (h *HandlerContext) renderView(c echo.Context, comp templ.Component) error 
 		ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, u.Role)
 	}
 
-	// TODO: Remove b4to
-	// Bypass the auth check for now
-	// ctx = context.WithValue(ctx, constants.CTX_IS_LOGGEDIN_KEY, true)
-	// ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, "abe")
-	// ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, "admin")
+	// Bypass the login. Needs restart to take effect.
+	if os.Getenv(constants.ENV_BYPASS_LOGIN) == "true" {
+		ctx = context.WithValue(ctx, constants.CTX_IS_LOGGEDIN_KEY, true)
+		ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, "abe")
+		ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, "admin")
+	}
 
 	return comp.Render(ctx, c.Response())
 }

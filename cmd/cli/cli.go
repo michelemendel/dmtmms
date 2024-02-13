@@ -18,7 +18,7 @@ func main() {
 
 	repo := repo.NewRepo()
 	defer repo.Close()
-	// repo.DBConfig()
+	repo.DB.Exec("PRAGMA foreign_keys = OFF")
 
 	if *db != "" {
 		switch *db {

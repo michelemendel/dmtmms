@@ -26,7 +26,7 @@ templ (vctx *ViewCtx) UserTable(users []entity.User) {
 		<table class="w-1/2 text-left text-sm font-light">
 			<thead class="border-1 font-medium dark:border-neutral-500">
 				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
-					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">UserName</th>
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Username</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Role</th>
 					<th scope="col" class="py-2 text-slate-200 bg-slate-500"></th>
 					<th scope="col" class="py-2 text-slate-200 bg-slate-500"></th>
@@ -48,6 +48,7 @@ templ (vctx *ViewCtx) userTableRow(user entity.User) {
 	>
 		<td class="whitespace-nowrap px-6 py-4">{ user.Name }</td>
 		<td class="whitespace-nowrap px-6 py-4">{ user.Role }</td>
+		// Update user
 		<td
 			hx-get={ constants.ROUTE_USER_UPDATE + "/" + user.Name }
 			hx-target="#users"
@@ -62,6 +63,7 @@ templ (vctx *ViewCtx) userTableRow(user entity.User) {
 			</span>
 		</td>
 		if user.Name != ctx.Value(constants.CTX_USER_NAME_KEY).(string) {
+			// Delete user
 			<td
 				id={ "delete-" + user.Name }
 				hx-delete={ constants.ROUTE_USER_DELETE + "/" + user.Name }
@@ -78,6 +80,7 @@ templ (vctx *ViewCtx) userTableRow(user entity.User) {
 					</svg>
 				</span>
 			</td>
+			// Reset user's password
 			<td
 				id={ "resetPW-" + user.Name }
 				hx-get={ constants.ROUTE_USER_RESET_PW + "/" + user.Name }
@@ -168,9 +171,9 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 		</div>
 	</form>
 	// Error message
-	if vctx.Err != nil {
+	if vctx.ViewError.Err != nil {
 		<div class="mb-4">
-			<div class="block text-red-600 text-xs">{ vctx.Err.Error() }</div>
+			<div class="block text-red-600 text-xs">{ vctx.ViewError.Err.Error() }</div>
 		</div>
 	}
 }
