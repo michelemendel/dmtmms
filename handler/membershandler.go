@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/entity"
@@ -15,7 +16,7 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	members, err := h.MembersFiltered(c, f)
 	if err != nil {
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Members([]entity.Member{}, entity.Member{}, []entity.Group{}, filter.Filter{}))
+		return h.renderView(c, vctx.Members([]entity.Member{}, "", "", "", []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
 	}
 
 	var member entity.Member
@@ -27,12 +28,11 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 		groups = []entity.Group{}
 	}
 
-	return h.renderView(c, h.ViewCtx.Members(members, member, groups, f))
+	memberDatas := entity.GetMemberDetails(member)
+	return h.renderView(c, h.ViewCtx.Members(members, member.UUID, member.FamilyUUID, member.FamilyGroup, memberDatas, groups, f))
 }
 
 func (h *HandlerContext) MembersFiltered(c echo.Context, filter filter.Filter) ([]entity.Member, error) {
-	fmt.Println("MembersFiltered: searchTerms:", filter.SearchTerms)
-
 	members, err := h.Repo.SelectMembersByFilter(filter)
 	if err != nil {
 		return []entity.Member{}, err
@@ -41,7 +41,6 @@ func (h *HandlerContext) MembersFiltered(c echo.Context, filter filter.Filter) (
 }
 
 func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.Group, error) {
-	fmt.Println("MemberDetails")
 	memberUUID := c.QueryParam("muuid")
 	if memberUUID == "" {
 		return entity.Member{}, nil, nil
@@ -52,16 +51,10 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 	if err != nil {
 		return entity.Member{}, []entity.Group{}, err
 	}
-	for _, m := range members {
-		fmt.Println(m)
-	}
 
 	groups, err := h.Repo.SelectGroupsByMember(memberUUID)
 	if err != nil {
 		return entity.Member{}, []entity.Group{}, err
-	}
-	for _, g := range groups {
-		fmt.Println(g)
 	}
 
 	if len(members) > 0 {
@@ -72,8 +65,41 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 }
 
 //--------------------------------------------------------------------------------
-// Create and update member
+// Create member
 
-func (h *HandlerContext) MemberEditHandler(c echo.Context) error {
-	return h.renderView(c, h.ViewCtx.MemberEdit())
+func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
+	return h.renderView(c, h.ViewCtx.MemberForm(""))
+}
+
+func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
+	return h.renderView(c, h.ViewCtx.MemberForm(""))
+}
+
+//--------------------------------------------------------------------------------
+// Delete member
+
+func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
+	uuid := c.Param("uuid")
+	fmt.Println("MemberDeleteHandler: uuid:", uuid)
+	err := h.Repo.DeleteMember(uuid)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", uuid)
+		// vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
+		// return h.renderView(c, vctx.Members([]entity.Member{}, "", "", "", []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+		return h.MembersHandler(c)
+	}
+	return h.MembersHandler(c)
+}
+
+//--------------------------------------------------------------------------------
+// Update member
+
+func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
+	uuid := c.Param("uuid")
+	fmt.Println("MemberUpdateInitHandler: uuid:", uuid)
+	return h.renderView(c, h.ViewCtx.MemberForm(uuid))
+}
+
+func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
+	return h.renderView(c, h.ViewCtx.MemberForm(""))
 }

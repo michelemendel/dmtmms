@@ -8,7 +8,6 @@ import (
 templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op string) {
 	@vctx.AppRoot("") {
 		<div id="users" class="px-4 py-5 sm:px-6">
-			// <div class="w-2/3 max-w-2xl">
 			<div class="min-w-2/3">
 				@vctx.UserForm(selectedUser, op)
 			</div>
@@ -24,6 +23,7 @@ templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op st
 templ (vctx *ViewCtx) UserTable(users []entity.User) {
 	<div class="flex flex-grow overflow-auto flex-col max-h-[50rem]">
 		<table class="w-1/2 text-left text-sm font-light">
+			// Table header
 			<thead class="border-1 font-medium dark:border-neutral-500">
 				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Username</th>
@@ -33,6 +33,7 @@ templ (vctx *ViewCtx) UserTable(users []entity.User) {
 					<th scope="col" class="py-2 text-slate-200 bg-slate-500"></th>
 				</tr>
 			</thead>
+			// Table body
 			<tbody>
 				for _, user := range users {
 					@vctx.userTableRow(user)
@@ -117,7 +118,7 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 	>
 		<div class="flex flex-row">
 			<div data-te-input-wrapper-init class="relative">
-				<!-- Username -->
+				// Username input
 				<input
 					type="text"
 					name="username"
@@ -134,8 +135,8 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 				/>
 			</div>
 			if op == constants.OP_CREATE {
+				// Password input
 				<div data-te-input-wrapper-init class="relative ml-2">
-					<!-- Password -->
 					<input
 						type="text"
 						name="password"
@@ -146,7 +147,9 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 					/>
 				</div>
 			}
+			// Role selection
 			@vctx.roleOptions(selectedUser)
+			// Submit
 			<button
 				type="submit"
 				data-te-ripple-init
@@ -158,6 +161,7 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 					Update user
 				}
 			</button>
+			// Cancel
 			<button
 				hx-get={ constants.ROUTE_USERS }
 				hx-target="#users"

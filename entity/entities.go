@@ -2,6 +2,8 @@ package entity
 
 import (
 	"time"
+
+	"github.com/michelemendel/dmtmms/util"
 )
 
 // DTO
@@ -107,4 +109,29 @@ func NewFamily(uuid, name string) Family {
 		UUID: uuid,
 		Name: name,
 	}
+}
+
+//--------------------------------------------------------------------------------
+// MemberDatas
+
+type MemberDetail struct {
+	Title string
+	Value string
+}
+
+// To be presented on the detail section of the member page
+func GetMemberDetails(member Member) []MemberDetail {
+	datas := []MemberDetail{}
+
+	datas = append(datas, MemberDetail{"Date of Birth", util.Time2String(member.DOB)})
+	datas = append(datas, MemberDetail{"Personnummer", member.Personnummer})
+	datas = append(datas, MemberDetail{"Name", member.Name})
+	datas = append(datas, MemberDetail{"Email", member.Email})
+	datas = append(datas, MemberDetail{"Mobile", member.Mobile})
+	datas = append(datas, MemberDetail{"Address1", member.Address.Address1})
+	datas = append(datas, MemberDetail{"Address2", member.Address.Address2})
+	datas = append(datas, MemberDetail{"Poststed", member.Address.Postnummer + " " + member.Address.Poststed})
+	datas = append(datas, MemberDetail{"Status", string(member.Status)})
+
+	return datas
 }

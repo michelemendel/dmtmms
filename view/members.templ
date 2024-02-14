@@ -5,8 +5,9 @@ import "github.com/michelemendel/dmtmms/entity"
 import "github.com/michelemendel/dmtmms/constants"
 import "github.com/michelemendel/dmtmms/util"
 import "github.com/michelemendel/dmtmms/filter"
+import "strings"
 
-templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, groups []entity.Group, f filter.Filter) {
+templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDatas []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
 	@vctx.AppRoot("") {
 		<div id="members" class="px-4 py-4">
 			<div class="">
@@ -17,7 +18,7 @@ templ (vctx *ViewCtx) Members(members []entity.Member, member entity.Member, gro
 					@vctx.MembersTable(members, f.GroupUUID, f.From, f.To, f.SearchTerms)
 				</div>
 				<div class="flex-auto w-1/5 px-4">
-					@vctx.MemberDetails(member, groups)
+					@vctx.MemberDetails(memberUUID, familyUUID, familyGroup, memberDatas, groups)
 				</div>
 			</div>
 			@focus()
@@ -41,16 +42,16 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 			<tbody>
 				for _, member := range members {
 					<tr
+						class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
 						id={ "member-" + member.UUID }
 						hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + guuid + "&from=" + fromVal + "&to=" + toVal + "&searchterms=" + searchterms }
 						hx-target="#members"
 						hx-select="#members"
 						hx-swap="outerHTML"
 						hx-push-url="true"
-						class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
 					>
 						@vctx.memberTableRowData(member)
-						@vctx.memberTableRowButtons(member)
+						@vctx.memberTableRowButtons(member, guuid, fromVal, toVal, searchterms)
 					</tr>
 				}
 			</tbody>
@@ -65,8 +66,14 @@ templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
 	<td class="whitespace-nowrap px-6 py-4">{ member.FamilyGroup }</td>
 }
 
-templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member) {
+templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member, guuid, fromVal, toVal, searchterms string) {
+	// Update member
 	<td
+		hx-get={ constants.ROUTE_MEMBER_UPDATE + "/" + member.UUID }
+		hx-target="#memberform"
+		hx-select="#memberform"
+		hx-swap="outerHTML"
+		hx-trigger="click consume"
 		class="w-3 font-medium cursor-pointer whitespace-nowrap py-4"
 	>
 		<span class="[&>svg]:w-5">
@@ -75,7 +82,15 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member) {
 			</svg>
 		</span>
 	</td>
+	// Delete member
+	// hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + guuid + "&from=" + fromVal + "&to=" + toVal + "&searchterms=" + searchterms }
 	<td
+		id={ "delete-" + member.UUID }
+		hx-delete={ constants.ROUTE_MEMBER_DELETE + "/" + member.UUID }
+		hx-target="#members"
+		hx-select="#members"
+		hx-swap="outerHTML"
+		hx-trigger="confirmed consume"
 		onClick={ memberDeleteConfirm(member.UUID) }
 		class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
 	>
@@ -188,56 +203,33 @@ templ (vctx *ViewCtx) DatePicker(id, val string) {
 	</div>
 }
 
-templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group) {
-	<div id="memberDetails" class="">
-		if member.UUID == "" {
-			<div>
-				<p>Click on a member to view details</p>
-			</div>
+templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, memberDatas []entity.MemberDetail, groups []entity.Group) {
+	<div
+		id="memberDetails"
+		class="px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700"
+	>
+		if len(memberDatas) == 0 {
+			<p>Click on a member to view details</p>
 		} else {
 			<ul class="w-96 text-sm">
-				<li class="w-full text-xs font-semibold dark:border-opacity-50">
-					Name
-				</li>
-				<li class="w-full pt-0.25 dark:border-opacity-50">
-					{ member.Name }
-				</li>
-				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-					Email
-				</li>
-				<li class="w-full pt-0.25 dark:border-opacity-50">
-					{ member.Email }
-				</li>
-				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-					Mobile
-				</li>
-				<li class="w-full pt-0.25 dark:border-opacity-50">
-					{ member.Mobile }
-				</li>
-				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-					Date of Birth
-				</li>
-				<li class="w-full pt-0.25 dark:border-opacity-50">
-					{ util.Time2String(member.DOB) }
-				</li>
-				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
-					Status
-				</li>
-				<li class="w-full pt-0.25 dark:border-opacity-50">
-					{ string(member.Status) }
-				</li>
+				for _, m := range memberDatas {
+					if strings.TrimSpace(m.Value) != "" {
+						<li class="w-full mt-1 text-xs font-semibold dark:border-opacity-50">{ m.Title } </li>
+						<li class="w-full pt-0.25 dark:border-opacity-50">{ m.Value } </li>
+					}
+				}
 				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
 					Family
 				</li>
 				<li
-					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&fuuid=" + member.FamilyUUID }
+					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&fuuid=" + familyUUID }
 					hx-target="#members"
 					hx-select="#members"
 					hx-swap="outerHTML"
-					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&fuuid=" + member.FamilyUUID }
+					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&fuuid=" + familyUUID }
 					class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer"
 				>
-					{ string(member.FamilyGroup) }
+					{ string(familyGroup) }
 				</li>
 				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
 					Organizations
@@ -246,11 +238,11 @@ templ (vctx *ViewCtx) MemberDetails(member entity.Member, groups []entity.Group)
 					<ul class="w-96 text-sm">
 						for _, group := range groups {
 							<li
-								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + group.UUID }
+								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&guuid=" + group.UUID }
 								hx-target="#members"
 								hx-select="#members"
 								hx-swap="outerHTML"
-								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + group.UUID }
+								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&guuid=" + group.UUID }
 							>{ group.Name }</li>
 						}
 					</ul>

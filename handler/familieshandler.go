@@ -19,6 +19,9 @@ func (h *HandlerContext) Families(c echo.Context, op string) error {
 	return h.renderView(c, h.ViewCtx.Families(families, entity.Family{}, op))
 }
 
+// --------------------------------------------------------------------------------
+// Create family
+
 func (h *HandlerContext) FamilyCreateHandler(c echo.Context) error {
 	families := h.GetFamilies()
 	familyGroup := c.FormValue("name")
@@ -42,6 +45,27 @@ func (h *HandlerContext) FamilyCreateHandler(c echo.Context) error {
 	return h.Families(c, constants.OP_CREATE)
 }
 
+// --------------------------------------------------------------------------------
+// Delete family
+
+func (h *HandlerContext) FamilyDeleteHandler(c echo.Context) error {
+	familyUUID := c.Param("uuid")
+	err := h.Repo.DeleteFamily(familyUUID)
+
+	fmt.Printf("[DELETE]: %v\n%[1]T\n", err)
+
+	if err != nil {
+		families := h.GetFamilies()
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
+		return h.renderView(c, vctx.Families(families, entity.Family{UUID: familyUUID}, constants.OP_CREATE))
+	}
+
+	return h.Families(c, constants.OP_CREATE)
+}
+
+// --------------------------------------------------------------------------------
+// Update family
+
 func (h *HandlerContext) FamilyUpdateInitHandler(c echo.Context) error {
 	families := h.GetFamilies()
 	familyUUID := c.Param("uuid")
@@ -64,21 +88,6 @@ func (h *HandlerContext) FamilyUpdateHandler(c echo.Context) error {
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnUpdate))
 		return h.renderView(c, vctx.Families([]entity.Family{}, family, constants.OP_UPDATE))
 	}
-	return h.Families(c, constants.OP_CREATE)
-}
-
-func (h *HandlerContext) FamilyDeleteHandler(c echo.Context) error {
-	familyUUID := c.Param("uuid")
-	err := h.Repo.DeleteFamily(familyUUID)
-
-	fmt.Printf("[DELETE]: %v\n%[1]T\n", err)
-
-	if err != nil {
-		families := h.GetFamilies()
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		return h.renderView(c, vctx.Families(families, entity.Family{UUID: familyUUID}, constants.OP_CREATE))
-	}
-
 	return h.Families(c, constants.OP_CREATE)
 }
 

@@ -91,6 +91,18 @@ templ (vctx *ViewCtx) NavBar() {
 							data-te-nav-link-ref
 						>Members</a>
 					</li>
+					<li class="mb-0 pr-2" data-te-nav-item-ref>
+						<!-- Create/update Member -->
+						<a
+							hx-get={ constants.ROUTE_MEMBER_CREATE }
+							hx-target="#main"
+							hx-select="#memberform"
+							hx-swap="innerHTML"
+							hx-push-url="true"
+							class="text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+							data-te-nav-link-ref
+						>Add Member</a>
+					</li>
 					<!-- Families -->
 					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_FAMILIES) {
 						<li class="mb-0 pr-2" data-te-nav-item-ref>

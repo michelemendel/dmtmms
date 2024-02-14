@@ -2,7 +2,6 @@ package repo
 
 import (
 	"database/sql"
-	"fmt"
 	"log/slog"
 	"strings"
 
@@ -70,7 +69,7 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 }
 
 func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member, error) {
-	fmt.Println("ExecuteQuery", query, args)
+	// fmt.Println("ExecuteQuery", query, args)
 	rows, err := r.DB.Query(query, args...)
 	if err != nil {
 		slog.Error(err.Error())

@@ -21,6 +21,9 @@ func (h *HandlerContext) Users(c echo.Context, op string) error {
 	return h.renderView(c, h.ViewCtx.Users(users, entity.User{}, op))
 }
 
+//--------------------------------------------------------------------------------
+// Create user
+
 func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 	users := h.GetUsers()
 	username := c.FormValue("username")
@@ -47,6 +50,24 @@ func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 	return h.Users(c, constants.OP_CREATE)
 }
 
+//--------------------------------------------------------------------------------
+// Delete user
+
+func (h *HandlerContext) UserDeleteHandler(c echo.Context) error {
+	username := c.Param("username")
+	err := h.Repo.DeleteUser(username)
+	if err != nil {
+		users := h.GetUsers()
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
+		return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE))
+	}
+
+	return h.Users(c, constants.OP_CREATE)
+}
+
+//--------------------------------------------------------------------------------
+// Update user
+
 func (h *HandlerContext) UserUpdateInitHandler(c echo.Context) error {
 	users := h.GetUsers()
 	username := c.Param("username")
@@ -72,17 +93,8 @@ func (h *HandlerContext) UserUpdateHandler(c echo.Context) error {
 	return h.Users(c, constants.OP_CREATE)
 }
 
-func (h *HandlerContext) UserDeleteHandler(c echo.Context) error {
-	username := c.Param("username")
-	err := h.Repo.DeleteUser(username)
-	if err != nil {
-		users := h.GetUsers()
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE))
-	}
-
-	return h.Users(c, constants.OP_CREATE)
-}
+//--------------------------------------------------------------------------------
+// Reset and set password
 
 func (h *HandlerContext) ResetPasswordHandler(c echo.Context) error {
 	username := c.Param("username")
