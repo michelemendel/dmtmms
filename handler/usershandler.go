@@ -105,8 +105,6 @@ func (h *HandlerContext) ResetPasswordHandler(c echo.Context) error {
 		slog.Error(err.Error(), "error generating new temporary password for ", username)
 	}
 
-	fmt.Println("newPW: ", newPW, " username: ", username)
-
 	users := h.GetUsers()
 	vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithTempPW(newPW, username))
 	return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE))

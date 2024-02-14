@@ -50,12 +50,6 @@ func (s *Session) Login(c echo.Context, username string) error {
 func (s *Session) Logout(c echo.Context) error {
 	sess, _ := session.Get(consts.AUTH_SESSION_NAME, c)
 	token := sess.Values[consts.AUTH_TOKEN_NAME]
-
-	if token != nil {
-		user := s.LoggedInUsers[TokenType(token.(string))]
-		fmt.Println("[SESSION]:Logout:", user.Name, token)
-	}
-
 	sess.Options.MaxAge = -1
 	sess.Save(c.Request(), c.Response())
 	if token != nil {
@@ -78,11 +72,4 @@ func (s *Session) GetCurrentUser(c echo.Context) (UserSession, error) {
 
 func (s *Session) GetLoggedInUsers() map[TokenType]UserSession {
 	return s.LoggedInUsers
-}
-
-func (s *Session) PrintLoggedInUsers() {
-	fmt.Println("[SESSION]:--- PrintLoggedInUsers ---")
-	for token, user := range s.LoggedInUsers {
-		fmt.Printf("[SESSION]:user:%s:%s\n", user.Name, token)
-	}
 }

@@ -59,7 +59,7 @@ const (
 	//
 	// Members
 	ROUTE_MEMBERS       = "/members"
-	ROUTE_MEMBER_CREATE = "/member/edit"
+	ROUTE_MEMBER_CREATE = "/member/create"
 	ROUTE_MEMBER_DELETE = "/member/delete"
 	ROUTE_MEMBER_UPDATE = "/member/update"
 

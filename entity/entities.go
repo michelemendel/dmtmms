@@ -123,6 +123,11 @@ type MemberDetail struct {
 func GetMemberDetails(member Member) []MemberDetail {
 	datas := []MemberDetail{}
 
+	if member.DOB.IsZero() {
+		return datas
+	}
+
+	datas = append(datas, MemberDetail{"ID", member.ID})
 	datas = append(datas, MemberDetail{"Date of Birth", util.Time2String(member.DOB)})
 	datas = append(datas, MemberDetail{"Personnummer", member.Personnummer})
 	datas = append(datas, MemberDetail{"Name", member.Name})

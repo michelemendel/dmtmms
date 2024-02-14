@@ -129,7 +129,7 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Main navigation container --><nav class=\"cursor-pointer flex-no-wrap relative flex w-full items-center justify-between bg-[#FBFBFB] py-2 shadow-md shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10 flex-wrap justify-start py-4\"><div class=\"flex w-full justify-between px-3\"><div id=\"navbarSupportedContent1\" class=\"flex flex-grow items-center\"><!-- Logo --><a class=\"mb-4 ml-2 mr-0 mt-3 flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 mb-0 mt-0\" href=\"#\"><img src=\"https://tecdn.b-cdn.net/img/logo/te-transparent-noshadows.webp\" style=\"height: 15px\" alt=\"TE Logo\" loading=\"lazy\"></a><!-- Left navigation links --><ul class=\"flex list-style-none mr-auto pl-0\" data-te-navbar-nav-ref><li class=\"mb-0 pr-2\" data-te-nav-item-ref><!-- Members --><a hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Main navigation container --><nav class=\"cursor-pointer flex-no-wrap relative flex w-full items-center justify-between bg-[#FBFBFB] py-2 shadow-md shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10 flex-wrap justify-start py-4\"><div class=\"flex w-full justify-between px-3\"><div id=\"navbarSupportedContent1\" class=\"flex flex-grow items-center\"><!-- Logo --><a class=\"mb-4 ml-2 mr-0 mt-3 flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 mb-0 mt-0\" href=\"#\"><img src=\"https://tecdn.b-cdn.net/img/logo/te-transparent-noshadows.webp\" style=\"height: 15px\" alt=\"TE Logo\" loading=\"lazy\"></a><!-- Left navigation links --><ul class=\"flex list-style-none mr-auto pl-0\" data-te-navbar-nav-ref><!-- Members --><li class=\"mb-0 pl-2\" data-te-nav-item-ref><a hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -137,7 +137,7 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#members\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Members</a></li><li class=\"mb-0 pr-2\" data-te-nav-item-ref><!-- Create/update Member --><a hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#members\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-lg leading-3 text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Members</a></li><!-- Create/update Member --><li class=\"mb-0\" data-te-nav-item-ref><a hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -145,12 +145,12 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#memberform\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Add Member</a></li><!-- Families -->")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#memberform\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Add Member</a></li><!-- Families -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string), constants.ROUTE_FAMILIES) {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"mb-0 pr-2\" data-te-nav-item-ref><a hx-get=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"mb-0\" data-te-nav-item-ref><a hx-get=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -158,7 +158,7 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#families\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Families</a></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#families\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Families</a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -168,7 +168,7 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string), constants.ROUTE_GROUPS) {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"mb-0 pr-2\" data-te-nav-item-ref><a hx-get=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"mb-0\" data-te-nav-item-ref><a hx-get=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -176,7 +176,7 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#groups\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Groups</a></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#groups\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Groups</a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -186,7 +186,7 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string), constants.ROUTE_USERS) {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"mb-0 pr-2\" data-te-nav-item-ref><a hx-get=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"mb-0\" data-te-nav-item-ref><a hx-get=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -194,7 +194,7 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#users\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Users</a></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#users\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400\" data-te-nav-link-ref>Users</a></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -214,7 +214,7 @@ func (vctx *ViewCtx) NavBar() templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(ctx.Value(constants.CTX_USER_NAME_KEY).(string))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/approot.templ`, Line: 167, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/approot.templ`, Line: 168, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {

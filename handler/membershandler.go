@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
@@ -80,7 +79,6 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 
 func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 	uuid := c.Param("uuid")
-	fmt.Println("MemberDeleteHandler: uuid:", uuid)
 	err := h.Repo.DeleteMember(uuid)
 	if err != nil {
 		slog.Error(err.Error(), "uuid", uuid)
@@ -96,7 +94,6 @@ func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 
 func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	uuid := c.Param("uuid")
-	fmt.Println("MemberUpdateInitHandler: uuid:", uuid)
 	return h.renderView(c, h.ViewCtx.MemberForm(uuid))
 }
 

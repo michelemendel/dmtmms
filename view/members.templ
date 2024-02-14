@@ -17,7 +17,7 @@ templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, f
 				<div class="flex-auto w-4/5">
 					@vctx.MembersTable(members, f.GroupUUID, f.From, f.To, f.SearchTerms)
 				</div>
-				<div class="flex-auto w-1/5 px-4">
+				<div class="flex-auto w-1/5 px-4 mt-10">
 					@vctx.MemberDetails(memberUUID, familyUUID, familyGroup, memberDatas, groups)
 				</div>
 			</div>
@@ -28,6 +28,7 @@ templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, f
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVal, searchterms string) {
 	<div class="flex flex-grow overflow-auto flex-col max-h-[50rem]">
+		// <div class="flex flex-grow overflow-auto flex-col max-h-[50rem] px-2 py-2 rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
 		<table class="w-full text-left text-sm font-light">
 			<thead class="border-1 font-medium dark:border-neutral-500">
 				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
@@ -42,15 +43,17 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 			<tbody>
 				for _, member := range members {
 					<tr
-						class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
 						id={ "member-" + member.UUID }
 						hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + guuid + "&from=" + fromVal + "&to=" + toVal + "&searchterms=" + searchterms }
 						hx-target="#members"
 						hx-select="#members"
 						hx-swap="outerHTML"
 						hx-push-url="true"
+						hx-trigger="click"
+						class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
 					>
 						@vctx.memberTableRowData(member)
+						// TODO: Fix authorization
 						@vctx.memberTableRowButtons(member, guuid, fromVal, toVal, searchterms)
 					</tr>
 				}
@@ -69,11 +72,13 @@ templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
 templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member, guuid, fromVal, toVal, searchterms string) {
 	// Update member
 	<td
+		id={ "update-" + member.UUID }
 		hx-get={ constants.ROUTE_MEMBER_UPDATE + "/" + member.UUID }
-		hx-target="#memberform"
+		hx-target="#main"
 		hx-select="#memberform"
-		hx-swap="outerHTML"
+		hx-swap="innerHTML"
 		hx-trigger="click consume"
+		hx-push-url={ constants.ROUTE_MEMBER_UPDATE + "/" + member.UUID }
 		class="w-3 font-medium cursor-pointer whitespace-nowrap py-4"
 	>
 		<span class="[&>svg]:w-5">
@@ -83,14 +88,14 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member, guuid, fromVal
 		</span>
 	</td>
 	// Delete member
-	// hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + guuid + "&from=" + fromVal + "&to=" + toVal + "&searchterms=" + searchterms }
 	<td
 		id={ "delete-" + member.UUID }
 		hx-delete={ constants.ROUTE_MEMBER_DELETE + "/" + member.UUID }
 		hx-target="#members"
 		hx-select="#members"
 		hx-swap="outerHTML"
-		hx-trigger="confirmed consume"
+		hx-trigger="confirmed"
+		hx-push-url="false"
 		onClick={ memberDeleteConfirm(member.UUID) }
 		class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
 	>
@@ -209,7 +214,9 @@ templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, 
 		class="px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700"
 	>
 		if len(memberDatas) == 0 {
-			<p>Click on a member to view details</p>
+			<p
+				class="text-sm italic"
+			>Click on a member to view details</p>
 		} else {
 			<ul class="w-96 text-sm">
 				for _, m := range memberDatas {

@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"strings"
 
+	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/filter"
 	"github.com/michelemendel/dmtmms/util"
@@ -37,12 +38,16 @@ const (
 
 func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, error) {
 	q := queryMembers
-	args := []any{
-		filter.From,
-		filter.To,
+	from := constants.DATE_MIN
+	to := constants.DATE_MAX
+	if filter.From != "" {
+		from = filter.From
 	}
+	if filter.To != "" {
+		to = filter.To
+	}
+	args := []any{from, to}
 
-	// fmt.Printf("Searchterms: #%s#", filter.SearchTerms)
 	if strings.TrimSpace(filter.SearchTerms) != "" {
 		q = q + "AND (m.name LIKE ? OR m.email LIKE ?)"
 		args = append(args, "%"+filter.SearchTerms+"%")

@@ -59,17 +59,17 @@ func (o Opts) WithSearchTerms(searchTerms string) Opts {
 }
 
 func (o Opts) WithFrom(from string) Opts {
-	if from == "" {
-		from = constants.DATE_MIN
-	}
+	// if from == "" {
+	// from = constants.DATE_MIN
+	// }
 	o.From = from
 	return o
 }
 
 func (o Opts) WithTo(to string) Opts {
-	if to == "" {
-		to = constants.DATE_MAX
-	}
+	// if to == "" {
+	// to = constants.DATE_MAX
+	// }
 	o.To = to
 	return o
 }
