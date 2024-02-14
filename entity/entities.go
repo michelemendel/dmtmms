@@ -108,33 +108,3 @@ func NewFamily(uuid, name string) Family {
 		Name: name,
 	}
 }
-
-// --------------------------------------------------------------------------------
-// Not sure if we need this
-type MemberGroupDTO struct {
-	UUID   string
-	ID     string
-	Name   string
-	DOB    time.Time
-	Email  string
-	Mobile string
-	Status MemberStatus
-	GUUID  string
-	GName  string
-	MGRole string
-}
-
-func NewMemberGroupDTO(uuid, id, name string, dob time.Time, Email, Mobile string, status MemberStatus, guuid, gname string, mgRole string) MemberGroupDTO {
-	return MemberGroupDTO{
-		UUID:   uuid,
-		ID:     id,
-		Name:   name,
-		DOB:    dob,
-		Email:  Email,
-		Mobile: Mobile,
-		Status: status,
-		GUUID:  guuid,
-		GName:  gname,
-		MGRole: mgRole,
-	}
-}

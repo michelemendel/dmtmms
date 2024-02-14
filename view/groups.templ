@@ -122,9 +122,9 @@ templ (vctx *ViewCtx) GroupForm(selectedGroup entity.Group, op string) {
 		hx-swap="outerHTML"
 	>
 		<div class="flex flex-row">
+			<!-- UUID -->
+			<input type="hidden" name="uuid" value={ selectedGroup.UUID }/>
 			<div data-te-input-wrapper-init class="relative">
-				<!-- UUID -->
-				<input type="hidden" name="uuid" value={ selectedGroup.UUID }/>
 				<!-- Group name -->
 				<input
 					type="text"
