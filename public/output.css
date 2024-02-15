@@ -2880,6 +2880,10 @@ input[type="range"]:active::-webkit-slider-thumb {
   padding: 0.625rem;
 }
 
+.p-3 {
+  padding: 0.75rem;
+}
+
 .p-4 {
   padding: 1rem;
 }
@@ -3151,14 +3155,6 @@ input[type="range"]:active::-webkit-slider-thumb {
   text-indent: -999px;
 }
 
-.align-baseline {
-  vertical-align: baseline;
-}
-
-.align-top {
-  vertical-align: top;
-}
-
 .align-middle {
   vertical-align: middle;
 }
@@ -3235,6 +3231,11 @@ input[type="range"]:active::-webkit-slider-thumb {
   line-height: 1.5rem;
 }
 
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -3248,11 +3249,6 @@ input[type="range"]:active::-webkit-slider-thumb {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
 }
 
 .font-black {
@@ -3307,6 +3303,10 @@ input[type="range"]:active::-webkit-slider-thumb {
   line-height: 2.5rem;
 }
 
+.leading-3 {
+  line-height: .75rem;
+}
+
 .leading-5 {
   line-height: 1.25rem;
 }
@@ -3345,10 +3345,6 @@ input[type="range"]:active::-webkit-slider-thumb {
 
 .leading-normal {
   line-height: 1.5;
-}
-
-.leading-3 {
-  line-height: .75rem;
 }
 
 .tracking-\[-0\.00833em\] {

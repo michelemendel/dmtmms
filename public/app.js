@@ -13,22 +13,45 @@ urls = [
 ]
 
 function loadLibs() {
-    var body = document.body;
-    var script = document.createElement('script');
+    let body = document.body;
+    let script = document.createElement('script');
     script.type = 'text/javascript';
 
     for (var i = 0; i < ids.length; i++) {
         // Unload libs
-        var els = document.querySelectorAll(`#${ids[i]}`);
+        let els = document.querySelectorAll(`#${ids[i]}`);
         els.forEach(function (el) {
-            // console.log(`Unloading ${ids[i]}`);
             el.remove();
         });
 
-        // Load libs
-        // console.log(`Loading ${ids[i]}`);
+        // Load libs        
         script.id = ids[i];
         script.src = urls[i];
         body.appendChild(script);
     };
 }
+
+//--------------------------------------------------------------------------------
+// This is to handle the issue with Flash Of Unstyled Content
+
+// This is called only when the page has reloaded.
+// We start by settings the body to be hidden, see appRoot.templ.
+document.onreadystatechange = () => {
+    if (document.readyState === "complete") {
+        showBody();
+    }
+};
+
+function hideBody() {
+    document.body.style.visibility = 'hidden';
+    document.body.style.opacity = 0;
+}
+
+function showBody() {
+    setTimeout(() => {
+        document.body.style.visibility = 'visible';
+        document.body.style.opacity = 1;
+    }, 100);
+}
+
+
