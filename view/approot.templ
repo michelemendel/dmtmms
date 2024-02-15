@@ -109,18 +109,19 @@ templ (vctx *ViewCtx) NavBar() {
 						>Members</a>
 					</li>
 					<!-- Create/update Member -->
-					// TODO: Fix authorization
-					<li class="mb-0" data-te-nav-item-ref>
-						<a
-							hx-get={ constants.ROUTE_MEMBER_CREATE }
-							hx-target="#main"
-							hx-select="#memberform"
-							hx-swap="innerHTML"
-							hx-push-url="true"
-							class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
-							data-te-nav-link-ref
-						>Add Member</a>
-					</li>
+					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_CREATE) {
+						<li class="mb-0" data-te-nav-item-ref>
+							<a
+								hx-get={ constants.ROUTE_MEMBER_CREATE }
+								hx-target="#main"
+								hx-select="#memberform"
+								hx-swap="innerHTML"
+								hx-push-url="true"
+								class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								data-te-nav-link-ref
+							>Add Member</a>
+						</li>
+					}
 					<!-- Families -->
 					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_FAMILIES) {
 						<li class="mb-0" data-te-nav-item-ref>

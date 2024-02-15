@@ -8,7 +8,6 @@ import (
 )
 
 func (s *Session) IsAuthorized(userRole string, path string) bool {
-
 	if path == constants.ROUTE_INDEX ||
 		path == constants.ROUTE_LOGIN ||
 		path == constants.ROUTE_LOGOUT ||
@@ -21,25 +20,17 @@ func (s *Session) IsAuthorized(userRole string, path string) bool {
 	case "root":
 		return true
 	case "admin":
-		switch path {
-		case constants.ROUTE_FAMILIES:
-			return true
-		case constants.ROUTE_GROUPS:
-			return true
-		case constants.ROUTE_USERS:
-			return true
-		}
+		return true
 	case "edit":
 		switch path {
-		case constants.ROUTE_FAMILIES:
-			return true
-		case constants.ROUTE_GROUPS:
-			return true
 		case constants.ROUTE_USERS:
 			return false
 		}
+		return true
 	case "read":
 		switch path {
+		case constants.ROUTE_MEMBER_CREATE:
+			return false
 		case constants.ROUTE_FAMILIES:
 			return false
 		case constants.ROUTE_GROUPS:
@@ -47,6 +38,7 @@ func (s *Session) IsAuthorized(userRole string, path string) bool {
 		case constants.ROUTE_USERS:
 			return false
 		}
+		return true
 	}
 	return false
 }
@@ -67,8 +59,7 @@ func (s *Session) Authorize(next echo.HandlerFunc) echo.HandlerFunc {
 		if s.IsAuthorized(user.Role, path) {
 			return next(c)
 		} else {
-			return next(c)
-			// return echo.ErrUnauthorized
+			return echo.ErrUnauthorized
 		}
 	}
 }
