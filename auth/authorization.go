@@ -17,6 +17,8 @@ func (s *Session) IsAuthorized(userRole string, path string) bool {
 	}
 
 	switch userRole {
+	case "":
+		return false
 	case "root":
 		return true
 	case "admin":
@@ -46,7 +48,7 @@ func (s *Session) IsAuthorized(userRole string, path string) bool {
 // Authorize is a middleware to check if the user is authorized to access the route
 func (s *Session) Authorize(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		sess, _ := s.GetCurrentUser(c)
+		sess, _ := s.GetLoggedInUser(c)
 		path := c.Path()
 
 		if sess.Name == "" || path == "/node_modules/tw-elements/dist/js*" || path == "/public*" {

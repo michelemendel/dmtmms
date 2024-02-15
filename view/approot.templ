@@ -13,14 +13,12 @@ templ (vctx *ViewCtx) AppRoot(title string) {
 			id="appRoot"
 			style="visibility: hidden; opacity: 0;"
 		>
-			if ctx.Value(constants.CTX_IS_LOGGEDIN_KEY).(bool) == true {
+			if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_ANY) {
 				@vctx.NavBar()
-				<div id="main">
-					{ children... }
-				</div>
-			} else {
-				@vctx.Login("", nil)
 			}
+			<div id="main">
+				{ children... }
+			</div>
 			// This (the tw-elements script below) doesn't work for the following two reasons:
 			// 1. The library has to loaded after receiving the html fragments. It's not enough to load it in the body once.
 			// 2. It can only be loaded once, because loading more than once will cause a buggy behavior of the TW Elements.

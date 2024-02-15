@@ -28,9 +28,14 @@ func NewSession(repo *repo.Repo) *Session {
 	}
 }
 
-func (s *Session) Login(c echo.Context, username string) error {
-	sess, _ := session.Get(consts.AUTH_SESSION_NAME, c)
+func (s *Session) Login(c echo.Context, username string) {
+	token := s.SetSession(c)
+	s.LoggedInUsers[TokenType(token)] = UserSession{Name: username, Token: TokenType(token)}
+}
 
+func (s *Session) SetSession(c echo.Context) string {
+	token := util.GenerateUUID()
+	sess, _ := session.Get(consts.AUTH_SESSION_NAME, c)
 	sess.Options = &sessions.Options{
 		Path: "/",
 		// MaxAge: 30, // 30 seconds
@@ -38,13 +43,9 @@ func (s *Session) Login(c echo.Context, username string) error {
 		// MaxAge:   86400 * 1, // 1 day
 		HttpOnly: true,
 	}
-	newToken := util.GenerateUUID()
-	s.LoggedInUsers[TokenType(newToken)] = UserSession{Name: username, Token: TokenType(newToken)}
-
-	sess.Values[consts.AUTH_TOKEN_NAME] = newToken
+	sess.Values[consts.AUTH_TOKEN_NAME] = token
 	sess.Save(c.Request(), c.Response())
-
-	return nil
+	return token
 }
 
 func (s *Session) Logout(c echo.Context) error {
@@ -58,9 +59,7 @@ func (s *Session) Logout(c echo.Context) error {
 	return nil
 }
 
-func (s *Session) GetCurrentUser(c echo.Context) (UserSession, error) {
-	// s.PrintLoggedInUsers()
-
+func (s *Session) GetLoggedInUser(c echo.Context) (UserSession, error) {
 	sess, _ := session.Get(consts.AUTH_SESSION_NAME, c)
 	token := sess.Values[consts.AUTH_TOKEN_NAME]
 	if token != nil {

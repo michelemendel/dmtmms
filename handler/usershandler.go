@@ -117,7 +117,7 @@ func (h *HandlerContext) SetPasswordInitHandler(c echo.Context) error {
 func (h *HandlerContext) SetPasswordHandler(c echo.Context) error {
 	newPW := c.FormValue("newpassword")
 	newPWCheck := c.FormValue("newpasswordcheck")
-	userSession, err := h.Session.GetCurrentUser(c)
+	userSession, err := h.Session.GetLoggedInUser(c)
 	username := userSession.Name
 	if err != nil {
 		slog.Error("error getting current user", "error", err.Error())

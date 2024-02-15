@@ -42,6 +42,7 @@ func main() {
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv(consts.ENV_SESSION_KEY_KEY)))))
+	e.Use(s.Authenticate)
 	e.Use(s.Authorize)
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
@@ -56,6 +57,12 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 	httpErr, ok := err.(*echo.HTTPError)
 	if ok {
 		code = httpErr.Code
+	}
+
+	// Authentication (401)
+	if code == echo.ErrUnauthorized.Code {
+		c.Redirect(http.StatusTemporaryRedirect, "/login")
+		return
 	}
 
 	slog.Warn("httpError", "code", code, "errorMsg", httpErr.Message)

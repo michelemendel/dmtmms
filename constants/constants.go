@@ -42,6 +42,7 @@ const (
 
 // Routes
 const (
+	ROUTE_ANY = "any"
 	//
 	ROUTE_LOGIN  = "/login"
 	ROUTE_LOGOUT = "/logout"

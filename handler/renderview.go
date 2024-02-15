@@ -11,26 +11,26 @@ import (
 )
 
 func (h *HandlerContext) renderView(c echo.Context, comp templ.Component) error {
-	user, _ := h.Session.GetCurrentUser(c)
+	user, _ := h.Session.GetLoggedInUser(c)
 	isLoggedOut := auth.UserSession{} == user
 
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, constants.CTX_IS_LOGGEDIN_KEY, false)
 	ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, "")
 	if isLoggedOut {
 		ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, "anonymous")
 	} else {
 		u, _ := h.Repo.SelectUser(user.Name)
-		ctx = context.WithValue(ctx, constants.CTX_IS_LOGGEDIN_KEY, true)
 		ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, user.Name)
 		ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, u.Role)
 	}
 
-	// Bypass the login. Needs restart to take effect.
+	// Bypass the login
 	if os.Getenv(constants.ENV_BYPASS_LOGIN) == "true" {
-		ctx = context.WithValue(ctx, constants.CTX_IS_LOGGEDIN_KEY, true)
-		ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, "abe")
-		ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, "admin")
+		username := "abe"
+		role := "admin"
+		h.Session.Login(c, username)
+		ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, username)
+		ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, role)
 	}
 
 	return comp.Render(ctx, c.Response())
