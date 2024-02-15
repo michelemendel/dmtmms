@@ -181,7 +181,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(member.ID)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 77, Col: 64}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 76, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -194,7 +194,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(member.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 78, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 77, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -207,7 +207,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(util.Time2String(member.DOB))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 79, Col: 71}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 78, Col: 71}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -220,7 +220,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(member.FamilyGroup)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 80, Col: 61}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 79, Col: 61}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -474,7 +474,7 @@ func (vctx *ViewCtx) DatePicker(id, val string) templ.Component {
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 218, Col: 7}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 217, Col: 7}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
@@ -527,7 +527,7 @@ func (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, m
 					var templ_7745c5c3_Var16 string
 					templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(m.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 236, Col: 84}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 235, Col: 84}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 					if templ_7745c5c3_Err != nil {
@@ -540,7 +540,7 @@ func (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, m
 					var templ_7745c5c3_Var17 string
 					templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(m.Value)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 237, Col: 65}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 236, Col: 65}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 					if templ_7745c5c3_Err != nil {
@@ -575,7 +575,7 @@ func (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, m
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(string(familyGroup))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 251, Col: 26}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 250, Col: 26}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {
@@ -609,7 +609,7 @@ func (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, m
 				var templ_7745c5c3_Var19 string
 				templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(group.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 265, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 264, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 				if templ_7745c5c3_Err != nil {

@@ -65,7 +65,6 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 						class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
 					>
 						@vctx.memberTableRowData(member)
-						// TODO: Fix authorization
 						@vctx.memberTableRowButtons(member, guuid, fromVal, toVal, searchterms)
 					</tr>
 				}
