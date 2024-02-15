@@ -1,7 +1,8 @@
-<div id=\"members\" class=\"px-4 py-4\"><div class=\"\">
-</div><div class=\"flex flex-row mt-2\"><div class=\"flex-auto w-4/5\">
-</div><div class=\"flex-auto w-1/5 px-4 mt-10\">
-</div></div>
+<div id=\"members\" class=\"flex flex-row mt-2 px-4 py-4\"><div class=\"w-4/5\"><div class=\"flow-root\"><div class=\"float-left\">
+</div><div class=\"float-right\"><a href=\"
+\" title=\"Download CSV\" download=\"members.csv\" target=\"_blank\">CSV</a></div></div><div class=\"mt-4\">
+</div></div><div class=\"flex-auto w-1/5 px-4 mt-10\">
+</div>
 </div>
 <div class=\"flex flex-grow overflow-auto flex-col max-h-[50rem]\"><table class=\"w-full text-left text-sm font-light\"><thead class=\"border-1 font-medium dark:border-neutral-500\"><tr class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\"><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">#</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Name</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">DOB</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Family</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th></tr></thead> <tbody>
 <tr id=\"

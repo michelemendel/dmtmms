@@ -11,6 +11,13 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.Static("/public", "public")
 	e.Static("/node_modules/tw-elements/dist/js", "node_modules/tw-elements/dist/js/")
 
+	// Download
+	e.GET("/csv", func(c echo.Context) error {
+		msCSV, _ := hCtx.MembersAsCSV(c)
+		c.Response().Header().Set("Content-Disposition", "attachment; filename=members.csv")
+		return c.Blob(200, "text/csv", msCSV)
+	})
+
 	// Auth
 	e.POST(constants.ROUTE_LOGIN, hCtx.LoginHandler)
 	e.GET(constants.ROUTE_LOGOUT, hCtx.LogoutHandler)

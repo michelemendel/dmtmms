@@ -1,5 +1,7 @@
 package view
 
+import "fmt"
+
 // import "github.com/michelemendel/dmtmms/constants"
 import "github.com/michelemendel/dmtmms/entity"
 import "github.com/michelemendel/dmtmms/constants"
@@ -7,19 +9,29 @@ import "github.com/michelemendel/dmtmms/util"
 import "github.com/michelemendel/dmtmms/filter"
 import "strings"
 
-templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDatas []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
+templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
 	@vctx.AppRoot("") {
-		<div id="members" class="px-4 py-4">
-			<div class="">
-				@vctx.FilterBar(f.From, f.To, f.SearchTerms)
-			</div>
-			<div class="flex flex-row mt-2">
-				<div class="flex-auto w-4/5">
+		<div id="members" class="flex flex-row mt-2 px-4 py-4">
+			<div class="w-4/5">
+				<div class="flow-root">
+					<div class="float-left">
+						@vctx.FilterBar(f)
+					</div>
+					<div class="float-right">
+						<a
+							href={ templ.SafeURL(fmt.Sprintf("/csv?searchterms=%s&from=%s&to=%s", f.SearchTerms, f.From, f.To)) }
+							title="Download CSV"
+							download="members.csv"
+							target="_blank"
+						>CSV</a>
+					</div>
+				</div>
+				<div class="mt-4">
 					@vctx.MembersTable(members, f.GroupUUID, f.From, f.To, f.SearchTerms)
 				</div>
-				<div class="flex-auto w-1/5 px-4 mt-10">
-					@vctx.MemberDetails(memberUUID, familyUUID, familyGroup, memberDatas, groups)
-				</div>
+			</div>
+			<div class="flex-auto w-1/5 px-4 mt-10">
+				@vctx.MemberDetails(memberUUID, familyUUID, familyGroup, memberDetails, groups)
 			</div>
 			@focus()
 		</div>
@@ -122,7 +134,8 @@ script memberDeleteConfirm(memberUUID string) {
 	})
 }
 
-templ (vctx *ViewCtx) FilterBar(fromVal, toVal, searchterms string) {
+// templ (vctx *ViewCtx) FilterBar(fromVal, toVal, searchterms string) {
+templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 	<form
 		hx-get={ constants.ROUTE_MEMBERS }
 		hx-include="[name='searchterms'], [name='from'], [name='to']"
@@ -145,17 +158,17 @@ templ (vctx *ViewCtx) FilterBar(fromVal, toVal, searchterms string) {
 					type="text"
 					id="searchterms"
 					name="searchterms"
-					value={ searchterms }
+					value={ f.SearchTerms }
 					placeholder="search"
 					aria-label="searchterms"
 					class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
 				/>
 			</div>
 			<div class="ml-2">
-				@vctx.DatePicker("from", fromVal)
+				@vctx.DatePicker("from", f.From)
 			</div>
 			<div class="ml-2">
-				@vctx.DatePicker("to", toVal)
+				@vctx.DatePicker("to", f.To)
 			</div>
 			<div class="ml-2">
 				<button
@@ -208,18 +221,18 @@ templ (vctx *ViewCtx) DatePicker(id, val string) {
 	</div>
 }
 
-templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, memberDatas []entity.MemberDetail, groups []entity.Group) {
+templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group) {
 	<div
 		id="memberDetails"
 		class="px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700"
 	>
-		if len(memberDatas) == 0 {
+		if len(memberDetails) == 0 {
 			<p
 				class="text-sm italic"
 			>Click on a member to view details</p>
 		} else {
 			<ul class="w-96 text-sm">
-				for _, m := range memberDatas {
+				for _, m := range memberDetails {
 					if strings.TrimSpace(m.Value) != "" {
 						<li class="w-full mt-1 text-xs font-semibold dark:border-opacity-50">{ m.Title } </li>
 						<li class="w-full pt-0.25 dark:border-opacity-50">{ m.Value } </li>
