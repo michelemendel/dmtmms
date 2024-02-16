@@ -14,10 +14,31 @@ templ (vctx *ViewCtx) AppRoot(title string) {
 			if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_ANY) {
 				@vctx.NavBar()
 			}
-			<div
-				id="main"
-				class="mt-20"
-			>
+			// <div id="main">
+			// Trying out input with floating labels.
+			// 
+			// TWE - line through label when it floats
+			<div id="main" class="mt-20">
+				<div class="relative mb-3" data-te-input-wrapper-init>
+					<input
+						type="text"
+						class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+						id="exampleFormControlInput1"
+						placeholder="Example label"
+					/>
+					<label
+						for="exampleFormControlInput1"
+						class="focus:outline-none bg-white hover:outline-dashed pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
+					>
+						Example label
+					</label>
+					// https://flowbite.com/docs/forms/floating-label/
+					// 		<div class="relative">
+					// 			<input type="text" id="floating_outlined" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
+					// 			<label for="floating_outlined" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">Floating outlined</label>
+					// 		</div>
+					// 		@vctx.Footer()
+				</div>
 				{ children... }
 			</div>
 		</body>
@@ -57,138 +78,133 @@ templ (vctx *ViewCtx) Head(title string) {
 }
 
 templ (vctx *ViewCtx) NavBar() {
-	<!-- Main navigation container -->
-	<div
-		class="fixed w-full top-0 left-0"
-	>
-		<nav class="cursor-pointer flex-no-wrap relative flex w-full items-center justify-between bg-[#FBFBFB] py-2 shadow-md shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10 flex-wrap justify-start py-4">
-			<div class="flex w-full justify-between px-3">
-				<div
-					id="navbarSupportedContent1"
-					class="flex flex-grow items-center"
+	<nav class="cursor-pointer flex-no-wrap relative flex w-full items-center justify-between bg-[#FBFBFB] py-2 shadow-md shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10 flex-wrap justify-start py-4">
+		<div class="flex w-full justify-between px-3">
+			<div
+				id="navbarSupportedContent1"
+				class="flex flex-grow items-center"
+			>
+				<!-- Logo -->
+				<a
+					class="mb-4 ml-2 mr-0 mt-3 flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 mb-0 mt-0"
+					href="#"
 				>
-					<!-- Logo -->
-					<a
-						class="mb-4 ml-2 mr-0 mt-3 flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 mb-0 mt-0"
-						href="#"
-					>
-						<img
-							src="https://tecdn.b-cdn.net/img/logo/te-transparent-noshadows.webp"
-							style="height: 15px"
-							alt="TE Logo"
-							loading="lazy"
-						/>
-					</a>
-					<!-- Left navigation links -->
-					<ul class="flex list-style-none mr-auto pl-0" data-te-navbar-nav-ref>
-						<!-- Members -->
-						<li class="mb-0 pl-2" data-te-nav-item-ref>
+					<img
+						src="https://tecdn.b-cdn.net/img/logo/te-transparent-noshadows.webp"
+						style="height: 15px"
+						alt="TE Logo"
+						loading="lazy"
+					/>
+				</a>
+				<!-- Left navigation links -->
+				<ul class="flex list-style-none mr-auto pl-0" data-te-navbar-nav-ref>
+					<!-- Members -->
+					<li class="mb-0 pl-2" data-te-nav-item-ref>
+						<a
+							hx-get={ constants.ROUTE_MEMBERS }
+							hx-target="#main"
+							hx-swap="innerHTML"
+							hx-push-url="true"
+							class="text-lg leading-3 text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+							data-te-nav-link-ref
+						>Members</a>
+					</li>
+					<!-- Create/update Member -->
+					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_CREATE) {
+						<li class="mb-0" data-te-nav-item-ref>
 							<a
-								hx-get={ constants.ROUTE_MEMBERS }
+								hx-get={ constants.ROUTE_MEMBER_CREATE }
 								hx-target="#main"
+								hx-select="#memberform"
 								hx-swap="innerHTML"
 								hx-push-url="true"
-								class="text-lg leading-3 text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 								data-te-nav-link-ref
-							>Members</a>
+							>Add Member</a>
 						</li>
-						<!-- Create/update Member -->
-						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_CREATE) {
-							<li class="mb-0" data-te-nav-item-ref>
-								<a
-									hx-get={ constants.ROUTE_MEMBER_CREATE }
-									hx-target="#main"
-									hx-select="#memberform"
-									hx-swap="innerHTML"
-									hx-push-url="true"
-									class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
-									data-te-nav-link-ref
-								>Add Member</a>
-							</li>
-						}
-						<!-- Families -->
-						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_FAMILIES) {
-							<li class="mb-0" data-te-nav-item-ref>
-								<a
-									hx-get={ constants.ROUTE_FAMILIES }
-									hx-target="#main"
-									hx-select="#families"
-									hx-swap="innerHTML"
-									hx-push-url="true"
-									class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
-									data-te-nav-link-ref
-								>Families</a>
-							</li>
-						}
-						<!-- Groups -->
-						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_GROUPS) {
-							<li class="mb-0" data-te-nav-item-ref>
-								<a
-									hx-get={ constants.ROUTE_GROUPS }
-									hx-target="#main"
-									hx-select="#groups"
-									hx-swap="innerHTML"
-									hx-push-url="true"
-									class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
-									data-te-nav-link-ref
-								>Groups</a>
-							</li>
-						}
-						<!-- Users -->
-						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_USERS) {
-							<li class="mb-0" data-te-nav-item-ref>
-								<a
-									hx-get={ constants.ROUTE_USERS }
-									hx-target="#main"
-									hx-select="#users"
-									hx-swap="innerHTML"
-									hx-push-url="true"
-									class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
-									data-te-nav-link-ref
-								>Users</a>
-							</li>
-						}
-					</ul>
-				</div>
-				<!-- Right elements -->
-				<div class="relative flex justify-end items-center">
-					<!-- Logged in user -->
-					<a
-						hx-get={ constants.ROUTE_USER_SET_PW }
-						hx-target="#main"
-						hx-select="#setNewPassword"
-						hx-swap="innerHTML"
-						hx-push-url="true"
-						class="mr-2 text-neutral-600 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
-					>
-						<div class="flex flex-row">
-							<span class="[&>svg]:w-5">
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
-								</svg>
-							</span>
-							<span class="ml-1">
-								{ ctx.Value(constants.CTX_USER_NAME_KEY).(string) }
-							</span>
-						</div>
-					</a>
-					<ul class="list-style-none mr-auto flex flex-col pl-0 lg:flex-row" data-te-navbar-nav-ref>
-						<li class="lg:mb-0 lg:pr-2" data-te-nav-item-ref>
-							<!-- Logout -->
+					}
+					<!-- Families -->
+					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_FAMILIES) {
+						<li class="mb-0" data-te-nav-item-ref>
 							<a
-								hx-get={ constants.ROUTE_LOGOUT }
-								hx-target="#appRoot"
+								hx-get={ constants.ROUTE_FAMILIES }
+								hx-target="#main"
+								hx-select="#families"
 								hx-swap="innerHTML"
-								hx-push-url="/"
-								class="text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								hx-push-url="true"
+								class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 								data-te-nav-link-ref
-							>logout</a>
+							>Families</a>
 						</li>
-					</ul>
-				</div>
+					}
+					<!-- Groups -->
+					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_GROUPS) {
+						<li class="mb-0" data-te-nav-item-ref>
+							<a
+								hx-get={ constants.ROUTE_GROUPS }
+								hx-target="#main"
+								hx-select="#groups"
+								hx-swap="innerHTML"
+								hx-push-url="true"
+								class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								data-te-nav-link-ref
+							>Groups</a>
+						</li>
+					}
+					<!-- Users -->
+					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_USERS) {
+						<li class="mb-0" data-te-nav-item-ref>
+							<a
+								hx-get={ constants.ROUTE_USERS }
+								hx-target="#main"
+								hx-select="#users"
+								hx-swap="innerHTML"
+								hx-push-url="true"
+								class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								data-te-nav-link-ref
+							>Users</a>
+						</li>
+					}
+				</ul>
 			</div>
-		</nav>
-	</div>
+			<!-- Right elements -->
+			<div class="relative flex justify-end items-center">
+				<!-- Logged in user -->
+				<a
+					hx-get={ constants.ROUTE_USER_SET_PW }
+					hx-target="#main"
+					hx-select="#setNewPassword"
+					hx-swap="innerHTML"
+					hx-push-url="true"
+					class="mr-2 text-neutral-600 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
+				>
+					<div class="flex flex-row">
+						<span class="[&>svg]:w-5">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+							</svg>
+						</span>
+						<span class="ml-1">
+							{ ctx.Value(constants.CTX_USER_NAME_KEY).(string) }
+						</span>
+					</div>
+				</a>
+				<ul class="list-style-none mr-auto flex flex-col pl-0 lg:flex-row" data-te-navbar-nav-ref>
+					<li class="lg:mb-0 lg:pr-2" data-te-nav-item-ref>
+						<!-- Logout -->
+						<a
+							hx-get={ constants.ROUTE_LOGOUT }
+							hx-target="#appRoot"
+							hx-swap="innerHTML"
+							hx-push-url="/"
+							class="text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+							data-te-nav-link-ref
+						>logout</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 }
 
 templ (vctx *ViewCtx) Footer() {

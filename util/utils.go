@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/base64"
+	"fmt"
 	"log"
 	"log/slog"
 	"strings"
@@ -69,5 +70,13 @@ func String2Time(s string) time.Time {
 
 // Check if it is a hxr request
 func IsHXR(c echo.Context) bool {
+	if c.QueryParam("l") == "ok" {
+		fmt.Println("l is ok")
+	}
+
+	if c.QueryParam("l") == "ok" {
+		return false
+	}
+
 	return c.Request().Header.Get("HX-Request") == "true"
 }

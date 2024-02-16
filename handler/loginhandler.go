@@ -26,7 +26,8 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 
 	h.Session.Login(c, username)
 
-	return c.Redirect(302, "/members")
+	return c.Redirect(302, "/members?l=ok")
+	// return h.renderView(c, h.ViewCtx.Members([]entity.Member{}, "", "", "", []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
 }
 
 func (h *HandlerContext) LogoutHandler(c echo.Context) error {
