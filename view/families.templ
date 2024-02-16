@@ -6,8 +6,18 @@ import (
 )
 
 templ (vctx *ViewCtx) Families(families []entity.Family, selectedFamily entity.Family, op string) {
-	@vctx.AppRoot("") {
-		<div id="families" class="px-4 py-5 sm:px-6">
+	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
+		@vctx.FamiliesPage(families, selectedFamily, op)
+	} else {
+		@vctx.AppRoot("") {
+			@vctx.FamiliesPage(families, selectedFamily, op)
+		}
+	}
+}
+
+templ (vctx *ViewCtx) FamiliesPage(families []entity.Family, selectedFamily entity.Family, op string) {
+	<div id="families">
+		<div class="px-4 py-5 sm:px-6">
 			<div class="min-w-2/3">
 				@vctx.FamilyForm(selectedFamily, op)
 			</div>
@@ -15,7 +25,8 @@ templ (vctx *ViewCtx) Families(families []entity.Family, selectedFamily entity.F
 				@vctx.FamilyTable(families, selectedFamily)
 			</div>
 		</div>
-	}
+		@vctx.Footer()
+	</div>
 }
 
 //--------------------------------------------------------------------------------

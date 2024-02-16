@@ -10,8 +10,18 @@ import "github.com/michelemendel/dmtmms/filter"
 import "strings"
 
 templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
-	@vctx.AppRoot("") {
-		<div id="members" class="flex flex-row mt-2 px-4 py-4">
+	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
+		@vctx.MembersPage(members, memberUUID, familyUUID, familyGroup, memberDetails, groups, f)
+	} else {
+		@vctx.AppRoot("") {
+			@vctx.MembersPage(members, memberUUID, familyUUID, familyGroup, memberDetails, groups, f)
+		}
+	}
+}
+
+templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
+	<div id="members">
+		<div class="flex flex-row mt-2 px-4 py-4">
 			<div class="w-4/5">
 				<div class="flow-root">
 					<div class="float-left">
@@ -30,12 +40,13 @@ templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, f
 					@vctx.MembersTable(members, f.GroupUUID, f.From, f.To, f.SearchTerms)
 				</div>
 			</div>
-			<div class="flex-auto w-1/5 px-4 mt-10">
+			<div class="w-1/5 px-4 mt-10">
 				@vctx.MemberDetails(memberUUID, familyUUID, familyGroup, memberDetails, groups)
 			</div>
-			@focus()
 		</div>
-	}
+		@focusListener()
+		@vctx.Footer()
+	</div>
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVal, searchterms string) {
@@ -230,14 +241,14 @@ templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, 
 				class="text-sm italic"
 			>Click on a member to view details</p>
 		} else {
-			<ul class="w-96 text-sm">
+			<ul class=" text-sm">
 				for _, m := range memberDetails {
 					if strings.TrimSpace(m.Value) != "" {
-						<li class="w-full mt-1 text-xs font-semibold dark:border-opacity-50">{ m.Title } </li>
-						<li class="w-full pt-0.25 dark:border-opacity-50">{ m.Value } </li>
+						<li class="mt-1 text-xs font-semibold dark:border-opacity-50">{ m.Title } </li>
+						<li class="pt-0.25 dark:border-opacity-50">{ m.Value } </li>
 					}
 				}
-				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
 					Family
 				</li>
 				<li
@@ -250,11 +261,11 @@ templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, 
 				>
 					{ string(familyGroup) }
 				</li>
-				<li class="w-full text-xs font-semibold pt-2 dark:border-opacity-50">
+				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
 					Organizations
 				</li>
-				<li class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
-					<ul class="w-96 text-sm">
+				<li class="pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
+					<ul class="text-sm">
 						for _, group := range groups {
 							<li
 								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&guuid=" + group.UUID }
@@ -278,7 +289,7 @@ script cl(msg string) {
 	console.log(msg)
 }
 
-script focus() {
+script focusListener() {
 	let search = document.getElementById("searchterms");
 	val = search.value;
 

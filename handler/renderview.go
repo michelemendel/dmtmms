@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/auth"
 	"github.com/michelemendel/dmtmms/constants"
+	"github.com/michelemendel/dmtmms/util"
 )
 
 func (h *HandlerContext) renderView(c echo.Context, comp templ.Component) error {
@@ -32,6 +33,8 @@ func (h *HandlerContext) renderView(c echo.Context, comp templ.Component) error 
 		ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, username)
 		ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, role)
 	}
+
+	ctx = context.WithValue(ctx, constants.CTX_IS_XHR_KEY, util.IsHXR(c))
 
 	return comp.Render(ctx, c.Response())
 }

@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -64,4 +65,9 @@ func String2Time(s string) time.Time {
 		return time.Time{}
 	}
 	return t
+}
+
+// Check if it is a hxr request
+func IsHXR(c echo.Context) bool {
+	return c.Request().Header.Get("HX-Request") == "true"
 }

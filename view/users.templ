@@ -6,8 +6,18 @@ import (
 )
 
 templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op string) {
-	@vctx.AppRoot("") {
-		<div id="users" class="px-4 py-5 sm:px-6">
+	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
+		@vctx.UsersPage(users, selectedUser, op)
+	} else {
+		@vctx.AppRoot("") {
+			@vctx.UsersPage(users, selectedUser, op)
+		}
+	}
+}
+
+templ (vctx *ViewCtx) UsersPage(users []entity.User, selectedUser entity.User, op string) {
+	<div id="users">
+		<div class="px-4 py-5 sm:px-6">
 			<div class="min-w-2/3">
 				@vctx.UserForm(selectedUser, op)
 			</div>
@@ -15,7 +25,8 @@ templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op st
 				@vctx.UserTable(users)
 			</div>
 		</div>
-	}
+		@vctx.Footer()
+	</div>
 }
 
 //--------------------------------------------------------------------------------

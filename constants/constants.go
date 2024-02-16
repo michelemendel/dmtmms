@@ -38,6 +38,7 @@ const (
 	CTX_USER_NAME_KEY   = "username"
 	CTX_USER_ROLE_KEY   = "userrole"
 	CTX_IS_LOGGEDIN_KEY = "isloggedinkey"
+	CTX_IS_XHR_KEY      = "isxhr"
 )
 
 // Routes

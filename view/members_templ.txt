@@ -1,8 +1,8 @@
-<div id=\"members\" class=\"flex flex-row mt-2 px-4 py-4\"><div class=\"w-4/5\"><div class=\"flow-root\"><div class=\"float-left\">
+<div id=\"members\"><div class=\"flex flex-row mt-2 px-4 py-4\"><div class=\"w-4/5\"><div class=\"flow-root\"><div class=\"float-left\">
 </div><div class=\"float-right\"><a href=\"
 \" title=\"Download CSV\" download=\"members.csv\" target=\"_blank\">CSV</a></div></div><div class=\"mt-4\">
-</div></div><div class=\"flex-auto w-1/5 px-4 mt-10\">
-</div>
+</div></div><div class=\"w-1/5 px-4 mt-10\">
+</div></div>
 </div>
 <div class=\"flex flex-grow overflow-auto flex-col max-h-[50rem]\"><table class=\"w-full text-left text-sm font-light\"><thead class=\"border-1 font-medium dark:border-neutral-500\"><tr class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\"><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">#</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Name</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">DOB</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Family</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th></tr></thead> <tbody>
 <tr id=\"
@@ -40,14 +40,14 @@
  date</label></div>
 <div id=\"memberDetails\" class=\"px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700\">
 <p class=\"text-sm italic\">Click on a member to view details</p>
-<ul class=\"w-96 text-sm\">
-<li class=\"w-full mt-1 text-xs font-semibold dark:border-opacity-50\">
-</li><li class=\"w-full pt-0.25 dark:border-opacity-50\">
+<ul class=\" text-sm\">
+<li class=\"mt-1 text-xs font-semibold dark:border-opacity-50\">
+</li><li class=\"pt-0.25 dark:border-opacity-50\">
 </li>
-<li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Family</li><li hx-get=\"
+<li class=\"text-xs font-semibold pt-2 dark:border-opacity-50\">Family</li><li hx-get=\"
 \" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"
 \" class=\"w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer\">
-</li><li class=\"w-full text-xs font-semibold pt-2 dark:border-opacity-50\">Organizations</li><li class=\"w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer\"><ul class=\"w-96 text-sm\">
+</li><li class=\"text-xs font-semibold pt-2 dark:border-opacity-50\">Organizations</li><li class=\"pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer\"><ul class=\"text-sm\">
 <li hx-get=\"
 \" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"
 \">

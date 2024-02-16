@@ -6,8 +6,18 @@ import (
 )
 
 templ (vctx *ViewCtx) Groups(groups []entity.Group, selectedGroup entity.Group, op string) {
-	@vctx.AppRoot("") {
-		<div id="groups" class="px-4 py-5 sm:px-6">
+	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
+		@vctx.GroupsPage(groups, selectedGroup, op)
+	} else {
+		@vctx.AppRoot("") {
+			@vctx.GroupsPage(groups, selectedGroup, op)
+		}
+	}
+}
+
+templ (vctx *ViewCtx) GroupsPage(groups []entity.Group, selectedGroup entity.Group, op string) {
+	<div id="groups">
+		<div class="px-4 py-5 sm:px-6">
 			<div class="min-w-2/3">
 				@vctx.GroupForm(selectedGroup, op)
 			</div>
@@ -15,7 +25,8 @@ templ (vctx *ViewCtx) Groups(groups []entity.Group, selectedGroup entity.Group, 
 				@vctx.GroupTable(groups, selectedGroup)
 			</div>
 		</div>
-	}
+		@vctx.Footer()
+	</div>
 }
 
 //--------------------------------------------------------------------------------

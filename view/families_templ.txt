@@ -1,6 +1,7 @@
-<div id=\"families\" class=\"px-4 py-5 sm:px-6\"><div class=\"min-w-2/3\">
+<div id=\"families\"><div class=\"px-4 py-5 sm:px-6\"><div class=\"min-w-2/3\">
 </div><div class=\"pt-2\">
 </div></div>
+</div>
 <div class=\"flex flex-grow overflow-auto flex-col max-h-[50rem]\"><table class=\"w-1/2 text-left text-sm font-light\"><thead class=\"border-1 font-medium dark:border-neutral-500\"><tr class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\"><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Family name</th><th scope=\"col\" class=\"py-2 text-slate-200 bg-slate-500\"></th><th scope=\"col\" class=\"py-2 text-slate-200 bg-slate-500\"></th></tr></thead><tbody>
 </tbody></table></div>
 <tr class=\"border-b dark:border-neutral-500 hover:bg-neutral-100\"><td class=\"whitespace-nowrap px-6 py-4\">
