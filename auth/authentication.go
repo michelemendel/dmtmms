@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo/v4"
 )
 
@@ -11,7 +9,6 @@ func (s *Session) Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
 		sess, _ := s.GetLoggedInUser(c)
 		path := c.Path()
 
-		fmt.Println("path:", path)
 		if path == "/login" || path == "/node_modules/tw-elements/dist/js*" || path == "/public*" {
 			return next(c)
 		}

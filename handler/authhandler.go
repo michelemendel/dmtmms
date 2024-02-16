@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/e"
 	"github.com/michelemendel/dmtmms/util"
@@ -29,7 +27,6 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 	h.Session.Login(c, username)
 
 	// c.Response().Header().Set("hx-refresh", "true")
-	fmt.Println("LoginHandler: Going to MembersHandler")
 	return h.MembersHandler(c)
 }
 
