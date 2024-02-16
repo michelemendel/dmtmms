@@ -6,7 +6,7 @@ import (
 	"github.com/michelemendel/dmtmms/util"
 )
 
-func (h *HandlerContext) ViewLoginwHandler(c echo.Context) error {
+func (h *HandlerContext) ViewLoginHandler(c echo.Context) error {
 	return h.renderView(c, h.ViewCtx.Login("", nil))
 }
 
@@ -26,8 +26,7 @@ func (h *HandlerContext) LoginHandler(c echo.Context) error {
 
 	h.Session.Login(c, username)
 
-	// c.Response().Header().Set("hx-refresh", "true")
-	return h.MembersHandler(c)
+	return c.Redirect(302, "/members")
 }
 
 func (h *HandlerContext) LogoutHandler(c echo.Context) error {

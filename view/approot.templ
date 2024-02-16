@@ -6,36 +6,32 @@ templ (vctx *ViewCtx) AppRoot(title string) {
 	<!DOCTYPE html>
 	<html>
 		@vctx.Head(title)
-		@vctx.Body()
+		<body
+			hx-boost="true"
+			comment="https://htmx.org/events/#htmx:afterSwap"
+			hx-on::after-settle="showBody();"
+			id="appRoot"
+			style="visibility: hidden; opacity: 0;"
+		>
+			if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_ANY) {
+				@vctx.NavBar()
+			}
+			<div id="main">
+				{ children... }
+			</div>
+			// This (the tw-elements script below) doesn't work for the following two reasons:
+			// 1. The library has to loaded after receiving the html fragments. It's not enough to load it in the body once.
+			// 2. It can only be loaded once, because loading more than once will cause a buggy behavior of the TW Elements.
+			// Discussions about this issue:
+			// https://github.com/mdbootstrap/TW-Elements/discussions/1819
+			// https://stackoverflow.com/questions/76051980/flowbite-component-not-working-when-loaded-via-htmx-django-project
+			// Solution: 
+			// See htmx.onLoad in Head function below.
+			<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
+			<!-- <script type="text/javascript" src="/public/tw-elements.umd.min.js"></script> -->
+			@footer()
+		</body>
 	</html>
-}
-
-templ (vctx *ViewCtx) Body() {
-	<body
-		hx-boost="true"
-		comment="https://htmx.org/events/#htmx:afterSwap"
-		hx-on::after-settle="showBody();"
-		id="appRoot"
-		style="visibility: hidden; opacity: 0;"
-	>
-		if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_ANY) {
-			@vctx.NavBar()
-		}
-		<div id="main">
-			{ children... }
-		</div>
-		// This (the tw-elements script below) doesn't work for the following two reasons:
-		// 1. The library has to loaded after receiving the html fragments. It's not enough to load it in the body once.
-		// 2. It can only be loaded once, because loading more than once will cause a buggy behavior of the TW Elements.
-		// Discussions about this issue:
-		// https://github.com/mdbootstrap/TW-Elements/discussions/1819
-		// https://stackoverflow.com/questions/76051980/flowbite-component-not-working-when-loaded-via-htmx-django-project
-		// Solution: 
-		// See htmx.onLoad in Head function below.
-		<!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
-		<!-- <script type="text/javascript" src="/public/tw-elements.umd.min.js"></script> -->
-		@footer()
-	</body>
 }
 
 templ (vctx *ViewCtx) Head(title string) {

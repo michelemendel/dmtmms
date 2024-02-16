@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
 )
@@ -51,13 +49,11 @@ func (s *Session) Authorize(next echo.HandlerFunc) echo.HandlerFunc {
 		sess, _ := s.GetLoggedInUser(c)
 		path := c.Path()
 
-		if sess.Name == "" || path == "/node_modules/tw-elements/dist/js*" || path == "/public*" {
+		if sess.Name == "" || path == "/login" || path == "/node_modules/tw-elements/dist/js*" || path == "/public*" {
 			return next(c)
 		}
 
 		user, _ := s.Repo.SelectUser(sess.Name)
-
-		fmt.Printf("Authorize: role:%s, path:%s\n", user.Role, path)
 		if s.IsAuthorized(user.Role, path) {
 			return next(c)
 		} else {

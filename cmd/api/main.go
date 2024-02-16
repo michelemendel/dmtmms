@@ -59,18 +59,19 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 		code = httpErr.Code
 	}
 
-	// Authentication (401)
-	if code == echo.ErrUnauthorized.Code {
+	slog.Warn("httpError", "code", code)
+
+	// Authentication (used forbidden here (403), since we use echo.ErrUnauthorized (401) for authorization)
+	if code == echo.ErrForbidden.Code {
+		fmt.Println("redirecting to /login")
 		c.Redirect(http.StatusTemporaryRedirect, "/login")
 		return
 	}
 
-	slog.Warn("httpError", "code", code, "errorMsg", httpErr.Message)
-
 	errorPage := fmt.Sprintf("./public/%d.html", code)
+	fmt.Println("errorPage:", errorPage)
 	fileErr := c.File(errorPage)
 	if fileErr != nil {
 		c.Logger().Error(fileErr)
-		fmt.Println("customHTTPErrorHandler", fileErr)
 	}
 }

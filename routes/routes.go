@@ -19,7 +19,7 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	})
 
 	// Auth
-	e.GET(constants.ROUTE_LOGIN, hCtx.ViewLoginwHandler)
+	e.GET(constants.ROUTE_LOGIN, hCtx.ViewLoginHandler)
 	e.POST(constants.ROUTE_LOGIN, hCtx.LoginHandler)
 	e.GET(constants.ROUTE_LOGOUT, hCtx.LogoutHandler)
 

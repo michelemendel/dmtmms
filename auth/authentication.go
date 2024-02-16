@@ -1,11 +1,18 @@
 package auth
 
 import (
+	"os"
+
 	"github.com/labstack/echo/v4"
+	"github.com/michelemendel/dmtmms/constants"
 )
 
 func (s *Session) Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		if os.Getenv(constants.ENV_BYPASS_LOGIN) == "true" {
+			return next(c)
+		}
+
 		sess, _ := s.GetLoggedInUser(c)
 		path := c.Path()
 
@@ -14,7 +21,7 @@ func (s *Session) Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		if sess.Name == "" {
-			return echo.ErrUnauthorized
+			return echo.ErrForbidden
 		} else {
 			return next(c)
 		}
