@@ -74,16 +74,17 @@ func NewMember(uuid,
 	familyUUID, familyGroup string,
 ) Member {
 	return Member{
-		UUID:        uuid,
-		ID:          id,
-		Name:        name,
-		DOB:         dob,
-		Email:       email,
-		Mobile:      mobile,
-		Address:     address,
-		Status:      status,
-		FamilyUUID:  familyUUID,
-		FamilyGroup: familyGroup,
+		UUID:         uuid,
+		ID:           id,
+		Name:         name,
+		DOB:          dob,
+		Personnummer: personnummer,
+		Email:        email,
+		Mobile:       mobile,
+		Address:      address,
+		Status:       status,
+		FamilyUUID:   familyUUID,
+		FamilyGroup:  familyGroup,
 	}
 }
 

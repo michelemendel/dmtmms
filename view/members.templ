@@ -30,12 +30,9 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUI
 						@vctx.FilterBar(f)
 					</div>
 					<div class="float-right">
-						<a
-							href={ templ.SafeURL(fmt.Sprintf("/csv?searchterms=%s&from=%s&to=%s", f.SearchTerms, f.From, f.To)) }
-							title="Download CSV"
-							download="members.csv"
-							target="_blank"
-						>CSV</a>
+						<div class="ml-2 relative">
+							@vctx.DownloadForm(f.SearchTerms, f.From, f.To)
+						</div>
 					</div>
 				</div>
 				<div class="mt-2">
@@ -48,7 +45,36 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUI
 		</div>
 		@focusListener()
 		@vctx.Footer()
+		<script type="text/javascript" src="/public/app.js"></script>
 	</div>
+}
+
+templ (vctx *ViewCtx) DownloadForm(searchTerms, from, to string) {
+	<select
+		id="download"
+		class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+	>
+		<option>Download</option>
+		<option value={ fmt.Sprintf("/download?searchterms=%s&from=%s&to=%s&t=%s", searchTerms, from, to, "csv") }>CSV</option>
+		<option value={ fmt.Sprintf("/download?searchterms=%s&from=%s&to=%s&t=%s", searchTerms, from, to, "fnr") }>Fødselsnummer</option>
+		<option value={ fmt.Sprintf("/download?searchterms=%s&from=%s&to=%s&t=%s", searchTerms, from, to, "emails") }>Emails</option>
+	</select>
+	// <form
+	// 	hx-get={ constants.ROUTE_DOWNLOAD }
+	// 	hx-swap="none"
+	// >
+	// 	<input type="hidden" name="searchterms" value={ searchTerms }/>
+	// 	<input type="hidden" name="from" value={ from }/>
+	// 	<input type="hidden" name="to" value={ to }/>
+	// 	@vctx.SelectDD("downloadType", "", "", []string{"CSV", "Fødselsnummer", "Emails"})
+	// 	<button
+	// 		type="submit"
+	// 		data-te-ripple-init
+	// 		class="ml-2 inline-block rounded bg-primary px-4 pb-[5px] pt-[6px] text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+	// 	>
+	// 		Download
+	// 	</button>
+	// </form>
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVal, searchterms string) {
@@ -59,7 +85,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">#</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Name</th>
-					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">DOB</th>
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Fødselsnummer</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Family</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500"></th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500"></th>
@@ -89,7 +115,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
 	<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
-	<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) }</td>
+	<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) +"-"+ member.Personnummer }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.FamilyGroup }</td>
 }
 
@@ -146,7 +172,6 @@ script memberDeleteConfirm(memberUUID string) {
 	})
 }
 
-// templ (vctx *ViewCtx) FilterBar(fromVal, toVal, searchterms string) {
 templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 	<form
 		hx-get={ constants.ROUTE_MEMBERS }

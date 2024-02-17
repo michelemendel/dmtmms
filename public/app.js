@@ -3,24 +3,33 @@
 
 // This is called only when the page has reloaded.
 // We start by settings the body to be hidden, see appRoot.templ.
-document.onreadystatechange = () => {
-    if (document.readyState === "complete") {
-        showBody();
+// document.onreadystatechange = () => {
+//     if (document.readyState === "complete") {
+//         showBody();
+//     }
+// };
+
+// function hideMain() {
+//     main = document.getElementById('main');
+//     main.style.visibility = 'hidden';
+//     // main.style.opacity = 0;
+// }
+
+// function showMain() {
+//     main = document.getElementById('main');
+//     setTimeout(() => {
+//         main.style.visibility = 'visible';
+//         // main.style.opacity = 1;
+//     }, 50);
+// }
+
+
+var download = document.querySelector('#download');
+download.addEventListener('change', function () {
+    var url = this.value;
+    if (url !== "Download") {
+        // window.open(url, '_blank');
+        window.open(url, '');
     }
-};
-
-function hideMain() {
-    main = document.getElementById('main');
-    main.style.visibility = 'hidden';
-    // main.style.opacity = 0;
-}
-
-function showMain() {
-    main = document.getElementById('main');
-    setTimeout(() => {
-        main.style.visibility = 'visible';
-        // main.style.opacity = 1;
-    }, 50);
-}
-
-
+    download.value = "Download";
+});

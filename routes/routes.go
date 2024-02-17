@@ -12,11 +12,13 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.Static("/node_modules/tw-elements/dist/js", "node_modules/tw-elements/dist/js/")
 
 	// Download
-	e.GET("/csv", func(c echo.Context) error {
-		msCSV, _ := hCtx.MembersAsCSV(c)
-		c.Response().Header().Set("Content-Disposition", "attachment; filename=members.csv")
-		return c.Blob(200, "text/csv", msCSV)
-	})
+	e.GET(constants.ROUTE_DOWNLOAD, hCtx.DownloadHandler)
+	// e.GET(constants.ROUTE_DOWNLOAD, func(c echo.Context) error {
+	// 	// msCSV, _ := hCtx.MembersAsCSV(c)
+	// 	// c.Response().Header().Set("Content-Disposition", "attachment; filename=members.csv")
+	// 	// return c.Blob(200, "text/csv", msCSV)
+	// 	return nil
+	// })
 
 	// Auth
 	e.GET(constants.ROUTE_LOGIN, hCtx.ViewLoginHandler)

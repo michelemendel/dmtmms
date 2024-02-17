@@ -80,6 +80,9 @@ const (
 	ROUTE_FAMILY_UPDATE = "/family/update"
 
 	//
+	ROUTE_DOWNLOAD = "/download"
+
+	//
 	ROUTE_PING = "/ping"
 )
 
