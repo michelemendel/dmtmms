@@ -17,7 +17,7 @@ templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op st
 
 templ (vctx *ViewCtx) UsersPage(users []entity.User, selectedUser entity.User, op string) {
 	<div id="users">
-		<div class="px-4 py-5 sm:px-6">
+		<div class="px-4 py-5">
 			<div class="min-w-2/3">
 				@vctx.UserForm(selectedUser, op)
 			</div>
@@ -128,38 +128,24 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 		hx-swap="outerHTML"
 	>
 		<div class="flex flex-row">
-			<div data-te-input-wrapper-init class="relative">
-				// Username input
-				<input
-					type="text"
-					name="username"
-					value={ selectedUser.Name }
-					placeholder="name"
-					aria-label="username"
-					if op == constants.OP_CREATE {
-						required
-						class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-					} else {
-						readonly
-						class="peer block min-h-[auto] w-full rounded border-0 bg-neutral-100 px-3 py-[0.32rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:bg-neutral-700 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-					}
-				/>
+			// Username input
+			<div class="relative">
+				if op == constants.OP_CREATE {
+					@Input("username", selectedUser.Name, "name", "name", true, false)
+				} else {
+					@Input("username", selectedUser.Name, "name", "name", false, true)
+				}
 			</div>
 			if op == constants.OP_CREATE {
 				// Password input
-				<div data-te-input-wrapper-init class="relative ml-2">
-					<input
-						type="text"
-						name="password"
-						placeholder="password"
-						aria-label="password"
-						required
-						class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-					/>
+				<div class="ml-2 relative">
+					@Input("password", "", "password", "password", true, false)
 				</div>
 			}
 			// Role selection
-			@vctx.roleOptions(selectedUser)
+			<div class="ml-2 relative">
+				@vctx.SelectDD("role", "Role", selectedUser.Role, vctx.Roles)
+			</div>
 			// Submit
 			<button
 				type="submit"
@@ -191,25 +177,6 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 			<div class="block text-red-600 text-xs">{ vctx.ViewError.Err.Error() }</div>
 		</div>
 	}
-}
-
-templ (vctx *ViewCtx) roleOptions(selectedUser entity.User) {
-	<div
-		class="ml-2"
-	>
-		<select
-			id="role"
-			name="role"
-			data-te-select-init
-			data-te-select-size="sm"
-			class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-		>
-			for _, role := range vctx.Roles {
-				<option value={ role } selected?={ role == selectedUser.Role }>{ role }</option>
-			}
-		</select>
-		<label data-te-select-label-ref>Role</label>
-	</div>
 }
 
 //--------------------------------------------------------------------------------

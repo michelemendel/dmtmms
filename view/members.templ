@@ -2,12 +2,14 @@ package view
 
 import "fmt"
 
-// import "github.com/michelemendel/dmtmms/constants"
-import "github.com/michelemendel/dmtmms/entity"
-import "github.com/michelemendel/dmtmms/constants"
-import "github.com/michelemendel/dmtmms/util"
-import "github.com/michelemendel/dmtmms/filter"
-import "strings"
+import (
+	// "github.com/michelemendel/dmtmms/constants"
+	"github.com/michelemendel/dmtmms/entity"
+	"github.com/michelemendel/dmtmms/constants"
+	"github.com/michelemendel/dmtmms/util"
+	"github.com/michelemendel/dmtmms/filter"
+	"strings"
+)
 
 templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
@@ -21,7 +23,7 @@ templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, f
 
 templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
 	<div id="members">
-		<div class="flex flex-row mt-2 px-4 py-4">
+		<div class="flex flex-row px-4 py-5">
 			<div class="w-4/5">
 				<div class="flow-root">
 					<div class="float-left">
@@ -36,7 +38,7 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUI
 						>CSV</a>
 					</div>
 				</div>
-				<div class="mt-4">
+				<div class="mt-2">
 					@vctx.MembersTable(members, f.GroupUUID, f.From, f.To, f.SearchTerms)
 				</div>
 			</div>
@@ -155,30 +157,15 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 		hx-push-url="true"
 		hx-trigger="keyup[keyCode==13]"
 	>
-		<div
-			id="filterBar"
-			class="flex flex-row"
-		>
-			<div
-				data-te-input-wrapper-init
-				class="relative"
-			>
-				<!-- Search -->
-				<input
-					type="text"
-					id="searchterms"
-					name="searchterms"
-					value={ f.SearchTerms }
-					placeholder="search"
-					aria-label="searchterms"
-					class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-				/>
+		<div id="filterBar" class="flex flex-row">
+			<div class="relative">
+				@Input("searchterms", f.SearchTerms, "search", "search", false, false)
 			</div>
 			<div class="ml-2">
-				@vctx.DatePicker("from", f.From)
+				@DatePicker("from", f.From)
 			</div>
 			<div class="ml-2">
-				@vctx.DatePicker("to", f.To)
+				@DatePicker("to", f.To)
 			</div>
 			<div class="ml-2">
 				<button
@@ -189,46 +176,13 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 					hx-swap="outerHTML"
 					hx-push-url="true"
 					type="button"
-					class="inline-block rounded bg-primary px-4 pb-[5px] pt-[6px] text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+					class="inline-block rounded bg-primary px-4 pb-[5px] pt-[6px] text-xs font-medium uppercase leading-[1.7] text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
 				>
 					Search
 				</button>
 			</div>
 		</div>
 	</form>
-}
-
-templ (vctx *ViewCtx) DatePicker(id, val string) {
-	<div
-		id="datepicker-close-without-confirmation"
-		data-te-inline="true"
-		data-te-format="yyyy-mm-dd"
-		data-te-datepicker-init
-		data-te-input-wrapper-init
-		class="relative"
-	>
-		<input
-			type="text"
-			id={ id }
-			name={ id }
-			if val == constants.DATE_MIN || val == constants.DATE_MAX {
-				value=""
-			}
-			value={ val }
-			type="text"
-			placeholder={ id + " (YYYY-MM-DD)" }
-			data-te-datepicker-toggle-ref
-			data-te-datepicker-toggle-button-ref
-			placeholder="Form control sm"
-			class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-		/>
-		<label
-			for={ id }
-			class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] text-xs leading-[1.5] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.75rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.75rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-		>
-			{ id } date
-		</label>
-	</div>
 }
 
 templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group) {
@@ -262,7 +216,7 @@ templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, 
 					{ string(familyGroup) }
 				</li>
 				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
-					Organizations
+					Groups	
 				</li>
 				<li class="pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
 					<ul class="text-sm">
