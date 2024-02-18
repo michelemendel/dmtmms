@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/entity"
@@ -49,13 +50,12 @@ func (h *HandlerContext) Emails(members []entity.Member) []byte {
 
 func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string {
 	var items [][]string
-	items = append(items, []string{"ID", "Name", "DOB", "Personnummer", "Email", "Mobile"})
+	items = append(items, []string{"ID", "Name", "DOB", "Fødselsnummer", "Email", "Mobile"})
 	for _, m := range members {
 		items = append(items, []string{
 			m.ID,
 			m.Name,
-			util.Time2String(m.DOB),
-			m.Personnummer,
+			strings.Replace(util.Time2String(m.DOB), "-", "", -1) + "-" + m.Personnummer,
 			m.Email,
 			m.Mobile,
 			// m.Address1,
@@ -74,7 +74,7 @@ func (h *HandlerContext) PersonnummerTransformer(members []entity.Member) [][]st
 	for _, m := range members {
 		items = append(items, []string{
 			m.Name,
-			util.Time2String(m.DOB) + "-" + m.Personnummer,
+			strings.Replace(util.Time2String(m.DOB), "-", "", -1) + "-" + m.Personnummer,
 		})
 	}
 	return items

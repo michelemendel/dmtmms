@@ -12,23 +12,19 @@ import (
 )
 
 //--------------------------------------------------------------------------------
-// Focus on members
+// Members
 
 const (
-	_ = `
-	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status
-	FROM members as m 
-	`
-
-	_ = `
-	SELECT m.uuid, m.id, m.name, date(m.dob), m.email, m.mobile, m.status, f.name 
-	FROM members as m 
-	LEFT JOIN families as f ON m.family_uuid=f.uuid;
-	`
-
-	queryMembers = `
+	selectMember = `
 	SELECT m.uuid, m.id, m.name, date(m.dob), m.personnummer, m.email, m.mobile, m.address1, m.address1, m.postnummer, m.poststed, m.status, IFNULL(f.uuid, ""), IFNULL(f.name, "")
 	FROM members as m
+	`
+
+	queryMember = selectMember + `
+	LEFT JOIN families as f ON m.family_uuid=f.uuid
+	`
+
+	queryMembers = selectMember + `
 	LEFT JOIN families as f ON m.family_uuid=f.uuid
 	LEFT JOIN members_groups as mg on m.uuid = mg.member_uuid
 	LEFT JOIN groups as g on mg.group_uuid = g.uuid
@@ -72,6 +68,22 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 	q = q + " GROUP BY m.uuid ORDER BY m.name;"
 	return r.ExecuteQuery(q, args...)
 }
+
+//--------------------------------------------------------------------------------
+// Member
+
+func (r *Repo) SelectMemberByUUID(uuid string) (entity.Member, error) {
+	q := queryMember + " WHERE m.uuid=?;"
+	// fmt.Println("SelectMemberByUUID", q, uuid)
+	members, err := r.ExecuteQuery(q, uuid)
+	if err != nil || len(members) == 0 {
+		return entity.Member{}, err
+	}
+	return members[0], nil
+}
+
+//--------------------------------------------------------------------------------
+//
 
 func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member, error) {
 	// fmt.Println("ExecuteQuery", query, args)

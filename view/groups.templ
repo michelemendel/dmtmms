@@ -125,28 +125,32 @@ templ (vctx *ViewCtx) GroupForm(selectedGroup entity.Group, op string) {
 				@Input("name", selectedGroup.Name, "name", "name", true, false)
 			</div>
 			// Submit
-			<button
-				type="submit"
-				data-te-ripple-init
-				class="ml-2 inline-block rounded bg-primary px-4 pb-[5px] pt-[6px] text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-			>
-				if op == constants.OP_CREATE {
-					Create group
-				} else {
-					Update group
-				}
-			</button>
+			<div class="ml-2">
+				<button
+					type="submit"
+					data-te-ripple-init
+					class={ ButtonClass }
+				>
+					if op == constants.OP_CREATE {
+						Create group
+					} else {
+						Update group
+					}
+				</button>
+			</div>
 			// Cancel
-			<button
-				hx-get={ constants.ROUTE_GROUPS }
-				hx-target="#groups"
-				hx-swap="outerHTML"
-				type="button"
-				data-te-ripple-init
-				class="ml-2 inline-block rounded bg-primary px-4 pb-[5px] pt-[6px] text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-			>
-				Cancel
-			</button>
+			<div class="ml-2">
+				<button
+					hx-get={ constants.ROUTE_GROUPS }
+					hx-target="#groups"
+					hx-swap="outerHTML"
+					type="button"
+					data-te-ripple-init
+					class={ ButtonClass }
+				>
+					Cancel
+				</button>
+			</div>
 		</div>
 	</form>
 	// Error message

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
@@ -67,12 +68,12 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 // Create member
 
 func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
-	return h.renderView(c, h.ViewCtx.MemberForm(""))
+	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}))
 }
 
-func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
-	return h.renderView(c, h.ViewCtx.MemberForm(""))
-}
+// func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
+// 	return h.renderView(c, h.ViewCtx.MemberForm(""))
+// }
 
 //--------------------------------------------------------------------------------
 // Delete member
@@ -94,9 +95,17 @@ func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 
 func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	uuid := c.Param("uuid")
-	return h.renderView(c, h.ViewCtx.MemberForm(uuid))
+	fmt.Println("[UPDATE_MEMBER]: uuid:", uuid)
+	member, err := h.Repo.SelectMemberByUUID(uuid)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", uuid)
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnUpdate))
+		return h.renderView(c, vctx.Members([]entity.Member{}, "", "", "", []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+	}
+	return h.renderView(c, h.ViewCtx.MemberFormModal(member))
 }
 
 func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
-	return h.renderView(c, h.ViewCtx.MemberForm(""))
+	// return h.renderView(c, h.ViewCtx.MemberForm(""))
+	return nil
 }

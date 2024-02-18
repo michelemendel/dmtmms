@@ -24,12 +24,3 @@
 // }
 
 
-var download = document.querySelector('#download');
-download.addEventListener('change', function () {
-    var url = this.value;
-    if (url !== "Download") {
-        // window.open(url, '_blank');
-        window.open(url, '');
-    }
-    download.value = "Download";
-});

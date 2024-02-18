@@ -1,0 +1,126 @@
+package view
+
+import (
+	// "github.com/michelemendel/dmtmms/constants"
+
+	"github.com/michelemendel/dmtmms/entity"
+)
+
+templ (vctx *ViewCtx) MemberFormModal(member entity.Member) {
+	<div
+		id="memberForm"
+		class="fixed z-10 inset-0 overflow-y-auto"
+	>
+		<div class="flex items-center justify-center min-h-screen bg-gray-300 bg-opacity-40">
+			<div class="bg-white w-1/2 p-6 rounded shadow-md">
+				<div class="flex justify-end">
+					<!-- Close Button -->
+					<button id="closeMemberForm" class="text-gray-700 hover:text-red-500">
+						<svg
+							class="w-6 h-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M6 18L18 6M6 6l12 12"
+							></path>
+						</svg>
+					</button>
+				</div>
+				<h2 class="text-2xl font-bold mb-4">Contact Us</h2>
+				<form method="post">
+					<div class="mb-4">
+						<label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+						<input
+							type="text"
+							id="name"
+							name="name"
+							value={ member.Name }
+							class="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
+						/>
+					</div>
+					<div class="mb-4">
+						<label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+						<input
+							type="email"
+							id="email"
+							name="email"
+							class="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
+						/>
+					</div>
+					<div class="mb-4">
+						<label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+						<textarea
+							id="message"
+							name="message"
+							class="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500"
+						></textarea>
+					</div>
+					<button
+						type="submit"
+						class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
+					>
+						Send Message
+					</button>
+				</form>
+			</div>
+		</div>
+		<script>
+			var memberForm = document.getElementById('memberForm');
+			var closeMemberFormButton = document.getElementById('closeMemberForm');
+			closeMemberFormButton.addEventListener('click', () => {
+				memberForm.classList.add('hidden');
+			});
+		</script>
+	</div>
+}
+
+// templ (vctx *ViewCtx) MemberForm(uuid string) {
+// 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
+// 		@vctx.MemberFormPage()
+// 	} else {
+// 		@vctx.AppRoot("") {
+// 			@vctx.MemberFormPage()
+// 		}
+// 	}
+// }
+
+// templ (vctx *ViewCtx) MemberFormPage() {
+// 	<div id="memberForm">
+// 		<form>
+// 			<div class="relative">
+// 				<button
+// 					class={ ButtonClass }
+// 				>
+// 					Get bundle
+// 				</button>
+// 			</div>
+// 			<div class="relative">
+// 				<details class="dropdown">
+// 					<summary class="m-1 btn">open or close</summary>
+// 					<ul class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
+// 						<li><a>Item 1</a></li>
+// 						<li><a>Item 2</a></li>
+// 					</ul>
+// 				</details>
+// 			</div>
+// 			<div class="dropdown">
+// 				<div tabindex="0" role="button" class="btn m-1">Click</div>
+// 				<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+// 					<li><a>Item 1</a></li>
+// 					<li><a>Item 2</a></li>
+// 				</ul>
+// 			</div>
+// 			<button class="btn btn-primary">Button</button>
+// 		</form>
+// 		<span class="countdown font-mono text-6xl">
+// 			<span style="--value:50;"></span>
+// 		</span>
+// 		@vctx.Footer()
+// 	</div>
+// }

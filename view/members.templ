@@ -23,14 +23,30 @@ templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, f
 
 templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
 	<div id="members">
+		// Placeholders
+		<div id="memberForm">
+			<div id="closeMemberForm"></div>
+		</div>
+		// 
 		<div class="flex flex-row px-4 py-5">
 			<div class="w-4/5">
 				<div class="flow-root">
 					<div class="float-left">
 						@vctx.FilterBar(f)
 					</div>
-					<div class="float-right">
-						<div class="ml-2 relative">
+					<div class="float-right flex flex-row">
+						<button
+							id="openMemberForm"
+							hx-get={ constants.ROUTE_MEMBER_CREATE }
+							hx-target="#memberForm"
+							hx-select="#memberForm"
+							hx-swap="outerHTML"
+							hx-push-url="false"
+							class={ ButtonClass }
+						>
+							Add member
+						</button>
+						<div class="ml-2">
 							@vctx.DownloadForm(f.SearchTerms, f.From, f.To)
 						</div>
 					</div>
@@ -43,10 +59,37 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUI
 				@vctx.MemberDetails(memberUUID, familyUUID, familyGroup, memberDetails, groups)
 			</div>
 		</div>
-		@focusListener()
 		@vctx.Footer()
-		<script type="text/javascript" src="/public/app.js"></script>
+		@jsFunctions()
 	</div>
+}
+
+templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
+	<form
+		hx-get={ constants.ROUTE_MEMBERS }
+		hx-include="[name='searchterms'], [name='from'], [name='to']"
+		hx-target="#members"
+		hx-swap="outerHTML"
+		hx-push-url="true"
+		hx-trigger="keyup[keyCode==13]"
+	>
+		<div id="filterBar" class="flex flex-row">
+			<div>
+				@Input("searchterms", f.SearchTerms, "search", "search", false, false)
+			</div>
+			<div class="ml-2">
+				@DatePicker("from", f.From)
+			</div>
+			<div class="ml-2">
+				@DatePicker("to", f.To)
+			</div>
+			<div class="ml-2">
+				<button class={ ButtonClass }>
+					Search
+				</button>
+			</div>
+		</div>
+	</form>
 }
 
 templ (vctx *ViewCtx) DownloadForm(searchTerms, from, to string) {
@@ -59,27 +102,10 @@ templ (vctx *ViewCtx) DownloadForm(searchTerms, from, to string) {
 		<option value={ fmt.Sprintf("/download?searchterms=%s&from=%s&to=%s&t=%s", searchTerms, from, to, "fnr") }>Fødselsnummer</option>
 		<option value={ fmt.Sprintf("/download?searchterms=%s&from=%s&to=%s&t=%s", searchTerms, from, to, "emails") }>Emails</option>
 	</select>
-	// <form
-	// 	hx-get={ constants.ROUTE_DOWNLOAD }
-	// 	hx-swap="none"
-	// >
-	// 	<input type="hidden" name="searchterms" value={ searchTerms }/>
-	// 	<input type="hidden" name="from" value={ from }/>
-	// 	<input type="hidden" name="to" value={ to }/>
-	// 	@vctx.SelectDD("downloadType", "", "", []string{"CSV", "Fødselsnummer", "Emails"})
-	// 	<button
-	// 		type="submit"
-	// 		data-te-ripple-init
-	// 		class="ml-2 inline-block rounded bg-primary px-4 pb-[5px] pt-[6px] text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-	// 	>
-	// 		Download
-	// 	</button>
-	// </form>
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVal, searchterms string) {
-	<div class="flex flex-grow overflow-auto flex-col max-h-[50rem]">
-		// <div class="flex flex-grow overflow-auto flex-col max-h-[50rem] px-2 py-2 rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+	<div class="flex flex-grow overflow-y-scroll flex-col max-h-[50rem]">
 		<table class="w-full text-left text-sm font-light">
 			<thead class="border-1 font-medium dark:border-neutral-500">
 				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
@@ -124,11 +150,11 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member, guuid, fromVal
 	<td
 		id={ "update-" + member.UUID }
 		hx-get={ constants.ROUTE_MEMBER_UPDATE + "/" + member.UUID }
-		hx-target="#main"
-		hx-select="#memberform"
-		hx-swap="innerHTML"
+		hx-target="#memberForm"
+		hx-select="#memberForm"
+		hx-swap="outerHTML"
+		hx-push-url="false"
 		hx-trigger="click consume"
-		hx-push-url={ constants.ROUTE_MEMBER_UPDATE + "/" + member.UUID }
 		class="w-3 font-medium cursor-pointer whitespace-nowrap py-4"
 	>
 		<span class="[&>svg]:w-5">
@@ -170,44 +196,6 @@ script memberDeleteConfirm(memberUUID string) {
 	htmx.trigger("#delete-"+memberUUID, "confirmed");
 	}
 	})
-}
-
-templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
-	<form
-		hx-get={ constants.ROUTE_MEMBERS }
-		hx-include="[name='searchterms'], [name='from'], [name='to']"
-		hx-target="#members"
-		hx-select="#members"
-		hx-swap="outerHTML"
-		hx-push-url="true"
-		hx-trigger="keyup[keyCode==13]"
-	>
-		<div id="filterBar" class="flex flex-row">
-			<div class="relative">
-				@Input("searchterms", f.SearchTerms, "search", "search", false, false)
-			</div>
-			<div class="ml-2">
-				@DatePicker("from", f.From)
-			</div>
-			<div class="ml-2">
-				@DatePicker("to", f.To)
-			</div>
-			<div class="ml-2">
-				<button
-					hx-get={ constants.ROUTE_MEMBERS }
-					hx-include="[name='searchterms'], [name='from'], [name='to']"
-					hx-target="#members"
-					hx-select="#members"
-					hx-swap="outerHTML"
-					hx-push-url="true"
-					type="button"
-					class="inline-block rounded bg-primary px-4 pb-[5px] pt-[6px] text-xs font-medium uppercase leading-[1.7] text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-				>
-					Search
-				</button>
-			</div>
-		</div>
-	</form>
 }
 
 templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group) {
@@ -268,7 +256,8 @@ script cl(msg string) {
 	console.log(msg)
 }
 
-script focusListener() {
+script jsFunctions() {
+	// Focus on search input
 	let search = document.getElementById("searchterms");
 	val = search.value;
 
@@ -283,4 +272,14 @@ script focusListener() {
 			search.value = val;
 		}  
     });
+
+	// Download
+	var download = document.querySelector('#download');
+	download.addEventListener('change', function () {
+    	var url = this.value;
+    	if (url !== "Download") {        
+       		window.open(url, '_self');
+    	}
+	    download.value = "Download";
+	});
 }
