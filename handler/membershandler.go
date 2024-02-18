@@ -71,9 +71,9 @@ func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
 	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}))
 }
 
-// func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
-// 	return h.renderView(c, h.ViewCtx.MemberForm(""))
-// }
+func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
+	return h.MembersHandler(c)
+}
 
 //--------------------------------------------------------------------------------
 // Delete member
@@ -106,6 +106,5 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 }
 
 func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
-	// return h.renderView(c, h.ViewCtx.MemberForm(""))
-	return nil
+	return h.MembersHandler(c)
 }

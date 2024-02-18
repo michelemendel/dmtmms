@@ -128,7 +128,6 @@ templ (vctx *ViewCtx) FamilyForm(selectedFamily entity.Family, op string) {
 			<div class="ml-2">
 				<button
 					type="submit"
-					data-te-ripple-init
 					class={ ButtonClass }
 				>
 					if op == constants.OP_CREATE {
@@ -145,7 +144,6 @@ templ (vctx *ViewCtx) FamilyForm(selectedFamily entity.Family, op string) {
 					hx-target="#families"
 					hx-swap="outerHTML"
 					type="button"
-					data-te-ripple-init
 					class={ ButtonClass }
 				>
 					Cancel

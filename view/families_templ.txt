@@ -23,13 +23,13 @@
  hx-target=\"#families\" hx-select=\"#families\" hx-swap=\"outerHTML\"><div class=\"flex flex-row\"><input type=\"hidden\" name=\"uuid\" value=\"
 \"><div class=\"relative\">
 </div><div class=\"ml-2\">
-<button type=\"submit\" data-te-ripple-init class=\"
+<button type=\"submit\" class=\"
 \">
 Create family
 Update family
 </button></div><div class=\"ml-2\">
 <button hx-get=\"
-\" hx-target=\"#families\" hx-swap=\"outerHTML\" type=\"button\" data-te-ripple-init class=\"
+\" hx-target=\"#families\" hx-swap=\"outerHTML\" type=\"button\" class=\"
 \">Cancel</button></div></div></form>
 <div class=\"mb-4\"><div class=\"block text-red-600 text-xs\">
 </div></div>

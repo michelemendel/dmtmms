@@ -8,7 +8,7 @@
 </div></div>
 </div>
 <form hx-get=\"
-\" hx-include=\"[name=&#39;searchterms&#39;], [name=&#39;from&#39;], [name=&#39;to&#39;]\" hx-target=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"keyup[keyCode==13]\"><div id=\"filterBar\" class=\"flex flex-row\"><div>
+\" hx-include=\"[name=&#39;searchterms&#39;], [name=&#39;from&#39;], [name=&#39;to&#39;]\" hx-target=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"keyup[keyCode==13]\"><div id=\"filterBar\" class=\"flex flex-row\"><div class=\"relative\">
 </div><div class=\"ml-2\">
 </div><div class=\"ml-2\">
 </div><div class=\"ml-2\">

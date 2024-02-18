@@ -74,7 +74,7 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 		hx-trigger="keyup[keyCode==13]"
 	>
 		<div id="filterBar" class="flex flex-row">
-			<div>
+			<div class="relative">
 				@Input("searchterms", f.SearchTerms, "search", "search", false, false)
 			</div>
 			<div class="ml-2">
@@ -141,7 +141,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
 	<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
-	<td class="whitespace-nowrap px-6 py-4">{ util.Time2String(member.DOB) +"-"+ member.Personnummer }</td>
+	<td class="whitespace-nowrap px-6 py-4">{ strings.Replace(util.Time2String(member.DOB),"-","",-1) +"-"+ member.Personnummer }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.FamilyGroup }</td>
 }
 
