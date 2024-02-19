@@ -16,7 +16,29 @@ import (
 
 const (
 	selectMember = `
-	SELECT m.uuid, m.id, m.name, date(m.dob), m.personnummer, m.email, m.mobile, m.address1, m.address1, m.postnummer, m.poststed, m.status, IFNULL(f.uuid, ""), IFNULL(f.name, "")
+	SELECT 
+	m.uuid, 
+	m.id, 
+	m.name, 
+	date(m.dob), 
+	m.personnummer, 
+	m.email, 
+	m.mobile, 
+	m.address1, 
+	m.address1, 
+	m.postnummer, 
+	m.poststed, 
+	IFNULL(m.synagogue_seat, ""),
+	IFNULL(m.membership_fee_tier, ""),
+	IFNULL(date(m.registered_date), ""),
+	IFNULL(date(m.deregistered_date), ""),
+	IFNULL(m.receive_email, false),
+	IFNULL(m.receive_mail, false),
+	IFNULL(m.receive_hatikva, false),
+	IFNULL(m.archived, false),
+	m.status, 
+	IFNULL(f.uuid, ""), 
+	IFNULL(f.name, "")
 	FROM members as m
 	`
 
@@ -28,7 +50,8 @@ const (
 	LEFT JOIN families as f ON m.family_uuid=f.uuid
 	LEFT JOIN members_groups as mg on m.uuid = mg.member_uuid
 	LEFT JOIN groups as g on mg.group_uuid = g.uuid
-	WHERE m.dob BETWEEN julianday(?) AND julianday(?)
+	WHERE m.archived=0
+	AND m.dob BETWEEN julianday(?) AND julianday(?)
 	`
 )
 
@@ -111,18 +134,30 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 	var address2 string
 	var postnummer string
 	var poststed string
+	var synagogueSeat string
+	var membershipFeeTier string
+	var registeredDateStr string
+	var deregisteredDateStr string
+	var receiveEmail bool
+	var receiveMail bool
+	var receiveHatikva bool
+	var archived bool
 	var status string
 	var familyUUID string
 	var familyGroup string
+	//
 	for rows.Next() {
-		err := rows.Scan(&uuid, &id, &name, &dobStr, &personnummer, &email, &mobile, &address1, &address2, &postnummer, &poststed, &status, &familyUUID, &familyGroup)
+		err := rows.Scan(&uuid, &id, &name, &dobStr, &personnummer, &email, &mobile, &address1, &address2, &postnummer, &poststed, &synagogueSeat, &membershipFeeTier, &registeredDateStr, &deregisteredDateStr, &receiveEmail, &receiveMail, &receiveHatikva, &archived, &status, &familyUUID, &familyGroup)
 		if err != nil {
 			slog.Error(err.Error())
 			return members, err
 		}
-		mDOB := util.String2Time(dobStr)
+
+		DOB := util.String2Time(dobStr)
+		registeredDate := util.String2Time(registeredDateStr)
+		deregisteredDate := util.String2Time(deregisteredDateStr)
 		address := entity.NewAddress(address1, address2, postnummer, poststed)
-		members = append(members, entity.NewMember(uuid, id, name, mDOB, personnummer, email, mobile, address, entity.MemberStatus(status), familyUUID, familyGroup))
+		members = append(members, entity.NewMember(uuid, id, name, DOB, personnummer, email, mobile, address, synagogueSeat, membershipFeeTier, registeredDate, deregisteredDate, receiveEmail, receiveMail, receiveHatikva, archived, entity.MemberStatus(status), familyUUID, familyGroup))
 	}
 	err := rows.Err()
 	if err != nil {

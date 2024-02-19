@@ -11,17 +11,17 @@ import (
 	"strings"
 )
 
-templ (vctx *ViewCtx) Members(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
+templ (vctx *ViewCtx) Members(members []entity.Member, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
-		@vctx.MembersPage(members, memberUUID, familyUUID, familyGroup, memberDetails, groups, f)
+		@vctx.MembersPage(members, memberDetails, groups, f)
 	} else {
 		@vctx.AppRoot("") {
-			@vctx.MembersPage(members, memberUUID, familyUUID, familyGroup, memberDetails, groups, f)
+			@vctx.MembersPage(members, memberDetails, groups, f)
 		}
 	}
 }
 
-templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
+templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
 	<div id="members">
 		// Placeholders
 		<div id="memberForm">
@@ -56,7 +56,7 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberUUID, familyUUI
 				</div>
 			</div>
 			<div class="w-1/5 px-4 mt-10">
-				@vctx.MemberDetails(memberUUID, familyUUID, familyGroup, memberDetails, groups)
+				@vctx.MemberDetails(memberDetails, groups)
 			</div>
 		</div>
 		@vctx.Footer()
@@ -166,7 +166,7 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member, guuid, fromVal
 	// Delete member
 	<td
 		id={ "delete-" + member.UUID }
-		hx-delete={ constants.ROUTE_MEMBER_DELETE + "/" + member.UUID }
+		hx-delete={ constants.ROUTE_MEMBER_ARCHIVE + "/" + member.UUID }
 		hx-target="#members"
 		hx-select="#members"
 		hx-swap="outerHTML"
@@ -198,7 +198,7 @@ script memberDeleteConfirm(memberUUID string) {
 	})
 }
 
-templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, memberDetails []entity.MemberDetail, groups []entity.Group) {
+templ (vctx *ViewCtx) MemberDetails(memberDetails []entity.MemberDetail, groups []entity.Group) {
 	<div
 		id="memberDetails"
 		class="px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700"
@@ -219,14 +219,15 @@ templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, 
 					Family
 				</li>
 				<li
-					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&fuuid=" + familyUUID }
+					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails[0].Value + "&fuuid=" + memberDetails[1].Value }
 					hx-target="#members"
 					hx-select="#members"
 					hx-swap="outerHTML"
-					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&fuuid=" + familyUUID }
+					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails[0].Value + "&fuuid=" + memberDetails[1].Value }
 					class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer"
 				>
-					{ string(familyGroup) }
+					// Family name
+					{ string(memberDetails[2].Value) }
 				</li>
 				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
 					Groups	
@@ -235,11 +236,11 @@ templ (vctx *ViewCtx) MemberDetails(memberUUID, familyUUID, familyGroup string, 
 					<ul class="text-sm">
 						for _, group := range groups {
 							<li
-								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&guuid=" + group.UUID }
+								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails[0].Value + "&guuid=" + group.UUID }
 								hx-target="#members"
 								hx-select="#members"
 								hx-swap="outerHTML"
-								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberUUID + "&guuid=" + group.UUID }
+								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails[0].Value + "&guuid=" + group.UUID }
 							>{ group.Name }</li>
 						}
 					</ul>

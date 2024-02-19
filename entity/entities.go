@@ -23,10 +23,13 @@ func NewUser(name, password, role string) User {
 
 type MemberStatus string
 
+// Aktiv, Utmeldt, Død, Stopp
+// TODO: What does "Stopp" mean?
 const (
-	MemberStatusActive      MemberStatus = "active"
-	MemberStatusArchived    MemberStatus = "archived"
-	MemberStatusToBeDeleted MemberStatus = "tobedeleted"
+	MemberStatusActive       MemberStatus = "active"
+	MemberStatusDeregistered MemberStatus = "deregistered"
+	MemberStatusDead         MemberStatus = "dead"
+	MemberStatusStop         MemberStatus = "stop"
 )
 
 // https://www.posten.no/sende/adressering#:~:text=Adressering%20til%20postmottakere%20i%20Norge&text=Felles%20for%20all%20adressering%20er,p%C3%A5%20nederste%20linje%20i%20adressen.
@@ -48,6 +51,19 @@ func NewAddress(address1, address2, postnummer, poststed string) Address {
 
 // Fødselsnummer (11 digits) = dateOfBirth (6 digits) + personnummer (5 digits)
 // https://mail.google.com/mail/u/0/#search/from%3Aadm%40dmt.oslo.no/FMfcgzGwJcbCTnSbdzxfhHXlFLZCXDGZ?projector=1&messagePartId=0.1
+// ok Navn
+// ok Adresse
+// ok Kommune
+// ok Fødselsdato
+// ok Personnummer
+// ok E-post
+// ok Telefonnummer
+// ok Synagogeplass
+// ok Medlemsbidrags-grupper
+// ok Innmeldings dato
+// ok Utmeldings dato
+// ok Status medlemskap Aktiv, Utmeldt, Død, Stopp
+// ok Hatikva?
 type Member struct {
 	UUID         string
 	ID           string
@@ -56,35 +72,59 @@ type Member struct {
 	Personnummer string
 	Email        string
 	Mobile       string
-	Status       MemberStatus
 	Address
-	ReceiveEmail bool
-	ReceiveMail  bool
-	FamilyUUID   string
-	FamilyGroup  string
+	Synagogueseat     string
+	MembershipFeeTier string
+	RegisteredDate    time.Time
+	DeregisteredDate  time.Time
+	ReceiveEmail      bool
+	ReceiveMail       bool
+	ReceiveHatikva    bool
+	Archived          bool
+	Status            MemberStatus
+	FamilyUUID        string
+	FamilyGroup       string
 }
 
 func NewMember(uuid,
 	id, name string,
 	dob time.Time,
 	personnummer,
-	email, mobile string,
+	email,
+	mobile string,
 	address Address,
+	synagogueseat string,
+	membershipFeeTier string,
+	registeredDate time.Time,
+	deregisteredDate time.Time,
+	receiveEmail bool,
+	receiveMail bool,
+	receiveHatikva bool,
+	archived bool,
 	status MemberStatus,
-	familyUUID, familyGroup string,
+	familyUUID,
+	familyGroup string,
 ) Member {
 	return Member{
-		UUID:         uuid,
-		ID:           id,
-		Name:         name,
-		DOB:          dob,
-		Personnummer: personnummer,
-		Email:        email,
-		Mobile:       mobile,
-		Address:      address,
-		Status:       status,
-		FamilyUUID:   familyUUID,
-		FamilyGroup:  familyGroup,
+		UUID:              uuid,
+		ID:                id,
+		Name:              name,
+		DOB:               dob,
+		Personnummer:      personnummer,
+		Email:             email,
+		Mobile:            mobile,
+		Address:           address,
+		Synagogueseat:     synagogueseat,
+		MembershipFeeTier: membershipFeeTier,
+		RegisteredDate:    registeredDate,
+		DeregisteredDate:  deregisteredDate,
+		ReceiveEmail:      receiveEmail,
+		ReceiveMail:       receiveMail,
+		ReceiveHatikva:    receiveHatikva,
+		Archived:          archived,
+		Status:            status,
+		FamilyUUID:        familyUUID,
+		FamilyGroup:       familyGroup,
 	}
 }
 
@@ -121,23 +161,27 @@ type MemberDetail struct {
 }
 
 // To be presented on the detail section of the member page
+// Maybe not the best way to get a list of data in order, when we have to write memberDetails[2].Value to get some value.
 func GetMemberDetails(member Member) []MemberDetail {
-	datas := []MemberDetail{}
+	details := []MemberDetail{}
 
 	if member.DOB.IsZero() {
-		return datas
+		return details
 	}
 
-	datas = append(datas, MemberDetail{"ID", member.ID})
-	datas = append(datas, MemberDetail{"Date of Birth", util.Time2String(member.DOB)})
-	datas = append(datas, MemberDetail{"Personnummer", member.Personnummer})
-	datas = append(datas, MemberDetail{"Name", member.Name})
-	datas = append(datas, MemberDetail{"Email", member.Email})
-	datas = append(datas, MemberDetail{"Mobile", member.Mobile})
-	datas = append(datas, MemberDetail{"Address1", member.Address.Address1})
-	datas = append(datas, MemberDetail{"Address2", member.Address.Address2})
-	datas = append(datas, MemberDetail{"Poststed", member.Address.Postnummer + " " + member.Address.Poststed})
-	datas = append(datas, MemberDetail{"Status", string(member.Status)})
+	details = append(details, MemberDetail{"UUID", member.UUID})
+	details = append(details, MemberDetail{"FamilyUUID", member.FamilyUUID})
+	details = append(details, MemberDetail{"FamilyGroup", member.FamilyGroup})
+	details = append(details, MemberDetail{"ID", member.ID})
+	details = append(details, MemberDetail{"Date of Birth", util.Time2String(member.DOB)})
+	details = append(details, MemberDetail{"Personnummer", member.Personnummer})
+	details = append(details, MemberDetail{"Name", member.Name})
+	details = append(details, MemberDetail{"Email", member.Email})
+	details = append(details, MemberDetail{"Mobile", member.Mobile})
+	details = append(details, MemberDetail{"Address1", member.Address.Address1})
+	details = append(details, MemberDetail{"Address2", member.Address.Address2})
+	details = append(details, MemberDetail{"Poststed", member.Address.Postnummer + " " + member.Address.Poststed})
+	details = append(details, MemberDetail{"Status", string(member.Status)})
 
-	return datas
+	return details
 }

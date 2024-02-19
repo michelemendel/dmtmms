@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"strconv"
+	"time"
 
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/util"
@@ -50,8 +51,7 @@ func (r *Repo) CreateTables() {
 	sqlStmts["create_members"] = `
 	CREATE TABLE IF NOT EXISTS members (
 		uuid TEXT PRIMARY KEY,
-		family_uuid TEXT,
-		id TEXT NOT NULL UNIQUE,
+		id TEXT UNIQUE,
 		name TEXT NOT NULL,
 		dob REAL,
 		personnummer TEXT,
@@ -61,11 +61,19 @@ func (r *Repo) CreateTables() {
 		address2 TEXT,
 		postnummer TEXT,
 		poststed TEXT,
-		status TEXT NOT NULL,
+		synagogue_seat TEXT,
+		membership_fee_tier TEXT,
+		registered_date REAL,
+		deregistered_date REAL,
 		receive_email BOOLEAN,
 		receive_mail BOOLEAN,
+		receive_hatikva BOOLEAN,
+		status TEXT NOT NULL,
+		archived BOOLEAN,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER,
+		family_uuid TEXT,
+		family_group TEXT,
 		FOREIGN KEY(family_uuid) REFERENCES families(uuid)
 	); `
 
@@ -151,42 +159,8 @@ func (r *Repo) InsertUsers() {
 
 // Members
 
-func (r *Repo) InsertMembersGroups() {
-	// 12 values
-	memberStmt, _ := r.DB.Prepare(`
-	INSERT INTO members(uuid, id, name, dob, personnummer, email, mobile, address1, address2, postnummer, poststed, status) 
-	VALUES(?, ?, ?, julianday(?), ?, ?, ?, ?, ?, ?, ?, ?)`)
+func (r *Repo) InsertFamilies() {
 	familyStmt, _ := r.DB.Prepare("INSERT INTO families(uuid, name) values(?, ?)")
-	groupStmt, _ := r.DB.Prepare("INSERT INTO groups(uuid, name) values(?, ?)")
-
-	memberIdPrefix := "99"
-	namePrefix := "mem"
-	phonePrefix := "12377"
-	address1 := ""
-	address2 := ""
-	postnummer := ""
-	poststed := ""
-	nrStart := 100
-	memberUUID := 11
-	nofMembers := 50
-	var status entity.MemberStatus = entity.MemberStatusActive
-	dob := util.String2Time("1980-02-01")
-	personnummer := "12345"
-	for i := 0; i < nofMembers; i++ {
-		memberId := memberIdPrefix + strconv.Itoa(nrStart+i)
-		name := namePrefix + strconv.Itoa(memberUUID)
-		email := name + "@test.com"
-		mobile := phonePrefix + strconv.Itoa(nrStart+i)
-		_, err := memberStmt.Exec(strconv.Itoa(memberUUID), memberId, name, dob, personnummer, email, mobile, address1, address2, postnummer, poststed, status)
-		if err != nil {
-			slog.Error(err.Error())
-		}
-		memberUUID++
-		dob = dob.AddDate(0, 1, 1)
-	}
-
-	// Families
-
 	familyUUID := 101
 	families := []string{"fam1", "fam2"}
 	for _, familyGroup := range families {
@@ -196,9 +170,9 @@ func (r *Repo) InsertMembersGroups() {
 		}
 		familyUUID++
 	}
-
-	// Groups
-
+}
+func (r *Repo) InsertGroups() {
+	groupStmt, _ := r.DB.Prepare("INSERT INTO groups(uuid, name) values(?, ?)")
 	groupUUID := 1001
 	groups := []string{"org1", "org2", "org3"}
 	for _, groupName := range groups {
@@ -208,36 +182,66 @@ func (r *Repo) InsertMembersGroups() {
 		}
 		groupUUID++
 	}
+}
 
-	// Family relationships
+type member struct {
+	uuid         string
+	receiveEmail bool
+	archived     bool
+	familyUUID   string
+	familyGroup  string
+	groupUUIDs   []string
+}
 
-	// Update members family relation
-	famUpdStmt, err := r.DB.Prepare("UPDATE members SET family_uuid=? WHERE uuid=?")
+var members = map[string]member{
+	"11": {uuid: "11", receiveEmail: true, archived: false, familyUUID: "101", familyGroup: "fam1", groupUUIDs: []string{"1001", "1002"}},
+	"12": {uuid: "12", receiveEmail: true, archived: false, familyUUID: "101", familyGroup: "fam1", groupUUIDs: []string{"1002", "1003"}},
+	"13": {uuid: "13", receiveEmail: false, archived: false, familyUUID: "102", familyGroup: "fam2", groupUUIDs: []string{"1001", "1002"}},
+	"14": {uuid: "14", receiveEmail: true, archived: false, familyUUID: "102", familyGroup: "fam2", groupUUIDs: []string{"1002", "1003"}},
+	"15": {uuid: "15", receiveEmail: false, archived: true, familyUUID: "102", familyGroup: "fam2", groupUUIDs: []string{"1002", "1004"}},
+}
 
-	if err != nil {
-		fmt.Println("error in prepared stmt for update", err.Error())
+func (r *Repo) InsertMembers() {
+	nofMembers := 72
+	nrStart := 100
+	memberUUID := 11
+	dob := util.String2Time("1980-02-01")
+	personnummer := "12345"
+	memberIdPrefix := "99"
+	namePrefix := "mem"
+	phonePrefix := "12377"
+	address1 := ""
+	address2 := ""
+	postnummer := ""
+	poststed := ""
+	var status entity.MemberStatus = entity.MemberStatusActive
+	for i := 0; i < nofMembers; i++ {
+		memberId := memberIdPrefix + strconv.Itoa(nrStart+i)
+		name := namePrefix + strconv.Itoa(memberUUID)
+		email := name + "@test.com"
+		mobile := phonePrefix + strconv.Itoa(nrStart+i)
+		address := entity.NewAddress(address1, address2, postnummer, poststed)
+		receiveEmail := true
+		archived := false
+		familyUUID := ""
+		familyGroup := ""
+		groupUUIDs := []string{}
+		if m, ok := members[strconv.Itoa(memberUUID)]; ok {
+			receiveEmail = m.receiveEmail
+			archived = m.archived
+			familyUUID = m.familyUUID
+			familyGroup = m.familyGroup
+			groupUUIDs = m.groupUUIDs
+		}
+
+		member := entity.NewMember(strconv.Itoa(memberUUID), memberId, name, dob, personnummer, email, mobile, address, "", "", util.String2Time("2020-01-01"), time.Time{}, receiveEmail, false, false, archived, status, familyUUID, familyGroup)
+		err := r.CreateMember(member, groupUUIDs)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+		memberUUID++
+		dob = dob.AddDate(0, 1, 1)
 	}
-	// mem1,mem2 is in fam1
-	famUpdStmt.Exec(101, 11)
-	famUpdStmt.Exec(101, 12)
-	// mem3,mem4 is in fam2
-	famUpdStmt.Exec(102, 13)
-	famUpdStmt.Exec(102, 14)
-
-	// Group relationships
-	memberGroupStmt, _ := r.DB.Prepare("INSERT INTO members_groups(member_uuid, group_uuid) values(?, ?)")
-
-	// mem1,mem3 is in org1 and org2
-	_, _ = memberGroupStmt.Exec(11, 1001)
-	_, _ = memberGroupStmt.Exec(11, 1002)
-	_, _ = memberGroupStmt.Exec(13, 1001)
-	_, _ = memberGroupStmt.Exec(13, 1002)
-	// mem4 is in org2 and org3
-	_, _ = memberGroupStmt.Exec(14, 1002)
-	_, _ = memberGroupStmt.Exec(14, 1003)
-	// mem5 is in org2 and org3
-	_, _ = memberGroupStmt.Exec(15, 1002)
-	_, _ = memberGroupStmt.Exec(15, 1003)
 }
 
 func (r *Repo) ShowUsers() error {

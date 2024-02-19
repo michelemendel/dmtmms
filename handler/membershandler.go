@@ -16,7 +16,7 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	members, err := h.MembersFiltered(c, f)
 	if err != nil {
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Members([]entity.Member{}, "", "", "", []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
 	}
 
 	var member entity.Member
@@ -28,8 +28,8 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 		groups = []entity.Group{}
 	}
 
-	memberDatas := entity.GetMemberDetails(member)
-	return h.renderView(c, h.ViewCtx.Members(members, member.UUID, member.FamilyUUID, member.FamilyGroup, memberDatas, groups, f))
+	memberDetails := entity.GetMemberDetails(member)
+	return h.renderView(c, h.ViewCtx.Members(members, memberDetails, groups, f))
 }
 
 func (h *HandlerContext) MembersFiltered(c echo.Context, filter filter.Filter) ([]entity.Member, error) {
@@ -76,16 +76,26 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 }
 
 //--------------------------------------------------------------------------------
-// Delete member
+// Archive & Delete member
+
+func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
+	uuid := c.Param("uuid")
+	err := h.Repo.ArchiveMember(uuid)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", uuid)
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+	}
+	return h.MembersHandler(c)
+}
 
 func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 	uuid := c.Param("uuid")
 	err := h.Repo.DeleteMember(uuid)
 	if err != nil {
 		slog.Error(err.Error(), "uuid", uuid)
-		// vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		// return h.renderView(c, vctx.Members([]entity.Member{}, "", "", "", []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
-		return h.MembersHandler(c)
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
 	}
 	return h.MembersHandler(c)
 }
@@ -100,7 +110,7 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	if err != nil {
 		slog.Error(err.Error(), "uuid", uuid)
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnUpdate))
-		return h.renderView(c, vctx.Members([]entity.Member{}, "", "", "", []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
 	}
 	return h.renderView(c, h.ViewCtx.MemberFormModal(member))
 }

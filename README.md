@@ -1,4 +1,4 @@
-# DMT Member Management System
+# Member Management System
 
 
 ## Description
@@ -20,12 +20,6 @@ Macos
 - Node
 - Tailwind (CSS)
   - npm install -D tailwindcss
-- TW Elements (use Tailwind)
-  - https://tw-elements.com/
-  - There were some issues: This didn't work (Uncaught SyntaxError: Unexpected token '<' (at tw-elements.umd.min.js:1:1))
-  -	<script type="text/javascript" src="../node_modules/tw-elements/dist/js/tw-elements.umd.min.js"></script>
-  - This worked, i.e. I had to get the file from the node_modules folder and put it in the public folder.
-  - <script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>			
 - HTMX - download htmx.min.js from https://htmx.org/
 - templ 
   - https://github.com/a-h/templ
@@ -33,6 +27,8 @@ Macos
   - go get github.com/a-h/templ
   - templ cli
     - go install github.com/a-h/templ/cmd/templ@latest
+- https://hyperscript.org/docs/#install
+  - Get the _hyperscript.min.js from https://github.com/bigskysoftware/_hyperscript/tree/master/dist
 - sweetalert2 - 11.10.4
   - https://sweetalert2.github.io/
   - Download from
@@ -40,9 +36,15 @@ Macos
       - sweetalert2.min.js
       - sweetalert2.min.css
   
-Not used
-- https://hyperscript.org/docs/#install
-  - Get the _hyperscript.min.js from https://github.com/bigskysoftware/_hyperscript/tree/master/dist
+Archived
+- TW Elements (use Tailwind)
+  - NOTE: I removed it, since it was more effective to use Tailwind directly.
+  - https://tw-elements.com/
+  - There were some issues: This didn't work (Uncaught SyntaxError: Unexpected token '<' (at tw-elements.umd.min.js:1:1))
+  -	<script type="text/javascript" src="../node_modules/tw-elements/dist/js/tw-elements.umd.min.js"></script>
+  - This worked, i.e. I had to get the file from the node_modules folder and put it in the public folder.
+  - <script type="text/javascript" src="/public/tw-elements.umd.min.js"></script>			
+
 
 ### Production
 

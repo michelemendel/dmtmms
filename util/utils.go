@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 	"log/slog"
@@ -62,7 +63,7 @@ func Time2String(t time.Time) string {
 func String2Time(s string) time.Time {
 	t, err := time.Parse(constants.DATE_FRMT, s)
 	if err != nil {
-		slog.Error("Error parsing date", "error", err)
+		// slog.Error("Error parsing date", "error", err)
 		return time.Time{}
 	}
 	return t
@@ -79,4 +80,20 @@ func IsHXR(c echo.Context) bool {
 	}
 
 	return c.Request().Header.Get("HX-Request") == "true"
+}
+
+func PP(s any) {
+	res, err := PrettyStruct(s)
+	if err != nil {
+		log.Panic(err)
+	}
+	fmt.Println(res)
+}
+
+func PrettyStruct(data interface{}) (string, error) {
+	val, err := json.MarshalIndent(data, "", "    ")
+	if err != nil {
+		return "", err
+	}
+	return string(val), nil
 }

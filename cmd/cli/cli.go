@@ -27,7 +27,9 @@ func main() {
 			repo.CreateTables()
 			repo.CreateIndexes()
 			repo.InsertUsers()
-			repo.InsertMembersGroups()
+			repo.InsertFamilies()
+			repo.InsertGroups()
+			repo.InsertMembers()
 		default:
 			fmt.Println("no op specified")
 		}
@@ -57,7 +59,9 @@ func main() {
 		case "users":
 			repo.InsertUsers()
 		case "members_groups":
-			repo.InsertMembersGroups()
+			repo.InsertFamilies()
+			repo.InsertGroups()
+			repo.InsertMembers()
 		default:
 			fmt.Println("no op specified")
 		}
