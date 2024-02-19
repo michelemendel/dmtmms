@@ -129,28 +129,50 @@ func (r *Repo) CreateIndexes() {
 //--------------------------------------------------------------------------------
 // DML
 
-type user struct {
-	name string
-	pw   string
-	role string
-}
-
+// Users
 func (r *Repo) InsertUsers() {
-	stmt, err := r.DB.Prepare("INSERT INTO users(name,password,role) values(?, ?, ?)")
-	if err != nil {
-		slog.Error(err.Error())
-	}
-
-	users := []user{
-		{"root", "root", "root"},
-		{"abe", "abe", "admin"},
-		{"eve", "eve", "edit"},
-		{"ron", "ron", "read"},
+	users := []entity.User{
+		{Name: "root", HashedPassword: "root", Role: "root"},
+		{Name: "abe", HashedPassword: "abe", Role: "admin"},
+		{Name: "eve", HashedPassword: "eve", Role: "edit"},
+		{Name: "ron", HashedPassword: "ron", Role: "read"},
 	}
 
 	for _, user := range users {
-		hpw, _ := util.HashPassword(user.pw)
-		_, err = stmt.Exec(user.name, hpw, user.role)
+		hpw, _ := util.HashPassword(user.HashedPassword)
+		user.HashedPassword = hpw
+		err := r.CreateUser(user)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+	}
+}
+
+// Families
+func (r *Repo) InsertFamilies() {
+	families := []entity.Family{
+		{UUID: "101", Name: "fam1"},
+		{UUID: "102", Name: "fam2"},
+	}
+
+	for _, family := range families {
+		err := r.CreateFamily(family)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+	}
+}
+
+// Groups
+func (r *Repo) InsertGroups() {
+	groups := []entity.Group{
+		{UUID: "1001", Name: "org1"},
+		{UUID: "1002", Name: "org2"},
+		{UUID: "1003", Name: "org3"},
+		{UUID: "1004", Name: "org4"},
+	}
+	for _, group := range groups {
+		err := r.CreateGroup(group)
 		if err != nil {
 			slog.Error(err.Error())
 		}
@@ -158,32 +180,6 @@ func (r *Repo) InsertUsers() {
 }
 
 // Members
-
-func (r *Repo) InsertFamilies() {
-	familyStmt, _ := r.DB.Prepare("INSERT INTO families(uuid, name) values(?, ?)")
-	familyUUID := 101
-	families := []string{"fam1", "fam2"}
-	for _, familyGroup := range families {
-		_, err := familyStmt.Exec(familyUUID, familyGroup)
-		if err != nil {
-			slog.Error(err.Error())
-		}
-		familyUUID++
-	}
-}
-func (r *Repo) InsertGroups() {
-	groupStmt, _ := r.DB.Prepare("INSERT INTO groups(uuid, name) values(?, ?)")
-	groupUUID := 1001
-	groups := []string{"org1", "org2", "org3"}
-	for _, groupName := range groups {
-		_, err := groupStmt.Exec(groupUUID, groupName)
-		if err != nil {
-			slog.Error(err.Error())
-		}
-		groupUUID++
-	}
-}
-
 type member struct {
 	uuid         string
 	receiveEmail bool
