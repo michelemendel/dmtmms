@@ -18,11 +18,11 @@ templ (vctx *ViewCtx) Login(username string, err error) {
 					hx-push-url="true"
 				>
 					<!--E-mail input-->
-					<div class="relative mb-6" data-te-input-wrapper-init>
+					<div class="mb-6" data-te-input-wrapper-init>
 						@Input("username", "", "Username", "Enter email", true, false)
 					</div>
 					<!--Password input-->
-					<div class="relative mb-6" data-te-input-wrapper-init>
+					<div class="mb-6" data-te-input-wrapper-init>
 						@InputPassword("password", "", "Password", "Password", true, false)
 					</div>
 					<!-- Error -->

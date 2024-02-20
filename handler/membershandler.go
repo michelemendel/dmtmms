@@ -5,8 +5,10 @@ import (
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
+	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/filter"
+	"github.com/michelemendel/dmtmms/util"
 	"github.com/michelemendel/dmtmms/view"
 )
 
@@ -68,10 +70,24 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 // Create member
 
 func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
-	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}))
+	families, _ := h.Repo.SelectFamilies()
+	groups, _ := h.Repo.SelectGroups()
+	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}, families, groups, []string{}, constants.OP_CREATE))
 }
 
 func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
+	uuid := util.GenerateUUID()
+	id := c.FormValue("id")
+	name := c.FormValue("name")
+	// dob := c.FormValue("dob")
+	// personnummer := c.FormValue("personnummer")
+	email := c.FormValue("email")
+	// mobile := c.FormValue("mobile")
+	// familyUUID := c.FormValue("family")
+	// groupUUIDs := c.FormValue("groups")
+
+	fmt.Println("[CREATE_MEMBER]:", uuid, id, name, email)
+
 	return h.MembersHandler(c)
 }
 
@@ -107,12 +123,16 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	uuid := c.Param("uuid")
 	fmt.Println("[UPDATE_MEMBER]: uuid:", uuid)
 	member, err := h.Repo.SelectMemberByUUID(uuid)
+	fmt.Println("[UPDATE_MEMBER]:", member.DOB, util.Time2String(member.DOB))
 	if err != nil {
 		slog.Error(err.Error(), "uuid", uuid)
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnUpdate))
 		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
 	}
-	return h.renderView(c, h.ViewCtx.MemberFormModal(member))
+	families, _ := h.Repo.SelectFamilies()
+	groups, _ := h.Repo.SelectGroups()
+	selectedGroupUUIDs, _ := h.Repo.SelectGroupUUIDsByMember(member.UUID)
+	return h.renderView(c, h.ViewCtx.MemberFormModal(member, families, groups, selectedGroupUUIDs, constants.OP_UPDATE))
 }
 
 func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {

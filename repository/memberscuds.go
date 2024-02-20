@@ -13,50 +13,20 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 	_, err := tx.Exec(`
 	INSERT INTO members(
 		uuid, 
-		id, 
-		name, 
-		dob, 
-		personnummer, 
-		email, 
+		id, name, dob, personnummer, email, 
 		mobile, 
-		address1, 
-		address2, 
-		postnummer, 
-		poststed, 
-		synagogue_seat,
-		membership_fee_tier,
-		registered_date,
-		deregistered_date,
-		receive_email,
-		receive_mail,
-		receive_hatikva,
-		archived,
-		status,
-		family_uuid,
+		address1, address2, postnummer, poststed, 
+		synagogue_seat, membership_fee_tier, registered_date, deregistered_date, receive_email,
+		receive_mail, receive_hatikva, archived, status, family_uuid,
 		family_group
 	) VALUES(?, ?, ?, julianday(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, julianday(?), julianday(?), ?, ?, ?, ?, ?, ?, ?)
 	`,
 		member.UUID,
-		member.ID,
-		member.Name,
-		member.DOB,
-		member.Personnummer,
-		member.Email,
+		member.ID, member.Name, member.DOB, member.Personnummer, member.Email,
 		member.Mobile,
-		member.Address.Address1,
-		member.Address.Address2,
-		member.Address.Postnummer,
-		member.Address.Poststed,
-		member.Synagogueseat,
-		member.MembershipFeeTier,
-		member.RegisteredDate,
-		member.DeregisteredDate,
-		member.ReceiveEmail,
-		member.ReceiveMail,
-		member.ReceiveHatikva,
-		member.Archived,
-		member.Status,
-		member.FamilyUUID,
+		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
+		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate, member.ReceiveEmail,
+		member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status, member.FamilyUUID,
 		member.FamilyGroup,
 	)
 	if err != nil {
@@ -99,7 +69,48 @@ func (r *Repo) DeleteMember(memberUUID string) error {
 	return nil
 }
 
+// slog.Info("UpdateGroup", "uuid", member.UUID, "name", member.Name)
 func (r *Repo) UpdateMember(member entity.Member) error {
-	slog.Info("UpdateGroup", "uuid", member.UUID, "name", member.Name)
+	tx, _ := r.DB.Begin()
+	_, err := tx.Exec(`
+	UPDATE members SET 
+		id=?, 
+		name=?, 
+		dob=julianday(?), 
+		personnummer=?, 
+		email=?, 
+		mobile=?, 
+		address1=?, 
+		address2=?, 
+		postnummer=?, 
+		poststed=?, 
+		synagogue_seat=?, 
+		membership_fee_tier=?, 
+		registered_date=julianday(?), 
+		deregistered_date=julianday(?), 
+		receive_email=?, 
+		receive_mail=?, 
+		receive_hatikva=?, 
+		archived=?, 
+		status=?, 
+		family_uuid=?, 
+		family_group=? 
+	WHERE uuid=?
+	`,
+		member.ID, member.Name, member.DOB, member.Personnummer, member.Email,
+		member.Mobile,
+		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
+		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate, member.ReceiveEmail,
+		member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status, member.FamilyUUID,
+		member.FamilyGroup,
+		member.UUID,
+	)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", member.UUID, "name", member.Name)
+		tx.Rollback()
+		return e.ErrUpdatingMember
+	}
+	tx.Commit()
+	slog.Info("UpdateMember", "uuid", member.UUID, "name", member.Name)
 	return nil
 }

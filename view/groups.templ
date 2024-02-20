@@ -121,7 +121,7 @@ templ (vctx *ViewCtx) GroupForm(selectedGroup entity.Group, op string) {
 			// UUID
 			<input type="hidden" name="uuid" value={ selectedGroup.UUID }/>
 			// Group name
-			<div class="relative">
+			<div>
 				@Input("name", selectedGroup.Name, "name", "name", true, false)
 			</div>
 			// Submit

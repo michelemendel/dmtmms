@@ -2,14 +2,14 @@ package view
 
 import (
 	"github.com/michelemendel/dmtmms/constants"
-
 	"github.com/michelemendel/dmtmms/entity"
+	"github.com/michelemendel/dmtmms/util"
 )
 
-templ (vctx *ViewCtx) MemberFormModal(member entity.Member) {
+templ (vctx *ViewCtx) MemberFormModal(member entity.Member, families []entity.Family, groups []entity.Group, selectedGroups []string, op string) {
 	<div
 		id="memberForm"
-		class="fixed z-10 inset-0 overflow-y-auto"
+		class="fixed z-20 inset-0 overflow-y-auto"
 	>
 		<div class="flex items-center justify-center min-h-screen bg-gray-300 bg-opacity-40">
 			<div class="bg-white w-1/2 p-6 rounded shadow-md">
@@ -32,15 +32,113 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member) {
 						</svg>
 					</button>
 				</div>
-				<h2 class="text-xl font-bold text-gray-900">Edit member</h2>
+				<h2 class="text-lg font-bold text-gray-900">
+					if op == "create" {
+						Add Member
+					} else {
+						Update Member
+					}
+				</h2>
+				// --------------------------------------------------------------------------------
 				// Form
 				<form>
-					<div class="relative mt-4">
+					// id
+					<div class="mt-2">
+						@Input("id", member.ID, "", "Id", false, false)
+					</div>
+					// name
+					<div class="mt-2">
 						@Input("name", member.Name, "", "Name", true, false)
 					</div>
-					<div class="relative mt-4">
-						@Input("email", member.Email, "", "Email", false, false)
+					// email
+					<div class="mt-2">
+						@InputEmail("email", member.Email, "", "Email", false, false)
 					</div>
+					// phone
+					<div class="mt-2">
+						@Input("phone", member.Mobile, "", "Phone", false, false)
+					</div>
+					// DOB + personnummer
+					<div class="mt-2 flex flex-row">
+						<div>
+							if member.DOB.IsZero() {
+								@DatePicker("dob", "", "DOB")
+							} else {
+								@DatePicker("dob", util.Time2String(member.DOB), "DOB")
+							}
+						</div>
+						<div class="ml-2 w-[60px]">
+							@Input("personnummer", member.Personnummer, "", "PN", false, false)
+						</div>
+					</div>
+					// address
+					<div class="mt-2">
+						<div class="">
+							@Input("address1", member.Address1, "", "Address1", false, false)
+						</div>
+						<div class="mt-1">
+							@Input("address2", member.Address2, "", "Address2", false, false)
+						</div>
+						<div class="mt-1 flex flex-row">
+							<div class="w-[160px]">
+								@Input("postnummer", member.Postnummer, "", "Postnummer", false, false)
+							</div>
+							<div class="ml-2 w-[80px]">
+								@Input("poststed", member.Poststed, "", "Poststed", false, false)
+							</div>
+						</div>
+					</div>
+					// synagogue_seat
+					<div class="mt-2">
+						@Input("synagogue_seat", member.Synagogueseat, "", "Synagogue seat", false, false)
+					</div>
+					// membership_fee_tier
+					<div class="mt-2">
+						@Input("membership_fee_tier", member.MembershipFeeTier, "", "Membership fee tier", false, false)
+					</div>
+					// registered_date 
+					<div class="mt-2">
+						if member.RegisteredDate.IsZero() {
+							@DatePicker("registered_date", "", "Reg.date")
+						} else {
+							@DatePicker("registered_date", util.Time2String(member.RegisteredDate), "Reg.date")
+						}
+					</div>
+					// deregistered_date 
+					<div class="mt-2">
+						if member.DeregisteredDate.IsZero() {
+							@DatePicker("deregistered_date", "", "Dereg.date")
+						} else {
+							@DatePicker("deregistered_date", util.Time2String(member.RegisteredDate), "Dereg.date")
+						}
+					</div>
+					// receive_email
+					<div class="mt-2">
+						@Checkbox("receive_email", member.ReceiveEmail, "Receive email", false)
+					</div>
+					// receive_mail
+					<div class="mt-1">
+						@Checkbox("receive_mail", member.ReceiveMail, "Receive mail", false)
+					</div>
+					// receive_hatikva
+					<div class="mt-1">
+						@Checkbox("receive_hatikvah", member.ReceiveHatikva, "Receive Hatikvah", false)
+					</div>
+					// status
+					<div class="mt-2">
+						@vctx.SelectDD("status", string(member.Status), "Status", vctx.MemberStatuses)
+					</div>
+					// family_group (family_uuid)
+					<div class="mt-2">
+						@vctx.SelectFamilies("family_group", "Family", member.FamilyUUID, families)
+					</div>
+					// groups (groups uuid)
+					<div class="mt-2">
+						@vctx.SelectGroups("groups", "Groups", selectedGroups, groups)
+					</div>
+					// 
+					// --------------------------------------------------------------------------------
+					// Button
 					<div class="mt-4">
 						<button
 							hx-post={ constants.ROUTE_MEMBER_CREATE }
@@ -49,7 +147,11 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member) {
 							type="button"
 							class={ ButtonClass }
 						>
-							Submit
+							if op == "create" {
+								Add
+							} else {
+								Update
+							}
 						</button>
 					</div>
 				</form>
@@ -64,48 +166,3 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member) {
 		</script>
 	</div>
 }
-
-// templ (vctx *ViewCtx) MemberForm(uuid string) {
-// 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
-// 		@vctx.MemberFormPage()
-// 	} else {
-// 		@vctx.AppRoot("") {
-// 			@vctx.MemberFormPage()
-// 		}
-// 	}
-// }
-
-// templ (vctx *ViewCtx) MemberFormPage() {
-// 	<div id="memberForm">
-// 		<form>
-// 			<div class="relative">
-// 				<button
-// 					class={ ButtonClass }
-// 				>
-// 					Get bundle
-// 				</button>
-// 			</div>
-// 			<div class="relative">
-// 				<details class="dropdown">
-// 					<summary class="m-1 btn">open or close</summary>
-// 					<ul class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
-// 						<li><a>Item 1</a></li>
-// 						<li><a>Item 2</a></li>
-// 					</ul>
-// 				</details>
-// 			</div>
-// 			<div class="dropdown">
-// 				<div tabindex="0" role="button" class="btn m-1">Click</div>
-// 				<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-// 					<li><a>Item 1</a></li>
-// 					<li><a>Item 2</a></li>
-// 				</ul>
-// 			</div>
-// 			<button class="btn btn-primary">Button</button>
-// 		</form>
-// 		<span class="countdown font-mono text-6xl">
-// 			<span style="--value:50;"></span>
-// 		</span>
-// 		@vctx.Footer()
-// 	</div>
-// }

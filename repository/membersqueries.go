@@ -17,17 +17,9 @@ import (
 const (
 	selectMember = `
 	SELECT 
-	m.uuid, 
-	m.id, 
-	m.name, 
-	date(m.dob), 
-	m.personnummer, 
-	m.email, 
-	m.mobile, 
-	m.address1, 
-	m.address1, 
-	m.postnummer, 
-	m.poststed, 
+	m.uuid, m.id, m.name, date(m.dob), m.personnummer, 
+	m.email, m.mobile, 
+	m.address1, m.address1, m.postnummer, m.poststed, 
 	IFNULL(m.synagogue_seat, ""),
 	IFNULL(m.membership_fee_tier, ""),
 	IFNULL(date(m.registered_date), ""),
@@ -147,7 +139,14 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 	var familyGroup string
 	//
 	for rows.Next() {
-		err := rows.Scan(&uuid, &id, &name, &dobStr, &personnummer, &email, &mobile, &address1, &address2, &postnummer, &poststed, &synagogueSeat, &membershipFeeTier, &registeredDateStr, &deregisteredDateStr, &receiveEmail, &receiveMail, &receiveHatikva, &archived, &status, &familyUUID, &familyGroup)
+		err := rows.Scan(
+			&uuid, &id, &name, &dobStr, &personnummer,
+			&email, &mobile,
+			&address1, &address2, &postnummer, &poststed,
+			&synagogueSeat, &membershipFeeTier, &registeredDateStr, &deregisteredDateStr,
+			&receiveEmail, &receiveMail, &receiveHatikva, &archived, &status, &familyUUID,
+			&familyGroup,
+		)
 		if err != nil {
 			slog.Error(err.Error())
 			return members, err
@@ -157,7 +156,14 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 		registeredDate := util.String2Time(registeredDateStr)
 		deregisteredDate := util.String2Time(deregisteredDateStr)
 		address := entity.NewAddress(address1, address2, postnummer, poststed)
-		members = append(members, entity.NewMember(uuid, id, name, DOB, personnummer, email, mobile, address, synagogueSeat, membershipFeeTier, registeredDate, deregisteredDate, receiveEmail, receiveMail, receiveHatikva, archived, entity.MemberStatus(status), familyUUID, familyGroup))
+		members = append(members, entity.NewMember(
+			uuid, id, name, DOB, personnummer,
+			email, mobile,
+			address,
+			synagogueSeat, membershipFeeTier, registeredDate, deregisteredDate, receiveEmail,
+			receiveMail, receiveHatikva, archived, entity.MemberStatus(status), familyUUID,
+			familyGroup,
+		))
 	}
 	err := rows.Err()
 	if err != nil {

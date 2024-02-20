@@ -74,14 +74,14 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 		hx-trigger="keyup[keyCode==13]"
 	>
 		<div id="filterBar" class="flex flex-row">
-			<div class="relative">
+			<div>
 				@Input("searchterms", f.SearchTerms, "search", "search", false, false)
 			</div>
 			<div class="ml-2">
-				@DatePicker("from", f.From)
+				@DatePicker("from", f.From, "From")
 			</div>
 			<div class="ml-2">
-				@DatePicker("to", f.To)
+				@DatePicker("to", f.To, "To")
 			</div>
 			<div class="ml-2">
 				<button class={ ButtonClass }>

@@ -86,3 +86,12 @@ func (r *Repo) SelectGroupsByMember(memberUUID string) ([]entity.Group, error) {
 	}
 	return groups, nil
 }
+
+func (r *Repo) SelectGroupUUIDsByMember(memberUUID string) ([]string, error) {
+	groups, _ := r.SelectGroupsByMember(memberUUID)
+	groupUUIDs := []string{}
+	for _, group := range groups {
+		groupUUIDs = append(groupUUIDs, group.UUID)
+	}
+	return groupUUIDs, nil
+}

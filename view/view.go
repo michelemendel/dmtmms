@@ -1,6 +1,9 @@
 package view
 
-import "github.com/michelemendel/dmtmms/auth"
+import (
+	"github.com/michelemendel/dmtmms/auth"
+	"github.com/michelemendel/dmtmms/entity"
+)
 
 type ViewCtx struct {
 	Opts
@@ -37,6 +40,7 @@ type ViewError struct {
 
 type Opts struct {
 	Roles                []string
+	MemberStatuses       []string
 	TempPassword         string
 	TempPasswordUserName string
 	ViewError            ViewError
@@ -45,7 +49,13 @@ type Opts struct {
 
 func MakeOpts() Opts {
 	return Opts{
-		Roles:                []string{"read", "edit", "admin"},
+		Roles: []string{"read", "edit", "admin"},
+		MemberStatuses: []string{
+			string(entity.MemberStatusActive),
+			string(entity.MemberStatusDeregistered),
+			string(entity.MemberStatusDead),
+			string(entity.MemberStatusStop),
+		},
 		TempPassword:         "",
 		TempPasswordUserName: "",
 		ViewError:            ViewError{},

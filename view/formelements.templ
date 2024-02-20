@@ -1,54 +1,99 @@
 package view
 
 import (
+	"slices"
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
 )
 
-templ Input(id, value, placeholder, label string, required, readonly bool, password ...string) {
+templ Input(id, value, placeholder, label string, required, readonly bool, inputType ...string) {
 	// <a href="https://flowbite.com/docs/forms/floating-label/">flowbite</a>
-	<input
-		if len(password) > 0 {
-			type="password"
-		} else {
-			type="text"
-		}
-		id={ id }
-		name={ id }
-		class="block px-2.5 w-full text-xs leading-[0.5] text-gray-900 bg-transparent rounded border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-		if required {
-			required
-		}
-		if readonly {
-			readonly
-		}
-		placeholder={ value }
-		value={ value }
-	/>
-	<label
-		for={ id }
-		class="absolute text-xs text-gray-500 dark:text-gray-400 duration-100 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-	>
-		{ label }
-	</label>
+	<div class="relative">
+		<input
+			if len(inputType) > 0 {
+				if inputType[0] == "password" {
+					type="password"
+				}
+				else
+				if inputType[0] == "email" {
+					type="email"
+				}
+			} else {
+				type="text"
+			}
+			id={ id }
+			name={ id }
+			class="block px-2.5 w-full text-xs leading-[0.5] text-gray-900 bg-transparent rounded border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+			if required {
+				required
+			}
+			if readonly {
+				readonly
+			}
+			placeholder={ value }
+			value={ value }
+		/>
+		<label
+			for={ id }
+			class="absolute text-xs text-gray-500 dark:text-gray-400 duration-100 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+		>
+			{ label }
+		</label>
+	</div>
 }
 
 templ InputPassword(id, value, placeholder, label string, required, readonly bool) {
-	@Input(id, value, placeholder, label, required, readonly, "password")
+	<div class="relative">
+		@Input(id, value, placeholder, label, required, readonly, "password")
+	</div>
 }
 
-templ DatePicker(id, val string) {
-	<input
-		type="date"
-		id={ id }
-		name={ id }
-		if val == constants.DATE_MIN || val == constants.DATE_MAX {
-			value=""
-		}
-		placeholder={ val }
-		value={ val }
-		class="peer block min-h-[auto] w-full rounded border-1 border-gray-300 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-	/>
+templ InputEmail(id, value, placeholder, label string, required, readonly bool) {
+	<div class="relative">
+		@Input(id, value, placeholder, label, required, readonly, "email")
+	</div>
+}
+
+templ Checkbox(id string, checked bool, label string, readonly bool) {
+	<div class="flex items">
+		<input
+			type="checkbox"
+			id={ id }
+			name={ id }
+			if readonly {
+				class="peer bg-gray-200"
+			} else {
+				class="peer"
+			}
+			checked?={ checked }
+			if readonly {
+				disabled
+			}
+		/>
+		<label
+			for={ id }
+			class="ml-2 text-xs text-gray-900 dark:text-gray-400"
+		>{ label }</label>
+	</div>
+}
+
+templ DatePicker(id, val, label string) {
+	<div class="relative">
+		<input
+			type="date"
+			id={ id }
+			name={ id }
+			if val == constants.DATE_MIN || val == constants.DATE_MAX {
+				value=""
+			}
+			value={ val }
+			class="peer block min-h-[auto] w-full rounded border-1 border-gray-300 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+		/>
+		<label
+			for={ id }
+			class="absolute text-xs text-gray-500 dark:text-gray-400 duration-100 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+		>{ label } </label>
+	</div>
 }
 
 templ (vctx *ViewCtx) RoleOptions(selectedUser entity.User) {
@@ -73,11 +118,11 @@ templ (vctx *ViewCtx) RoleOptions(selectedUser entity.User) {
 // Select, dropdown
 // https://tailwindcomponents.com/component/select-input-field
 // https://tailwindcomponents.com/component/dropdown-with-input-inside-tailwind-css
-templ (vctx *ViewCtx) SelectDD(id, label, selectedItem string, items []string) {
-	<div class="flex flex-row">
+templ (vctx *ViewCtx) SelectDD(id, selectedItem, label string, items []string) {
+	<div class="relative flex flex-row">
 		<label
 			for={ id }
-			class="inline-block align-baseline ml-2 mt-2 mr-[4px] text-xs font-medium text-gray-900 dark:text-gray-400"
+			class="inline-block align-baseline mt-2 mr-[4px] text-xs font-medium text-gray-900 dark:text-gray-400"
 		>{ label }</label>
 		<select
 			id={ id }
@@ -86,6 +131,44 @@ templ (vctx *ViewCtx) SelectDD(id, label, selectedItem string, items []string) {
 		>
 			for _, item := range items {
 				<option value={ item } selected?={ item == selectedItem }>{ item }</option>
+			}
+		</select>
+	</div>
+}
+
+templ (vctx *ViewCtx) SelectFamilies(id, label, selectedUUID string, families []entity.Family) {
+	<div class="relative flex flex-row">
+		<label
+			for={ id }
+			class="inline-block align-baseline mt-2 mr-[4px] text-xs font-medium text-gray-900 dark:text-gray-400"
+		>{ label }</label>
+		<select
+			id={ id }
+			name={ id }
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+		>
+			for _, family := range families {
+				<option value={ family.UUID } selected?={ selectedUUID == family.UUID }>{ family.Name }</option>
+			}
+		</select>
+	</div>
+}
+
+templ (vctx *ViewCtx) SelectGroups(id, label string, selectedUUIDs []string, groups []entity.Group) {
+	<div class="relative flex flex-row">
+		<label
+			for={ id }
+			class="inline-block align-baseline mt-2 mr-[4px] text-xs font-medium text-gray-900 dark:text-gray-400"
+		>{ label }</label>
+		<select
+			id={ id }
+			name={ id }
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+			multiple
+		>
+			for _, group := range groups {
+				// <option value={ group.UUID } selected?={ IsInGroup(group.UUID, selectedUUIDs) }>{ group.Name }</option>
+				<option value={ group.UUID } selected?={ slices.Contains(selectedUUIDs, group.UUID) }>{ group.Name }</option>
 			}
 		</select>
 	</div>

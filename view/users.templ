@@ -129,7 +129,7 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 	>
 		<div class="flex flex-row">
 			// Username input
-			<div class="relative">
+			<div>
 				if op == constants.OP_CREATE {
 					@Input("username", selectedUser.Name, "name", "name", true, false)
 				} else {
@@ -138,19 +138,18 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 			</div>
 			if op == constants.OP_CREATE {
 				// Password input
-				<div class="ml-2 relative">
+				<div class="ml-2">
 					@Input("password", "", "password", "password", true, false)
 				</div>
 			}
 			// Role selection
-			<div class="ml-2 relative">
-				@vctx.SelectDD("role", "Role", selectedUser.Role, vctx.Roles)
+			<div class="ml-2">
+				@vctx.SelectDD("role", selectedUser.Role, "Role", vctx.Roles)
 			</div>
 			// Submit
 			<div class="ml-2">
 				<button
 					type="submit"
-					data-te-ripple-init
 					class={ ButtonClass }
 				>
 					if op == constants.OP_CREATE {
@@ -167,7 +166,6 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 					hx-target="#users"
 					hx-swap="outerHTML"
 					type="button"
-					data-te-ripple-init
 					class={ ButtonClass }
 				>
 					Cancel
