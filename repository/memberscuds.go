@@ -1,7 +1,7 @@
 package repo
 
 import (
-	"fmt"
+	// "fmt"
 	"log/slog"
 
 	// "github.com/michelemendel/dmtmms/e"
@@ -17,8 +17,6 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 		familyUUID = member.FamilyUUID
 		familyName, _ = r.GetFamilyNameByUUID(member.FamilyUUID)
 	}
-
-	// fmt.Println("[R]: familyUUID", familyUUID, "familyName", familyName)
 
 	_, err := tx.Exec(`
 	INSERT INTO members(
@@ -56,8 +54,6 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 		gUUIDs = groupUUIDs
 	}
 
-	fmt.Println("[R]: groupUUIDs", groupUUIDs, "len", len(groupUUIDs), "gUUIDs", gUUIDs)
-
 	for _, groupUUID := range gUUIDs {
 		_, err = tx.Exec(`INSERT INTO members_groups(member_uuid, group_uuid) VALUES(?, ?)`, member.UUID, groupUUID)
 		if err != nil {
@@ -73,7 +69,6 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 }
 
 func (r *Repo) ArchiveMember(memberUUID string) error {
-	fmt.Println("[R]: ArchiveMember", "memberUUID", memberUUID)
 	_, err := r.DB.Exec("UPDATE members SET archived=true WHERE uuid=?", memberUUID)
 	if err != nil {
 		slog.Error(err.Error(), "uuid", memberUUID)
@@ -84,7 +79,6 @@ func (r *Repo) ArchiveMember(memberUUID string) error {
 }
 
 func (r *Repo) DeleteMember(memberUUID string) error {
-	fmt.Println("[R]: DeleteMember", "memberUUID", memberUUID)
 	_, err := r.DB.Exec("DELETE FROM members_groups WHERE member_uuid=?", memberUUID)
 	if err != nil {
 		slog.Error("delete from mebers_groups", "error", err.Error(), "uuid", memberUUID)

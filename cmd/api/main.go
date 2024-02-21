@@ -63,13 +63,11 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 
 	// Authentication (used forbidden here (403), since we use echo.ErrUnauthorized (401) for authorization)
 	if code == echo.ErrForbidden.Code {
-		fmt.Println("redirecting to /login")
 		c.Redirect(http.StatusTemporaryRedirect, "/login")
 		return
 	}
 
 	errorPage := fmt.Sprintf("./public/%d.html", code)
-	fmt.Println("errorPage:", errorPage)
 	fileErr := c.File(errorPage)
 	if fileErr != nil {
 		c.Logger().Error(fileErr)

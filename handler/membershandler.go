@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
@@ -98,6 +97,62 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 	return h.MembersHandler(c)
 }
 
+//--------------------------------------------------------------------------------
+// Archive & Delete member
+
+func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
+	uuid := c.Param("uuid")
+	err := h.Repo.ArchiveMember(uuid)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", uuid)
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+	}
+	return h.MembersHandler(c)
+}
+
+func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
+	uuid := c.Param("uuid")
+	err := h.Repo.DeleteMember(uuid)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", uuid)
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+	}
+	return h.MembersHandler(c)
+}
+
+//--------------------------------------------------------------------------------
+// Update member
+
+func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
+	families, _ := h.Repo.SelectFamilies()
+	groups, _ := h.Repo.SelectGroups()
+	//
+	uuid := c.Param("uuid")
+	member, selectedGroupUUIDs := CreatetMemberFromForm(c, uuid)
+	inputErrors, areErrors := ValidateInput(member)
+	if areErrors {
+		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
+	}
+
+	err := h.Repo.UpdateMember(member, selectedGroupUUIDs)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", uuid, "name", member.Name)
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
+	}
+
+	return h.MembersHandler(c)
+}
+
+func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
+	return h.MembersHandler(c)
+}
+
+//--------------------------------------------------------------------------------
+// Helper functions
+
 func CreatetMemberFromForm(c echo.Context, uuid string) (entity.Member, []string) {
 	params, _ := c.FormParams()
 	id := c.FormValue("id")
@@ -142,59 +197,4 @@ func ValidateInput(member entity.Member) (entity.InputErrors, bool) {
 	}
 	areErrors := len(inputErrors) > 0
 	return inputErrors, areErrors
-}
-
-//--------------------------------------------------------------------------------
-// Archive & Delete member
-
-func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
-	fmt.Println("MemberArchiveHandler:")
-	uuid := c.Param("uuid")
-	err := h.Repo.ArchiveMember(uuid)
-	if err != nil {
-		slog.Error(err.Error(), "uuid", uuid)
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
-	}
-	return h.MembersHandler(c)
-}
-
-func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
-	fmt.Println("MemberDeleteHandler:")
-	uuid := c.Param("uuid")
-	err := h.Repo.DeleteMember(uuid)
-	if err != nil {
-		slog.Error(err.Error(), "uuid", uuid)
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
-	}
-	return h.MembersHandler(c)
-}
-
-//--------------------------------------------------------------------------------
-// Update member
-
-func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
-	families, _ := h.Repo.SelectFamilies()
-	groups, _ := h.Repo.SelectGroups()
-	//
-	uuid := c.Param("uuid")
-	member, selectedGroupUUIDs := CreatetMemberFromForm(c, uuid)
-	inputErrors, areErrors := ValidateInput(member)
-	if areErrors {
-		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
-	}
-
-	err := h.Repo.UpdateMember(member, selectedGroupUUIDs)
-	if err != nil {
-		slog.Error(err.Error(), "uuid", uuid, "name", member.Name)
-		inputErrors["form"] = entity.NewInputError("form", err)
-		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
-	}
-
-	return h.MembersHandler(c)
-}
-
-func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
-	return h.MembersHandler(c)
 }

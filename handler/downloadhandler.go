@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/csv"
 	"errors"
-	"fmt"
 	"log/slog"
 	"strings"
 
@@ -15,11 +14,7 @@ import (
 )
 
 func (h *HandlerContext) DownloadHandler(c echo.Context) error {
-	searchTerms := c.QueryParam("searchterms")
-	from := c.QueryParam("from")
-	to := c.QueryParam("to")
 	downloadType := c.QueryParam("t")
-	fmt.Println("searchTerms", searchTerms, "from", from, "to", to, "downloadType", downloadType)
 	var data []byte
 	members, _ := h.GetMembers(c)
 

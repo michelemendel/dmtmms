@@ -86,10 +86,6 @@ func Bool2String(b bool) string {
 // Check if it is a hxr request
 func IsHXR(c echo.Context) bool {
 	if c.QueryParam("l") == "ok" {
-		fmt.Println("l is ok")
-	}
-
-	if c.QueryParam("l") == "ok" {
 		return false
 	}
 
