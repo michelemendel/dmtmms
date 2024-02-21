@@ -210,3 +210,14 @@ func GetMemberDetailsForPresentation(member Member) []MemberDetail {
 
 	return details
 }
+
+//--------------------------------------------------------------------------------
+//
+
+func Groups2UUIDsAsStrings(groups []Group) []string {
+	groupUUIDs := []string{}
+	for _, group := range groups {
+		groupUUIDs = append(groupUUIDs, group.UUID)
+	}
+	return groupUUIDs
+}

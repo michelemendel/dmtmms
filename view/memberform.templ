@@ -141,7 +141,11 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 					// Button
 					<div class="mt-4">
 						<button
-							hx-post={ constants.ROUTE_MEMBER_CREATE }
+							if op == "create" {
+								hx-post={ constants.ROUTE_MEMBER_CREATE }
+							} else {
+								hx-put={ constants.ROUTE_MEMBER_UPDATE }
+							}
 							hx-target="#members"
 							hx-swap="outerHTML"
 							type="button"

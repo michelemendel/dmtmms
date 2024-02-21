@@ -22,8 +22,12 @@ Update Member
 </div><div class=\"mt-2\">
 </div><div class=\"mt-2\">
 </div><div class=\"mt-4\">
-<button hx-post=\"
-\" hx-target=\"#members\" hx-swap=\"outerHTML\" type=\"button\" class=\"
+<button
+ hx-post=\"
+\"
+ hx-put=\"
+\"
+ hx-target=\"#members\" hx-swap=\"outerHTML\" type=\"button\" class=\"
 \">
 Add
 Update

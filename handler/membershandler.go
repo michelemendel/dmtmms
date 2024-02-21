@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
@@ -128,13 +129,32 @@ func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	families, _ := h.Repo.SelectFamilies()
 	groups, _ := h.Repo.SelectGroups()
-	//
+	memberUUID := c.Param("uuid")
+	filter := filter.MakeFilter(filter.MakeOpts().WithMemberUUID(memberUUID))
+	member := entity.Member{}
+	members, _ := h.Repo.SelectMembersByFilter(*filter)
+	selectedGroupUUIDsAsStrings := []string{}
+	selectedGroupUUIDs, _ := h.Repo.SelectGroupsByMember(memberUUID)
+	if len(members) > 0 {
+		member = members[0]
+		selectedGroupUUIDsAsStrings = entity.Groups2UUIDsAsStrings(selectedGroupUUIDs)
+	}
+	return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, entity.InputErrors{}))
+}
+
+func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
+	families, _ := h.Repo.SelectFamilies()
+	groups, _ := h.Repo.SelectGroups()
 	uuid := c.Param("uuid")
 	member, selectedGroupUUIDs := CreatetMemberFromForm(c, uuid)
+
 	inputErrors, areErrors := ValidateInput(member)
 	if areErrors {
 		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
 	}
+
+	fmt.Println("[H]:UPDATE", selectedGroupUUIDs)
+	util.PP(member)
 
 	err := h.Repo.UpdateMember(member, selectedGroupUUIDs)
 	if err != nil {
@@ -142,11 +162,6 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 		inputErrors["form"] = entity.NewInputError("form", err)
 		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
 	}
-
-	return h.MembersHandler(c)
-}
-
-func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
 	return h.MembersHandler(c)
 }
 

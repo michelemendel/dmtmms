@@ -2,6 +2,7 @@ package repo
 
 import (
 	// "fmt"
+	"fmt"
 	"log/slog"
 
 	// "github.com/michelemendel/dmtmms/e"
@@ -96,6 +97,8 @@ func (r *Repo) DeleteMember(memberUUID string) error {
 
 // slog.Info("UpdateGroup", "uuid", member.UUID, "name", member.Name)
 func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
+	fmt.Println("[R]:UpdateMember")
+
 	tx, _ := r.DB.Begin()
 	_, err := tx.Exec(`
 	UPDATE members SET 
@@ -119,6 +122,14 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 		return e.ErrUpdatingMember
 	}
 
+	// Remove member from all groups
+	// _, err = tx.Exec(`DELETE FROM members_groups WHERE member_uuid=?`, member.UUID)
+	// if err != nil {
+	// 	slog.Error(err.Error(), "uuid", member.UUID)
+	// 	tx.Rollback()
+	// }
+
+	// Add member to groups
 	for _, groupUUID := range groupUUIDs {
 		_, err = tx.Exec(`INSERT INTO members_groups(member_uuid, group_uuid) VALUES(?, ?)`, member.UUID, groupUUID)
 		if err != nil {
