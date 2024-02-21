@@ -200,7 +200,7 @@ var members = map[string]member{
 }
 
 func (r *Repo) InsertMembers() {
-	nofMembers := 7
+	nofMembers := 5
 	nrStart := 100
 	memberUUID := 11
 	dob := util.String2Time("1980-02-01")

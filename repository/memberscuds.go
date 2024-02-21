@@ -52,7 +52,7 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 
 	// Add member to groups
 	gUUIDs := []string{"0"}
-	if len(groupUUIDs) > 1 {
+	if len(groupUUIDs) > 0 {
 		gUUIDs = groupUUIDs
 	}
 
@@ -73,6 +73,7 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 }
 
 func (r *Repo) ArchiveMember(memberUUID string) error {
+	fmt.Println("[R]: ArchiveMember", "memberUUID", memberUUID)
 	_, err := r.DB.Exec("UPDATE members SET archived=true WHERE uuid=?", memberUUID)
 	if err != nil {
 		slog.Error(err.Error(), "uuid", memberUUID)
@@ -83,9 +84,16 @@ func (r *Repo) ArchiveMember(memberUUID string) error {
 }
 
 func (r *Repo) DeleteMember(memberUUID string) error {
-	_, err := r.DB.Exec("DELETE FROM members WHERE uuid=?", memberUUID)
+	fmt.Println("[R]: DeleteMember", "memberUUID", memberUUID)
+	_, err := r.DB.Exec("DELETE FROM members_groups WHERE member_uuid=?", memberUUID)
 	if err != nil {
-		slog.Error(err.Error(), "uuid", memberUUID)
+		slog.Error("delete from mebers_groups", "error", err.Error(), "uuid", memberUUID)
+		return err
+	}
+
+	_, err = r.DB.Exec("DELETE FROM members WHERE uuid=?", memberUUID)
+	if err != nil {
+		slog.Error("delete from members", "error", err.Error(), "uuid", memberUUID)
 		return err
 	}
 	slog.Info("DeleteMember", "uuid", memberUUID)

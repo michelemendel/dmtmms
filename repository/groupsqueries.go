@@ -23,7 +23,9 @@ func (r *Repo) SelectGroups() ([]entity.Group, error) {
 			slog.Error(err.Error())
 			return groups, err
 		}
-		groups = append(groups, entity.NewGroup(uuid, name))
+		if uuid != "0" {
+			groups = append(groups, entity.NewGroup(uuid, name))
+		}
 	}
 	err = rows.Err()
 	if err != nil {
@@ -55,6 +57,7 @@ func (r *Repo) DoesGroupNameExist(groupName string) bool {
 	return doExist
 }
 
+// SELECT g.uuid, g.name FROM groups as g JOIN members_groups as mg on g.uuid = mg.group_uuid WHERE mg.member_uuid = '1df90dea-e0e1-4ed2-8af5-2c475fd52c77';
 // Select groups by member
 func (r *Repo) SelectGroupsByMember(memberUUID string) ([]entity.Group, error) {
 	var groups []entity.Group

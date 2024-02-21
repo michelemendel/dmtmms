@@ -42,9 +42,9 @@ const (
 	LEFT JOIN families as f ON m.family_uuid=f.uuid
 	LEFT JOIN members_groups as mg on m.uuid = mg.member_uuid
 	LEFT JOIN groups as g on mg.group_uuid = g.uuid
-	WHERE m.archived=0
-	AND m.dob BETWEEN julianday(?) AND julianday(?)
+	WHERE m.dob BETWEEN julianday(?) AND julianday(?)
 	`
+	// WHERE m.archived=1
 )
 
 func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, error) {

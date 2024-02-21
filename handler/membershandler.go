@@ -81,9 +81,10 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 	groups, _ := h.Repo.SelectGroups()
 	//
 	uuid := util.GenerateUUID()
-	member, selectedGroupUUIDs := ExtractMemberFromForm(c, uuid)
+	member, selectedGroupUUIDs := CreatetMemberFromForm(c, uuid)
 	inputErrors, areErrors := ValidateInput(member)
 	if areErrors {
+		c.Response().Header().Set("HX-Retarget", "#memberForm")
 		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_CREATE, inputErrors))
 	}
 	//
@@ -97,7 +98,7 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 	return h.MembersHandler(c)
 }
 
-func ExtractMemberFromForm(c echo.Context, uuid string) (entity.Member, []string) {
+func CreatetMemberFromForm(c echo.Context, uuid string) (entity.Member, []string) {
 	params, _ := c.FormParams()
 	id := c.FormValue("id")
 	name := c.FormValue("name")
@@ -147,6 +148,7 @@ func ValidateInput(member entity.Member) (entity.InputErrors, bool) {
 // Archive & Delete member
 
 func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
+	fmt.Println("MemberArchiveHandler:")
 	uuid := c.Param("uuid")
 	err := h.Repo.ArchiveMember(uuid)
 	if err != nil {
@@ -158,6 +160,7 @@ func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
 }
 
 func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
+	fmt.Println("MemberDeleteHandler:")
 	uuid := c.Param("uuid")
 	err := h.Repo.DeleteMember(uuid)
 	if err != nil {
@@ -176,8 +179,7 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	groups, _ := h.Repo.SelectGroups()
 	//
 	uuid := c.Param("uuid")
-	fmt.Println("[UPDATE_MEMBER]: uuid:", uuid)
-	member, selectedGroupUUIDs := ExtractMemberFromForm(c, uuid)
+	member, selectedGroupUUIDs := CreatetMemberFromForm(c, uuid)
 	inputErrors, areErrors := ValidateInput(member)
 	if areErrors {
 		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))

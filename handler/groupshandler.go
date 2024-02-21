@@ -27,7 +27,6 @@ func (h *HandlerContext) GroupCreateHandler(c echo.Context) error {
 	groupName := c.FormValue("name")
 
 	if groupName == "" {
-		// vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(fmt.Errorf("group name is required")))
 		inputErrors["form"] = entity.NewInputError("form", errors.New("group name is required"))
 		return h.renderView(c, h.ViewCtx.Groups(groups, entity.Group{}, constants.OP_CREATE, inputErrors))
 	}
@@ -36,6 +35,7 @@ func (h *HandlerContext) GroupCreateHandler(c echo.Context) error {
 		UUID: util.GenerateUUID(),
 		Name: groupName,
 	}
+
 	err := h.Repo.CreateGroup(group)
 	if err != nil {
 		inputErrors["form"] = entity.NewInputError("form", err)

@@ -39,12 +39,12 @@ templ Input(id, value, placeholder, label string, required, readonly bool, input
 		>
 			{ label }
 		</label>
-		if inputError.Err != nil {
-			<div class="mb-4">
-				<div class="block text-red-600 text-xs">{ inputError.Err.Error() }</div>
-			</div>
-		}
 	</div>
+	if inputError.Err != nil {
+		<div class="mb-4">
+			<div class="block text-red-600 text-xs">{ inputError.Err.Error() }</div>
+		</div>
+	}
 }
 
 templ InputPassword(id, value, placeholder, label string, required, readonly bool, inputError entity.InputError) {
