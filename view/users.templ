@@ -5,24 +5,24 @@ import (
 	"github.com/michelemendel/dmtmms/entity"
 )
 
-templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, op string) {
+templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, tempPW, op string,inputErrors entity.InputErrors) {
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
-		@vctx.UsersPage(users, selectedUser, op)
+		@vctx.UsersPage(users, selectedUser, tempPW, op, inputErrors)
 	} else {
 		@vctx.AppRoot("") {
-			@vctx.UsersPage(users, selectedUser, op)
+			@vctx.UsersPage(users, selectedUser, tempPW, op, inputErrors)
 		}
 	}
 }
 
-templ (vctx *ViewCtx) UsersPage(users []entity.User, selectedUser entity.User, op string) {
+templ (vctx *ViewCtx) UsersPage(users []entity.User, selectedUser entity.User, tempPw, op string,inputErrors entity.InputErrors) {
 	<div id="users">
 		<div class="px-4 py-5">
 			<div class="min-w-2/3">
-				@vctx.UserForm(selectedUser, op)
+				@vctx.UserForm(selectedUser, op, inputErrors)
 			</div>
 			<div class="pt-2">
-				@vctx.UserTable(users)
+				@vctx.UserTable(users, selectedUser, tempPw)
 			</div>
 		</div>
 		@vctx.Footer()
@@ -31,7 +31,7 @@ templ (vctx *ViewCtx) UsersPage(users []entity.User, selectedUser entity.User, o
 
 //--------------------------------------------------------------------------------
 // User table
-templ (vctx *ViewCtx) UserTable(users []entity.User) {
+templ (vctx *ViewCtx) UserTable(users []entity.User, selectedUser entity.User, tempPW string) {
 	<div class="flex flex-grow overflow-auto flex-col max-h-[50rem]">
 		<table class="w-1/2 text-left text-sm font-light">
 			// Table header
@@ -47,14 +47,14 @@ templ (vctx *ViewCtx) UserTable(users []entity.User) {
 			// Table body
 			<tbody>
 				for _, user := range users {
-					@vctx.userTableRow(user)
+					@vctx.userTableRow(user, selectedUser, tempPW)
 				}
 			</tbody>
 		</table>
 	</div>
 }
 
-templ (vctx *ViewCtx) userTableRow(user entity.User) {
+templ (vctx *ViewCtx) userTableRow(user, selectedUser entity.User, tempPW string) {
 	<tr
 		class="border-b dark:border-neutral-500 hover:bg-neutral-100"
 	>
@@ -103,9 +103,11 @@ templ (vctx *ViewCtx) userTableRow(user entity.User) {
 				onClick={ userResetPWConfirm(user.Name) }
 				class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
 			>
-				if vctx.TempPassword != "" && vctx.TempPasswordUserName == user.Name {
-					<span class="italic">The password has been copied to the clipboard</span>
-					@copyToClipboard(vctx.TempPassword)
+				if tempPW != "" && selectedUser.Name == user.Name {
+					<div class="italic block text-blue-600 ml-2 w-48 text-xs text-wrap">
+						The password has been copied to the clipboard
+					</div>
+					@copyToClipboard(tempPW)
 				} else {
 					ResetPW
 				}
@@ -116,7 +118,7 @@ templ (vctx *ViewCtx) userTableRow(user entity.User) {
 
 //--------------------------------------------------------------------------------
 // User form
-templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
+templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string,inputErrors entity.InputErrors) {
 	<form
 		if op == constants.OP_CREATE {
 			hx-post={ constants.ROUTE_USER_CREATE }
@@ -131,20 +133,20 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 			// Username input
 			<div>
 				if op == constants.OP_CREATE {
-					@Input("username", selectedUser.Name, "name", "name", true, false)
+					@Input("username", selectedUser.Name, "name", "name", false, false, inputErrors["username"])
 				} else {
-					@Input("username", selectedUser.Name, "name", "name", false, true)
+					@Input("username", selectedUser.Name, "name", "name", false, true, inputErrors["username"])
 				}
 			</div>
 			if op == constants.OP_CREATE {
 				// Password input
 				<div class="ml-2">
-					@Input("password", "", "password", "password", true, false)
+					@Input("password", "", "password", "password", false, false, inputErrors["password"])
 				</div>
 			}
 			// Role selection
 			<div class="ml-2">
-				@vctx.SelectDD("role", selectedUser.Role, "Role", vctx.Roles)
+				@vctx.Select("role", selectedUser.Role, "Role", vctx.Roles)
 			</div>
 			// Submit
 			<div class="ml-2">
@@ -174,9 +176,9 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string) {
 		</div>
 	</form>
 	// Error message
-	if vctx.ViewError.Err != nil {
-		<div class="mb-4">
-			<div class="block text-red-600 text-xs">{ vctx.ViewError.Err.Error() }</div>
+	if inputErrors["form"].Err != nil {
+		<div id="form" class="mb-4">
+			<div class="block text-red-600 text-xs">{ inputErrors["form"].Err.Error() }</div>
 		</div>
 	}
 }

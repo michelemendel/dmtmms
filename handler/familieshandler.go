@@ -1,13 +1,13 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/util"
-	"github.com/michelemendel/dmtmms/view"
 )
 
 func (h *HandlerContext) FamiliesHandler(c echo.Context) error {
@@ -16,30 +16,31 @@ func (h *HandlerContext) FamiliesHandler(c echo.Context) error {
 
 func (h *HandlerContext) Families(c echo.Context, op string) error {
 	families := h.GetFamilies()
-	return h.renderView(c, h.ViewCtx.Families(families, entity.Family{}, op))
+	return h.renderView(c, h.ViewCtx.Families(families, entity.Family{}, op, entity.InputErrors{}))
 }
 
 // --------------------------------------------------------------------------------
 // Create family
 
 func (h *HandlerContext) FamilyCreateHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
 	families := h.GetFamilies()
-	familyGroup := c.FormValue("name")
+	familyName := c.FormValue("name")
 
-	if familyGroup == "" {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(fmt.Errorf("family name is required")))
-		return h.renderView(c, vctx.Families(families, entity.Family{}, constants.OP_CREATE))
+	if familyName == "" {
+		inputErrors["form"] = entity.NewInputError("form", errors.New("family name is required"))
+		return h.renderView(c, h.ViewCtx.Families(families, entity.Family{}, constants.OP_CREATE, inputErrors))
 	}
 
 	family := entity.Family{
 		UUID: util.GenerateUUID(),
-		Name: familyGroup,
+		Name: familyName,
 	}
 	err := h.Repo.CreateFamily(family)
 	fmt.Printf("[CREATE]: %v\n%[1]T\n", err)
 	if err != nil {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnCreate))
-		return h.renderView(c, vctx.Families(families, family, constants.OP_CREATE))
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.Families(families, family, constants.OP_CREATE, inputErrors))
 	}
 
 	return h.Families(c, constants.OP_CREATE)
@@ -49,15 +50,14 @@ func (h *HandlerContext) FamilyCreateHandler(c echo.Context) error {
 // Delete family
 
 func (h *HandlerContext) FamilyDeleteHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
 	familyUUID := c.Param("uuid")
 	err := h.Repo.DeleteFamily(familyUUID)
 
-	fmt.Printf("[DELETE]: %v\n%[1]T\n", err)
-
 	if err != nil {
 		families := h.GetFamilies()
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		return h.renderView(c, vctx.Families(families, entity.Family{UUID: familyUUID}, constants.OP_CREATE))
+		inputErrors["row"] = entity.NewInputError("row", err)
+		return h.renderView(c, h.ViewCtx.Families(families, entity.Family{UUID: familyUUID}, constants.OP_CREATE, inputErrors))
 	}
 
 	return h.Families(c, constants.OP_CREATE)
@@ -73,20 +73,28 @@ func (h *HandlerContext) FamilyUpdateInitHandler(c echo.Context) error {
 	if err != nil {
 		family = entity.Family{}
 	}
-	return h.renderView(c, h.ViewCtx.Families(families, family, constants.OP_UPDATE))
+	return h.renderView(c, h.ViewCtx.Families(families, family, constants.OP_UPDATE, entity.InputErrors{}))
 }
 
 func (h *HandlerContext) FamilyUpdateHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
+	families := h.GetFamilies()
 	familyUUID := c.FormValue("uuid")
-	familyGroup := c.FormValue("name")
+	familyName := c.FormValue("name")
 	family := entity.Family{
 		UUID: familyUUID,
-		Name: familyGroup,
+		Name: familyName,
 	}
+
+	if familyName == "" {
+		inputErrors["form"] = entity.NewInputError("form", errors.New("family name is required"))
+		return h.renderView(c, h.ViewCtx.Families(families, family, constants.OP_UPDATE, inputErrors))
+	}
+
 	err := h.Repo.UpdateFamily(family)
 	if err != nil {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnUpdate))
-		return h.renderView(c, vctx.Families([]entity.Family{}, family, constants.OP_UPDATE))
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.Families(families, family, constants.OP_UPDATE, inputErrors))
 	}
 	return h.Families(c, constants.OP_CREATE)
 }

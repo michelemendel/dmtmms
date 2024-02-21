@@ -5,24 +5,24 @@ import (
 	"github.com/michelemendel/dmtmms/entity"
 )
 
-templ (vctx *ViewCtx) Families(families []entity.Family, selectedFamily entity.Family, op string) {
+templ (vctx *ViewCtx) Families(families []entity.Family, selectedFamily entity.Family, op string, inputErrors entity.InputErrors) {
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
-		@vctx.FamiliesPage(families, selectedFamily, op)
+		@vctx.FamiliesPage(families, selectedFamily, op, inputErrors)
 	} else {
 		@vctx.AppRoot("") {
-			@vctx.FamiliesPage(families, selectedFamily, op)
+			@vctx.FamiliesPage(families, selectedFamily, op, inputErrors)
 		}
 	}
 }
 
-templ (vctx *ViewCtx) FamiliesPage(families []entity.Family, selectedFamily entity.Family, op string) {
+templ (vctx *ViewCtx) FamiliesPage(families []entity.Family, selectedFamily entity.Family, op string, inputErrors entity.InputErrors) {
 	<div id="families">
 		<div class="px-4 py-5">
 			<div class="min-w-2/3">
-				@vctx.FamilyForm(selectedFamily, op)
+				@vctx.FamilyForm(selectedFamily, op, inputErrors)
 			</div>
 			<div class="pt-2">
-				@vctx.FamilyTable(families, selectedFamily)
+				@vctx.FamilyTable(families, selectedFamily, inputErrors)
 			</div>
 		</div>
 		@vctx.Footer()
@@ -31,7 +31,7 @@ templ (vctx *ViewCtx) FamiliesPage(families []entity.Family, selectedFamily enti
 
 //--------------------------------------------------------------------------------
 // Family table
-templ (vctx *ViewCtx) FamilyTable(families []entity.Family, selectedFamily entity.Family) {
+templ (vctx *ViewCtx) FamilyTable(families []entity.Family, selectedFamily entity.Family, inputErrors entity.InputErrors) {
 	<div class="flex flex-grow overflow-auto flex-col max-h-[50rem]">
 		<table class="w-1/2 text-left text-sm font-light">
 			// Table header
@@ -45,14 +45,14 @@ templ (vctx *ViewCtx) FamilyTable(families []entity.Family, selectedFamily entit
 			// Table body
 			<tbody>
 				for _, family := range families {
-					@vctx.familyTableRow(family, selectedFamily)
+					@vctx.familyTableRow(family, selectedFamily, inputErrors)
 				}
 			</tbody>
 		</table>
 	</div>
 }
 
-templ (vctx *ViewCtx) familyTableRow(family entity.Family, selectedFamily entity.Family) {
+templ (vctx *ViewCtx) familyTableRow(family entity.Family, selectedFamily entity.Family, inputErrors entity.InputErrors) {
 	<tr
 		class="border-b dark:border-neutral-500 hover:bg-neutral-100"
 	>
@@ -71,13 +71,13 @@ templ (vctx *ViewCtx) familyTableRow(family entity.Family, selectedFamily entity
 				</svg>
 			</span>
 		</td>
-		if vctx.ViewError.Err != nil && vctx.ViewError.ErrType == ErrTypeOnDelete && selectedFamily.UUID == family.UUID {
+		if inputErrors["row"].Err != nil && selectedFamily.UUID == family.UUID {
 			// Delete error
 			<td>
 				<div class="mb-4">
 					<div class="block text-red-600 ml-2 w-48 text-xs text-wrap">
 						<p>
-							{ vctx.ViewError.Err.Error() }
+							{ inputErrors["row"].Err.Error() }
 						</p>
 					</div>
 				</div>
@@ -106,7 +106,7 @@ templ (vctx *ViewCtx) familyTableRow(family entity.Family, selectedFamily entity
 
 //--------------------------------------------------------------------------------
 // Family form
-templ (vctx *ViewCtx) FamilyForm(selectedFamily entity.Family, op string) {
+templ (vctx *ViewCtx) FamilyForm(selectedFamily entity.Family, op string,inputErrors entity.InputErrors) {
 	<form
 		if op == constants.OP_CREATE {
 			hx-post={ constants.ROUTE_FAMILY_CREATE }
@@ -122,7 +122,7 @@ templ (vctx *ViewCtx) FamilyForm(selectedFamily entity.Family, op string) {
 			<input type="hidden" name="uuid" value={ selectedFamily.UUID }/>
 			// Family name
 			<div class="relative">
-				@Input("name", selectedFamily.Name, "name", "name", true, false)
+				@Input("name", selectedFamily.Name, "name", "name", false, false, entity.InputError{})
 			</div>
 			// Submit
 			<div class="ml-2">
@@ -152,9 +152,10 @@ templ (vctx *ViewCtx) FamilyForm(selectedFamily entity.Family, op string) {
 		</div>
 	</form>
 	// Error message
-	if vctx.ViewError.Err != nil && vctx.ViewError.ErrType == ErrTypeOnCreate {
+	// if vctx.ViewError.Err != nil && vctx.ViewError.ErrType == ErrTypeOnCreate {
+	if inputErrors["form"].Err != nil {
 		<div class="mb-4">
-			<div class="block text-red-600 text-xs">{ vctx.ViewError.Err.Error() }</div>
+			<div class="block text-red-600 text-xs">{ inputErrors["form"].Err.Error() }</div>
 		</div>
 	}
 }

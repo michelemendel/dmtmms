@@ -6,7 +6,24 @@ import (
 	"github.com/michelemendel/dmtmms/util"
 )
 
-// DTO
+type InputError struct {
+	InputID string // ex: "name", "email", "mobile"
+	Err     error
+}
+
+func NewInputError(inputID string, err error) InputError {
+	return InputError{
+		InputID: inputID,
+		Err:     err,
+	}
+}
+
+type InputErrors map[string]InputError
+
+func NewInputErrors() InputErrors {
+	return InputErrors{}
+}
+
 type User struct {
 	Name           string
 	HashedPassword string

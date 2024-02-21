@@ -75,7 +75,7 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 	>
 		<div id="filterBar" class="flex flex-row">
 			<div>
-				@Input("searchterms", f.SearchTerms, "search", "search", false, false)
+				@Input("searchterms", f.SearchTerms, "search", "search", false, false, entity.InputError{})
 			</div>
 			<div class="ml-2">
 				@DatePicker("from", f.From, "From")

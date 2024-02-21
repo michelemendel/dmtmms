@@ -13,12 +13,11 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 	_, err := tx.Exec(`
 	INSERT INTO members(
 		uuid, 
-		id, name, dob, personnummer, email, 
-		mobile, 
+		id, name, dob, personnummer, email, mobile, 
 		address1, address2, postnummer, poststed, 
-		synagogue_seat, membership_fee_tier, registered_date, deregistered_date, receive_email,
-		receive_mail, receive_hatikva, archived, status, family_uuid,
-		family_group
+		synagogue_seat, membership_fee_tier, registered_date, deregistered_date, 
+		receive_email, receive_mail, receive_hatikva, archived, status, 
+		family_uuid, family_group
 	) VALUES(?, ?, ?, julianday(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, julianday(?), julianday(?), ?, ?, ?, ?, ?, ?, ?)
 	`,
 		member.UUID,
@@ -70,39 +69,22 @@ func (r *Repo) DeleteMember(memberUUID string) error {
 }
 
 // slog.Info("UpdateGroup", "uuid", member.UUID, "name", member.Name)
-func (r *Repo) UpdateMember(member entity.Member) error {
+func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 	tx, _ := r.DB.Begin()
 	_, err := tx.Exec(`
 	UPDATE members SET 
-		id=?, 
-		name=?, 
-		dob=julianday(?), 
-		personnummer=?, 
-		email=?, 
-		mobile=?, 
-		address1=?, 
-		address2=?, 
-		postnummer=?, 
-		poststed=?, 
-		synagogue_seat=?, 
-		membership_fee_tier=?, 
-		registered_date=julianday(?), 
-		deregistered_date=julianday(?), 
-		receive_email=?, 
-		receive_mail=?, 
-		receive_hatikva=?, 
-		archived=?, 
-		status=?, 
-		family_uuid=?, 
-		family_group=? 
+		id=?, name=?, dob=julianday(?), personnummer=?, email=?, mobile=?, 
+		address1=?, address2=?, postnummer=?, poststed=?, 
+		synagogue_seat=?, membership_fee_tier=?, registered_date=julianday(?), deregistered_date=julianday(?), 
+		receive_email=?, receive_mail=?, receive_hatikva=?, archived=?, status=?, 
+		family_uuid=?, family_group=? 
 	WHERE uuid=?
 	`,
-		member.ID, member.Name, member.DOB, member.Personnummer, member.Email,
-		member.Mobile,
+		member.ID, member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
-		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate, member.ReceiveEmail,
-		member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status, member.FamilyUUID,
-		member.FamilyGroup,
+		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
+		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status,
+		member.FamilyUUID, member.FamilyGroup,
 		member.UUID,
 	)
 	if err != nil {
@@ -110,6 +92,16 @@ func (r *Repo) UpdateMember(member entity.Member) error {
 		tx.Rollback()
 		return e.ErrUpdatingMember
 	}
+
+	for _, groupUUID := range groupUUIDs {
+		_, err = tx.Exec(`INSERT INTO members_groups(member_uuid, group_uuid) VALUES(?, ?)`, member.UUID, groupUUID)
+		if err != nil {
+			slog.Error(err.Error(), "uuid", member.UUID, "groupUUD", groupUUID)
+			tx.Rollback()
+			return e.ErrAddingGroupForMember
+		}
+	}
+
 	tx.Commit()
 	slog.Info("UpdateMember", "uuid", member.UUID, "name", member.Name)
 	return nil

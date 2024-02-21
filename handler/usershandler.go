@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"errors"
 	"log/slog"
 	"slices"
 
@@ -18,21 +18,22 @@ func (h *HandlerContext) UsersHandler(c echo.Context) error {
 
 func (h *HandlerContext) Users(c echo.Context, op string) error {
 	users := h.GetUsers()
-	return h.renderView(c, h.ViewCtx.Users(users, entity.User{}, op))
+	return h.renderView(c, h.ViewCtx.Users(users, entity.User{}, "", op, entity.NewInputErrors()))
 }
 
 //--------------------------------------------------------------------------------
 // Create user
 
 func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
 	users := h.GetUsers()
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 	role := c.FormValue("role")
 
 	if username == "" || password == "" || role == "" {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(fmt.Errorf("username, password, and role are required")))
-		return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE))
+		inputErrors["form"] = entity.NewInputError("form", errors.New("username and password are required"))
+		return h.renderView(c, h.ViewCtx.Users(users, entity.User{}, "", constants.OP_CREATE, inputErrors))
 	}
 
 	hpw, _ := util.HashPassword(password)
@@ -43,8 +44,8 @@ func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 	}
 	err := h.Repo.CreateUser(user)
 	if err != nil {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Users(users, user, constants.OP_CREATE))
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.Users(users, entity.User{}, "", constants.OP_CREATE, inputErrors))
 	}
 
 	return h.Users(c, constants.OP_CREATE)
@@ -54,12 +55,13 @@ func (h *HandlerContext) UserCreateHandler(c echo.Context) error {
 // Delete user
 
 func (h *HandlerContext) UserDeleteHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
 	username := c.Param("username")
 	err := h.Repo.DeleteUser(username)
 	if err != nil {
 		users := h.GetUsers()
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE))
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.Users(users, entity.User{}, "", constants.OP_CREATE, inputErrors))
 	}
 
 	return h.Users(c, constants.OP_CREATE)
@@ -75,68 +77,86 @@ func (h *HandlerContext) UserUpdateInitHandler(c echo.Context) error {
 	if err != nil {
 		user = entity.User{}
 	}
-	return h.renderView(c, h.ViewCtx.Users(users, user, constants.OP_UPDATE))
+	return h.renderView(c, h.ViewCtx.Users(users, user, "", constants.OP_UPDATE, entity.NewInputErrors()))
 }
 
 func (h *HandlerContext) UserUpdateHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
+	users := h.GetUsers()
 	username := c.FormValue("username")
 	role := c.FormValue("role")
 	user := entity.User{
 		Name: username,
 		Role: role,
 	}
+
+	if username == "" || role == "" {
+		inputErrors["form"] = entity.NewInputError("form", errors.New("username and role are required"))
+		return h.renderView(c, h.ViewCtx.Users(users, user, "", constants.OP_UPDATE, inputErrors))
+	}
+
 	err := h.Repo.UpdateUser(user)
 	if err != nil {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Users([]entity.User{}, user, constants.OP_UPDATE))
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.Users(users, user, "", constants.OP_UPDATE, inputErrors))
 	}
 	return h.Users(c, constants.OP_CREATE)
 }
 
 //--------------------------------------------------------------------------------
-// Reset and set password
+// Reset password
 
 func (h *HandlerContext) ResetPasswordHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
 	username := c.Param("username")
-	newPW := util.GeneratePassword()
-	hpw, _ := util.HashPassword(newPW)
+	tempPW := util.GeneratePassword()
+	hpw, _ := util.HashPassword(tempPW)
 	err := h.Repo.ResetPassword(username, hpw)
 	if err != nil {
 		slog.Error(err.Error(), "error generating new temporary password for ", username)
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.Users(h.GetUsers(), entity.User{}, "", constants.OP_CREATE, inputErrors))
 	}
 
 	users := h.GetUsers()
-	vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithTempPW(newPW, username))
-	return h.renderView(c, vctx.Users(users, entity.User{}, constants.OP_CREATE))
+	user := entity.User{
+		Name: username,
+		Role: "",
+	}
+	return h.renderView(c, h.ViewCtx.Users(users, user, tempPW, constants.OP_CREATE, inputErrors))
 }
+
+//--------------------------------------------------------------------------------
+// Set password - this has its own GUI
 
 func (h *HandlerContext) SetPasswordInitHandler(c echo.Context) error {
 	return h.renderView(c, h.ViewCtx.UserSetPasswordInit())
 }
 
 func (h *HandlerContext) SetPasswordHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
 	newPW := c.FormValue("newpassword")
 	newPWCheck := c.FormValue("newpasswordcheck")
 	userSession, err := h.Session.GetLoggedInUser(c)
 	username := userSession.Name
 	if err != nil {
 		slog.Error("error getting current user", "error", err.Error())
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(fmt.Errorf("there was an error getting the current user")))
-		return h.renderView(c, vctx.UserSetPassword(newPW, newPWCheck))
+		inputErrors["form"] = entity.NewInputError("form", errors.New("there was an error getting the current user"))
+		return h.renderView(c, h.ViewCtx.UserSetPassword(newPW, newPWCheck, inputErrors))
 	}
 	if newPW != newPWCheck {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(fmt.Errorf("passwords do not match")))
-		return h.renderView(c, vctx.UserSetPassword(newPW, newPWCheck))
+		inputErrors["form"] = entity.NewInputError("form", errors.New("passwords do not match"))
+		return h.renderView(c, h.ViewCtx.UserSetPassword(newPW, newPWCheck, inputErrors))
 	}
 	hpw, _ := util.HashPassword(newPW)
 	err = h.Repo.UpdateUserPassword(entity.User{Name: username, HashedPassword: hpw})
 	if err != nil {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(fmt.Errorf("there was an error setting the new password")))
-		return h.renderView(c, vctx.UserSetPassword(newPW, newPWCheck))
+		inputErrors["form"] = entity.NewInputError("form", errors.New("there was an error setting the new password"))
+		return h.renderView(c, h.ViewCtx.UserSetPassword(newPW, newPWCheck, inputErrors))
 	}
 
 	vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithMsg("password updated successfully"))
-	return h.renderView(c, vctx.UserSetPassword("", ""))
+	return h.renderView(c, vctx.UserSetPassword("", "", entity.InputErrors{}))
 }
 
 //--------------------------------------------------------------------------------

@@ -5,24 +5,24 @@ import (
 	"github.com/michelemendel/dmtmms/entity"
 )
 
-templ (vctx *ViewCtx) Groups(groups []entity.Group, selectedGroup entity.Group, op string) {
+templ (vctx *ViewCtx) Groups(groups []entity.Group, selectedGroup entity.Group, op string, inputErrors entity.InputErrors) {
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
-		@vctx.GroupsPage(groups, selectedGroup, op)
+		@vctx.GroupsPage(groups, selectedGroup, op, inputErrors)
 	} else {
 		@vctx.AppRoot("") {
-			@vctx.GroupsPage(groups, selectedGroup, op)
+			@vctx.GroupsPage(groups, selectedGroup, op, inputErrors)
 		}
 	}
 }
 
-templ (vctx *ViewCtx) GroupsPage(groups []entity.Group, selectedGroup entity.Group, op string) {
+templ (vctx *ViewCtx) GroupsPage(groups []entity.Group, selectedGroup entity.Group, op string, inputErrors entity.InputErrors) {
 	<div id="groups">
 		<div class="px-4 py-5">
 			<div class="min-w-2/3">
-				@vctx.GroupForm(selectedGroup, op)
+				@vctx.GroupForm(selectedGroup, op, inputErrors)
 			</div>
 			<div class="pt-2">
-				@vctx.GroupTable(groups, selectedGroup)
+				@vctx.GroupTable(groups, selectedGroup, inputErrors)
 			</div>
 		</div>
 		@vctx.Footer()
@@ -31,7 +31,7 @@ templ (vctx *ViewCtx) GroupsPage(groups []entity.Group, selectedGroup entity.Gro
 
 //--------------------------------------------------------------------------------
 // Group table
-templ (vctx *ViewCtx) GroupTable(groups []entity.Group, selectedGroup entity.Group) {
+templ (vctx *ViewCtx) GroupTable(groups []entity.Group, selectedGroup entity.Group, inputErrors entity.InputErrors) {
 	<div class="flex flex-grow overflow-auto flex-col max-h-[50rem]">
 		<table class="w-1/2 text-left text-sm font-light">
 			// Table header
@@ -45,14 +45,14 @@ templ (vctx *ViewCtx) GroupTable(groups []entity.Group, selectedGroup entity.Gro
 			// Table body
 			<tbody>
 				for _, group := range groups {
-					@vctx.groupTableRow(group, selectedGroup)
+					@vctx.groupTableRow(group, selectedGroup, inputErrors)
 				}
 			</tbody>
 		</table>
 	</div>
 }
 
-templ (vctx *ViewCtx) groupTableRow(group entity.Group, selectedGroup entity.Group) {
+templ (vctx *ViewCtx) groupTableRow(group entity.Group, selectedGroup entity.Group, inputErrors entity.InputErrors) {
 	<tr
 		class="border-b dark:border-neutral-500 hover:bg-neutral-100"
 	>
@@ -71,13 +71,13 @@ templ (vctx *ViewCtx) groupTableRow(group entity.Group, selectedGroup entity.Gro
 				</svg>
 			</span>
 		</td>
-		if vctx.ViewError.Err != nil && vctx.ViewError.ErrType == ErrTypeOnDelete && selectedGroup.UUID == group.UUID {
+		if inputErrors["row"].Err != nil && selectedGroup.UUID == group.UUID {
 			// Delete error
 			<td>
 				<div class="mb-4">
 					<div class="block text-red-600 ml-2 w-48 text-xs text-wrap">
 						<p>
-							{ vctx.ViewError.Err.Error() }
+							{ inputErrors["row"].Err.Error() }
 						</p>
 					</div>
 				</div>
@@ -106,7 +106,7 @@ templ (vctx *ViewCtx) groupTableRow(group entity.Group, selectedGroup entity.Gro
 
 //--------------------------------------------------------------------------------
 // Group form
-templ (vctx *ViewCtx) GroupForm(selectedGroup entity.Group, op string) {
+templ (vctx *ViewCtx) GroupForm(selectedGroup entity.Group, op string, inputErrors entity.InputErrors) {
 	<form
 		if op == constants.OP_CREATE {
 			hx-post={ constants.ROUTE_GROUP_CREATE }
@@ -122,7 +122,7 @@ templ (vctx *ViewCtx) GroupForm(selectedGroup entity.Group, op string) {
 			<input type="hidden" name="uuid" value={ selectedGroup.UUID }/>
 			// Group name
 			<div>
-				@Input("name", selectedGroup.Name, "name", "name", true, false)
+				@Input("name", selectedGroup.Name, "name", "name", false, false, entity.InputError{})
 			</div>
 			// Submit
 			<div class="ml-2">
@@ -154,9 +154,9 @@ templ (vctx *ViewCtx) GroupForm(selectedGroup entity.Group, op string) {
 		</div>
 	</form>
 	// Error message
-	if vctx.ViewError.Err != nil && vctx.ViewError.ErrType == ErrTypeOnCreate {
+	if inputErrors["form"].Err != nil {
 		<div class="mb-4">
-			<div class="block text-red-600 text-xs">{ vctx.ViewError.Err.Error() }</div>
+			<div class="block text-red-600 text-xs">{ inputErrors["form"].Err.Error() }</div>
 		</div>
 	}
 }

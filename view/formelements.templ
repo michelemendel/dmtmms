@@ -6,7 +6,7 @@ import (
 	"github.com/michelemendel/dmtmms/entity"
 )
 
-templ Input(id, value, placeholder, label string, required, readonly bool, inputType ...string) {
+templ Input(id, value, placeholder, label string, required, readonly bool, inputError entity.InputError, inputType ...string) {
 	// <a href="https://flowbite.com/docs/forms/floating-label/">flowbite</a>
 	<div class="relative">
 		<input
@@ -39,18 +39,23 @@ templ Input(id, value, placeholder, label string, required, readonly bool, input
 		>
 			{ label }
 		</label>
+		if inputError.Err != nil {
+			<div class="mb-4">
+				<div class="block text-red-600 text-xs">{ inputError.Err.Error() }</div>
+			</div>
+		}
 	</div>
 }
 
-templ InputPassword(id, value, placeholder, label string, required, readonly bool) {
+templ InputPassword(id, value, placeholder, label string, required, readonly bool, inputError entity.InputError) {
 	<div class="relative">
-		@Input(id, value, placeholder, label, required, readonly, "password")
+		@Input(id, value, placeholder, label, required, readonly, inputError, "password")
 	</div>
 }
 
-templ InputEmail(id, value, placeholder, label string, required, readonly bool) {
+templ InputEmail(id, value, placeholder, label string, required, readonly bool,inputError entity.InputError) {
 	<div class="relative">
-		@Input(id, value, placeholder, label, required, readonly, "email")
+		@Input(id, value, placeholder, label, required, readonly, inputError, "email")
 	</div>
 }
 
@@ -118,7 +123,7 @@ templ (vctx *ViewCtx) RoleOptions(selectedUser entity.User) {
 // Select, dropdown
 // https://tailwindcomponents.com/component/select-input-field
 // https://tailwindcomponents.com/component/dropdown-with-input-inside-tailwind-css
-templ (vctx *ViewCtx) SelectDD(id, selectedItem, label string, items []string) {
+templ (vctx *ViewCtx) Select(id, selectedItem, label string, items []string) {
 	<div class="relative flex flex-row">
 		<label
 			for={ id }

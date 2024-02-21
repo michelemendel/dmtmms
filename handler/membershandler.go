@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
@@ -72,23 +74,72 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
 	families, _ := h.Repo.SelectFamilies()
 	groups, _ := h.Repo.SelectGroups()
-	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}, families, groups, []string{}, constants.OP_CREATE))
+	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}, []string{}, families, groups, constants.OP_CREATE, entity.InputErrors{}))
 }
 
 func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
+	inputErrors := entity.NewInputErrors()
+	families, _ := h.Repo.SelectFamilies()
+	groups, _ := h.Repo.SelectGroups()
+	//
 	uuid := util.GenerateUUID()
-	id := c.FormValue("id")
-	name := c.FormValue("name")
-	// dob := c.FormValue("dob")
-	// personnummer := c.FormValue("personnummer")
-	email := c.FormValue("email")
-	// mobile := c.FormValue("mobile")
-	// familyUUID := c.FormValue("family")
-	// groupUUIDs := c.FormValue("groups")
+	member, selectedGroupUUIDs := ExtractMemberFromForm(c, uuid)
+	inputErrors, areErrors := ValidateInput(member)
+	if areErrors {
+		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_CREATE, inputErrors))
+	}
+	//
+	err := h.Repo.CreateMember(member, selectedGroupUUIDs)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", uuid, "name", member.Name, "email", member.Email)
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_CREATE, inputErrors))
+	}
 
-	fmt.Println("[CREATE_MEMBER]:", uuid, id, name, email)
+	fmt.Println("[CREATE_MEMBER]:", uuid, member.Name, member.Email)
 
 	return h.MembersHandler(c)
+}
+
+func ExtractMemberFromForm(c echo.Context, uuid string) (entity.Member, []string) {
+	id := c.FormValue("id")
+	name := c.FormValue("name")
+	dobStr := c.FormValue("dob")
+	personnummer := c.FormValue("personnummer")
+	email := c.FormValue("email")
+	mobile := c.FormValue("mobile")
+	groupUUIDsStr := c.FormValue("groups")
+	synagogueseat := c.FormValue("synagogueseat")
+	membershipFeeTier := c.FormValue("membershipfeetier")
+	registeredDateStr := c.FormValue("registereddate")
+	deregisteredDateStr := c.FormValue("deregistereddate")
+	familyUUID := c.FormValue("family")
+	familyGroup := c.FormValue("familygroup")
+	//
+	dob := util.String2Time(dobStr)
+	registeredDate := util.String2Time(registeredDateStr)
+	deregisteredDate := util.String2Time(deregisteredDateStr)
+	member := entity.NewMember(uuid,
+		id, name, dob, personnummer, email,
+		mobile, entity.Address{}, synagogueseat, membershipFeeTier,
+		registeredDate, deregisteredDate,
+		false, false, false, false, entity.MemberStatusActive,
+		familyUUID, familyGroup,
+	)
+	groupUUIDs := strings.Split(groupUUIDsStr, ",")
+	return member, groupUUIDs
+}
+func ValidateInput(member entity.Member) (entity.InputErrors, bool) {
+	inputErrors := entity.NewInputErrors()
+	//
+	if member.Name == "" {
+		inputErrors["name"] = entity.NewInputError("name", errors.New("Name is required"))
+	}
+	if member.ID == "" {
+		inputErrors["id"] = entity.NewInputError("name", errors.New("ID is required"))
+	}
+	areErrors := len(inputErrors) > 0
+	return inputErrors, areErrors
 }
 
 //--------------------------------------------------------------------------------
@@ -120,19 +171,26 @@ func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 // Update member
 
 func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
-	uuid := c.Param("uuid")
-	fmt.Println("[UPDATE_MEMBER]: uuid:", uuid)
-	member, err := h.Repo.SelectMemberByUUID(uuid)
-	fmt.Println("[UPDATE_MEMBER]:", member.DOB, util.Time2String(member.DOB))
-	if err != nil {
-		slog.Error(err.Error(), "uuid", uuid)
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnUpdate))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
-	}
+	inputErrors := entity.NewInputErrors()
 	families, _ := h.Repo.SelectFamilies()
 	groups, _ := h.Repo.SelectGroups()
-	selectedGroupUUIDs, _ := h.Repo.SelectGroupUUIDsByMember(member.UUID)
-	return h.renderView(c, h.ViewCtx.MemberFormModal(member, families, groups, selectedGroupUUIDs, constants.OP_UPDATE))
+	//
+	uuid := c.Param("uuid")
+	fmt.Println("[UPDATE_MEMBER]: uuid:", uuid)
+	member, selectedGroupUUIDs := ExtractMemberFromForm(c, uuid)
+	inputErrors, areErrors := ValidateInput(member)
+	if areErrors {
+		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
+	}
+
+	err := h.Repo.UpdateMember(member, selectedGroupUUIDs)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", uuid, "name", member.Name)
+		inputErrors["form"] = entity.NewInputError("form", err)
+		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
+	}
+
+	return h.MembersHandler(c)
 }
 
 func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {

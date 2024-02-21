@@ -6,7 +6,7 @@ import (
 	"github.com/michelemendel/dmtmms/util"
 )
 
-templ (vctx *ViewCtx) MemberFormModal(member entity.Member, families []entity.Family, groups []entity.Group, selectedGroups []string, op string) {
+templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []string, families []entity.Family, groups []entity.Group, op string, inputErrors entity.InputErrors) {
 	<div
 		id="memberForm"
 		class="fixed z-20 inset-0 overflow-y-auto"
@@ -44,19 +44,19 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, families []entity.Fa
 				<form>
 					// id
 					<div class="mt-2">
-						@Input("id", member.ID, "", "Id", false, false)
+						@Input("id", member.ID, "", "Id", false, false, inputErrors["id"])
 					</div>
 					// name
 					<div class="mt-2">
-						@Input("name", member.Name, "", "Name", true, false)
+						@Input("name", member.Name, "", "Name", true, false, inputErrors["name"])
 					</div>
 					// email
 					<div class="mt-2">
-						@InputEmail("email", member.Email, "", "Email", false, false)
+						@InputEmail("email", member.Email, "", "Email", false, false, inputErrors["email"])
 					</div>
 					// phone
 					<div class="mt-2">
-						@Input("phone", member.Mobile, "", "Phone", false, false)
+						@Input("mobile", member.Mobile, "", "Phone", false, false, inputErrors["mobile"])
 					</div>
 					// DOB + personnummer
 					<div class="mt-2 flex flex-row">
@@ -68,33 +68,33 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, families []entity.Fa
 							}
 						</div>
 						<div class="ml-2 w-[60px]">
-							@Input("personnummer", member.Personnummer, "", "PN", false, false)
+							@Input("personnummer", member.Personnummer, "", "PN", false, false, inputErrors["personnummer"])
 						</div>
 					</div>
 					// address
 					<div class="mt-2">
 						<div class="">
-							@Input("address1", member.Address1, "", "Address1", false, false)
+							@Input("address1", member.Address1, "", "Address1", false, false, inputErrors["address1"])
 						</div>
 						<div class="mt-1">
-							@Input("address2", member.Address2, "", "Address2", false, false)
+							@Input("address2", member.Address2, "", "Address2", false, false, inputErrors["address2"])
 						</div>
 						<div class="mt-1 flex flex-row">
 							<div class="w-[160px]">
-								@Input("postnummer", member.Postnummer, "", "Postnummer", false, false)
+								@Input("postnummer", member.Postnummer, "", "Postnummer", false, false, inputErrors["postnummer"])
 							</div>
 							<div class="ml-2 w-[80px]">
-								@Input("poststed", member.Poststed, "", "Poststed", false, false)
+								@Input("poststed", member.Poststed, "", "Poststed", false, false, inputErrors["poststed"])
 							</div>
 						</div>
 					</div>
 					// synagogue_seat
 					<div class="mt-2">
-						@Input("synagogue_seat", member.Synagogueseat, "", "Synagogue seat", false, false)
+						@Input("synagogue_seat", member.Synagogueseat, "", "Synagogue seat", false, false, inputErrors["synagogue_seat"])
 					</div>
 					// membership_fee_tier
 					<div class="mt-2">
-						@Input("membership_fee_tier", member.MembershipFeeTier, "", "Membership fee tier", false, false)
+						@Input("membership_fee_tier", member.MembershipFeeTier, "", "Membership fee tier", false, false, inputErrors["membership_fee_tier"])
 					</div>
 					// registered_date 
 					<div class="mt-2">
@@ -126,7 +126,7 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, families []entity.Fa
 					</div>
 					// status
 					<div class="mt-2">
-						@vctx.SelectDD("status", string(member.Status), "Status", vctx.MemberStatuses)
+						@vctx.Select("status", string(member.Status), "Status", vctx.MemberStatuses)
 					</div>
 					// family_group (family_uuid)
 					<div class="mt-2">
@@ -155,6 +155,12 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, families []entity.Fa
 						</button>
 					</div>
 				</form>
+				// Error message
+				if inputErrors["form"].Err != nil {
+					<div id="form" class="mb-4">
+						<div class="block text-red-600 text-xs">{ inputErrors["form"].Err.Error() }</div>
+					</div>
+				}
 			</div>
 		</div>
 		<script>
