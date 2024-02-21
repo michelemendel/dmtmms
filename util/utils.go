@@ -69,6 +69,20 @@ func String2Time(s string) time.Time {
 	return t
 }
 
+func String2Bool(s string) bool {
+	if s != "" {
+		return true
+	}
+	return false
+}
+
+func Bool2String(b bool) string {
+	if b {
+		return "true"
+	}
+	return "false"
+}
+
 // Check if it is a hxr request
 func IsHXR(c echo.Context) bool {
 	if c.QueryParam("l") == "ok" {

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
@@ -32,7 +31,7 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 		groups = []entity.Group{}
 	}
 
-	memberDetails := entity.GetMemberDetails(member)
+	memberDetails := entity.GetMemberDetailsForPresentation(member)
 	return h.renderView(c, h.ViewCtx.Members(members, memberDetails, groups, f))
 }
 
@@ -78,7 +77,6 @@ func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
 }
 
 func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
-	inputErrors := entity.NewInputErrors()
 	families, _ := h.Repo.SelectFamilies()
 	groups, _ := h.Repo.SelectGroups()
 	//
@@ -96,47 +94,50 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_CREATE, inputErrors))
 	}
 
-	fmt.Println("[CREATE_MEMBER]:", uuid, member.Name, member.Email)
-
 	return h.MembersHandler(c)
 }
 
 func ExtractMemberFromForm(c echo.Context, uuid string) (entity.Member, []string) {
+	params, _ := c.FormParams()
 	id := c.FormValue("id")
 	name := c.FormValue("name")
 	dobStr := c.FormValue("dob")
 	personnummer := c.FormValue("personnummer")
 	email := c.FormValue("email")
 	mobile := c.FormValue("mobile")
-	groupUUIDsStr := c.FormValue("groups")
-	synagogueseat := c.FormValue("synagogueseat")
-	membershipFeeTier := c.FormValue("membershipfeetier")
-	registeredDateStr := c.FormValue("registereddate")
-	deregisteredDateStr := c.FormValue("deregistereddate")
-	familyUUID := c.FormValue("family")
-	familyGroup := c.FormValue("familygroup")
+	synagogueseat := c.FormValue("synagogue_seat")
+	membershipFeeTier := c.FormValue("membership_fee_tier")
+	registeredDateStr := c.FormValue("registered_date")
+	deregisteredDateStr := c.FormValue("deregistered_date")
+	receiveEmailStr := c.FormValue("receive_email")
+	receiveMailStr := c.FormValue("receive_mail")
+	receiveHatikvaStr := c.FormValue("receive_hatikva")
+	status := c.FormValue("status")
+	familyUUID := c.FormValue("family_uuid")
+	familyName := c.FormValue("family_name")
 	//
 	dob := util.String2Time(dobStr)
 	registeredDate := util.String2Time(registeredDateStr)
 	deregisteredDate := util.String2Time(deregisteredDateStr)
+	receiveEmail := util.String2Bool(receiveEmailStr)
+	receiveMail := util.String2Bool(receiveMailStr)
+	receiveHatikva := util.String2Bool(receiveHatikvaStr)
 	member := entity.NewMember(uuid,
 		id, name, dob, personnummer, email,
-		mobile, entity.Address{}, synagogueseat, membershipFeeTier,
-		registeredDate, deregisteredDate,
-		false, false, false, false, entity.MemberStatusActive,
-		familyUUID, familyGroup,
+		mobile,
+		entity.Address{},
+		synagogueseat, membershipFeeTier, registeredDate, deregisteredDate,
+		receiveEmail, receiveMail, receiveHatikva, false, entity.MemberStatus(status),
+		familyUUID, familyName,
 	)
-	groupUUIDs := strings.Split(groupUUIDsStr, ",")
+	groupUUIDs := params["groups"]
 	return member, groupUUIDs
 }
 func ValidateInput(member entity.Member) (entity.InputErrors, bool) {
 	inputErrors := entity.NewInputErrors()
 	//
 	if member.Name == "" {
-		inputErrors["name"] = entity.NewInputError("name", errors.New("Name is required"))
-	}
-	if member.ID == "" {
-		inputErrors["id"] = entity.NewInputError("name", errors.New("ID is required"))
+		inputErrors["name"] = entity.NewInputError("name", errors.New("name is required"))
 	}
 	areErrors := len(inputErrors) > 0
 	return inputErrors, areErrors
@@ -171,7 +172,6 @@ func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 // Update member
 
 func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
-	inputErrors := entity.NewInputErrors()
 	families, _ := h.Repo.SelectFamilies()
 	groups, _ := h.Repo.SelectGroups()
 	//

@@ -44,3 +44,13 @@ func (r *Repo) SelectFamily(familyUUID string) (entity.Family, error) {
 	}
 	return entity.NewFamily(uuid, name), nil
 }
+
+func (r *Repo) GetFamilyNameByUUID(familyUUID string) (string, error) {
+	var name string
+	err := r.DB.QueryRow("SELECT name FROM families WHERE uuid=?", familyUUID).Scan(&name)
+	if err != nil {
+		slog.Error(err.Error(), "uuid", familyUUID)
+		return "", err
+	}
+	return name, nil
+}

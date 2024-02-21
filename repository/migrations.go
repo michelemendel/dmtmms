@@ -51,7 +51,7 @@ func (r *Repo) CreateTables() {
 	sqlStmts["create_members"] = `
 	CREATE TABLE IF NOT EXISTS members (
 		uuid TEXT PRIMARY KEY,
-		id TEXT UNIQUE,
+		id TEXT,
 		name TEXT NOT NULL,
 		dob REAL,
 		personnummer TEXT,
@@ -73,7 +73,7 @@ func (r *Repo) CreateTables() {
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER,
 		family_uuid TEXT,
-		family_group TEXT,
+		family_name TEXT,
 		FOREIGN KEY(family_uuid) REFERENCES families(uuid)
 	); `
 
@@ -151,6 +151,7 @@ func (r *Repo) InsertUsers() {
 // Families
 func (r *Repo) InsertFamilies() {
 	families := []entity.Family{
+		{UUID: "0", Name: ""},
 		{UUID: "101", Name: "fam1"},
 		{UUID: "102", Name: "fam2"},
 	}
@@ -166,6 +167,7 @@ func (r *Repo) InsertFamilies() {
 // Groups
 func (r *Repo) InsertGroups() {
 	groups := []entity.Group{
+		{UUID: "0", Name: ""},
 		{UUID: "1001", Name: "org1"},
 		{UUID: "1002", Name: "org2"},
 		{UUID: "1003", Name: "org3"},
@@ -185,16 +187,16 @@ type member struct {
 	receiveEmail bool
 	archived     bool
 	familyUUID   string
-	familyGroup  string
+	familyName   string
 	groupUUIDs   []string
 }
 
 var members = map[string]member{
-	"11": {uuid: "11", receiveEmail: true, archived: false, familyUUID: "101", familyGroup: "fam1", groupUUIDs: []string{"1001", "1002"}},
-	"12": {uuid: "12", receiveEmail: true, archived: false, familyUUID: "101", familyGroup: "fam1", groupUUIDs: []string{"1002", "1003"}},
-	"13": {uuid: "13", receiveEmail: false, archived: false, familyUUID: "102", familyGroup: "fam2", groupUUIDs: []string{"1001", "1002"}},
-	"14": {uuid: "14", receiveEmail: true, archived: false, familyUUID: "102", familyGroup: "fam2", groupUUIDs: []string{"1002", "1003"}},
-	"15": {uuid: "15", receiveEmail: false, archived: true, familyUUID: "102", familyGroup: "fam2", groupUUIDs: []string{"1002", "1004"}},
+	"11": {uuid: "11", receiveEmail: true, archived: false, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1001", "1002"}},
+	"12": {uuid: "12", receiveEmail: true, archived: false, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1002", "1003"}},
+	"13": {uuid: "13", receiveEmail: false, archived: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1001", "1002"}},
+	"14": {uuid: "14", receiveEmail: true, archived: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1003"}},
+	"15": {uuid: "15", receiveEmail: false, archived: true, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1004"}},
 }
 
 func (r *Repo) InsertMembers() {
@@ -220,17 +222,17 @@ func (r *Repo) InsertMembers() {
 		receiveEmail := true
 		archived := false
 		familyUUID := ""
-		familyGroup := ""
+		familyName := ""
 		groupUUIDs := []string{}
 		if m, ok := members[strconv.Itoa(memberUUID)]; ok {
 			receiveEmail = m.receiveEmail
 			archived = m.archived
 			familyUUID = m.familyUUID
-			familyGroup = m.familyGroup
+			familyName = m.familyName
 			groupUUIDs = m.groupUUIDs
 		}
 
-		member := entity.NewMember(strconv.Itoa(memberUUID), memberId, name, dob, personnummer, email, mobile, address, "", "", util.String2Time("2020-01-01"), time.Time{}, receiveEmail, false, false, archived, status, familyUUID, familyGroup)
+		member := entity.NewMember(strconv.Itoa(memberUUID), memberId, name, dob, personnummer, email, mobile, address, "", "", util.String2Time("2020-01-01"), time.Time{}, receiveEmail, false, false, archived, status, familyUUID, familyName)
 		err := r.CreateMember(member, groupUUIDs)
 		if err != nil {
 			slog.Error(err.Error())

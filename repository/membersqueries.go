@@ -34,9 +34,9 @@ const (
 	FROM members as m
 	`
 
-	queryMember = selectMember + `
-	LEFT JOIN families as f ON m.family_uuid=f.uuid
-	`
+	// queryMember = selectMember + `
+	// LEFT JOIN families as f ON m.family_uuid=f.uuid
+	// `
 
 	queryMembers = selectMember + `
 	LEFT JOIN families as f ON m.family_uuid=f.uuid
@@ -85,19 +85,6 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 }
 
 //--------------------------------------------------------------------------------
-// Member
-
-func (r *Repo) SelectMemberByUUID(uuid string) (entity.Member, error) {
-	q := queryMember + " WHERE m.uuid=?;"
-	// fmt.Println("SelectMemberByUUID", q, uuid)
-	members, err := r.ExecuteQuery(q, uuid)
-	if err != nil || len(members) == 0 {
-		return entity.Member{}, err
-	}
-	return members[0], nil
-}
-
-//--------------------------------------------------------------------------------
 //
 
 func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member, error) {
@@ -136,7 +123,7 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 	var archived bool
 	var status string
 	var familyUUID string
-	var familyGroup string
+	var familyName string
 	//
 	for rows.Next() {
 		err := rows.Scan(
@@ -145,7 +132,7 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 			&address1, &address2, &postnummer, &poststed,
 			&synagogueSeat, &membershipFeeTier, &registeredDateStr, &deregisteredDateStr,
 			&receiveEmail, &receiveMail, &receiveHatikva, &archived, &status, &familyUUID,
-			&familyGroup,
+			&familyName,
 		)
 		if err != nil {
 			slog.Error(err.Error())
@@ -162,7 +149,7 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 			address,
 			synagogueSeat, membershipFeeTier, registeredDate, deregisteredDate, receiveEmail,
 			receiveMail, receiveHatikva, archived, entity.MemberStatus(status), familyUUID,
-			familyGroup,
+			familyName,
 		))
 	}
 	err := rows.Err()

@@ -152,6 +152,7 @@ templ (vctx *ViewCtx) SelectFamilies(id, label, selectedUUID string, families []
 			name={ id }
 			class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 		>
+			<option value="">Select family</option>
 			for _, family := range families {
 				<option value={ family.UUID } selected?={ selectedUUID == family.UUID }>{ family.Name }</option>
 			}

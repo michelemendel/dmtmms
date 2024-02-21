@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"fmt"
 	"log/slog"
 
 	// "github.com/michelemendel/dmtmms/e"
@@ -10,6 +11,15 @@ import (
 
 func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 	tx, _ := r.DB.Begin()
+	familyUUID := "0"
+	familyName := ""
+	if member.FamilyUUID != "" {
+		familyUUID = member.FamilyUUID
+		familyName, _ = r.GetFamilyNameByUUID(member.FamilyUUID)
+	}
+
+	// fmt.Println("[R]: familyUUID", familyUUID, "familyName", familyName)
+
 	_, err := tx.Exec(`
 	INSERT INTO members(
 		uuid, 
@@ -17,24 +27,38 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 		address1, address2, postnummer, poststed, 
 		synagogue_seat, membership_fee_tier, registered_date, deregistered_date, 
 		receive_email, receive_mail, receive_hatikva, archived, status, 
-		family_uuid, family_group
-	) VALUES(?, ?, ?, julianday(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, julianday(?), julianday(?), ?, ?, ?, ?, ?, ?, ?)
-	`,
+		family_uuid, family_name
+		) VALUES(
+			?, 
+			?, ?, julianday(?), ?, ?, ?, 
+			?, ?, ?, ?, 
+			?, ?, julianday(?), julianday(?), 
+			?, ?, ?, ?, ?, 
+			?, ?
+		)
+		`,
 		member.UUID,
-		member.ID, member.Name, member.DOB, member.Personnummer, member.Email,
-		member.Mobile,
+		member.ID, member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
-		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate, member.ReceiveEmail,
-		member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status, member.FamilyUUID,
-		member.FamilyGroup,
+		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
+		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status,
+		familyUUID, familyName,
 	)
 	if err != nil {
-		slog.Error(err.Error(), "uuid", member.UUID, "name", member.Name)
+		slog.Error(err.Error(), "uuid", member.UUID, "name", member.Name, "familyUUID", familyUUID, "familyName", familyName)
 		tx.Rollback()
 		return e.ErrCreatingMember
 	}
 
-	for _, groupUUID := range groupUUIDs {
+	// Add member to groups
+	gUUIDs := []string{"0"}
+	if len(groupUUIDs) > 1 {
+		gUUIDs = groupUUIDs
+	}
+
+	fmt.Println("[R]: groupUUIDs", groupUUIDs, "len", len(groupUUIDs), "gUUIDs", gUUIDs)
+
+	for _, groupUUID := range gUUIDs {
 		_, err = tx.Exec(`INSERT INTO members_groups(member_uuid, group_uuid) VALUES(?, ?)`, member.UUID, groupUUID)
 		if err != nil {
 			slog.Error(err.Error(), "uuid", member.UUID, "groupUUD", groupUUID)
@@ -77,14 +101,14 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 		address1=?, address2=?, postnummer=?, poststed=?, 
 		synagogue_seat=?, membership_fee_tier=?, registered_date=julianday(?), deregistered_date=julianday(?), 
 		receive_email=?, receive_mail=?, receive_hatikva=?, archived=?, status=?, 
-		family_uuid=?, family_group=? 
+		family_uuid=?, family_name=? 
 	WHERE uuid=?
 	`,
 		member.ID, member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
 		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
 		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status,
-		member.FamilyUUID, member.FamilyGroup,
+		member.FamilyUUID, member.FamilyName,
 		member.UUID,
 	)
 	if err != nil {

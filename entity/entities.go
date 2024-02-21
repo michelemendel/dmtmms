@@ -100,7 +100,7 @@ type Member struct {
 	Archived          bool
 	Status            MemberStatus
 	FamilyUUID        string
-	FamilyGroup       string
+	FamilyName        string
 }
 
 func NewMember(uuid,
@@ -120,7 +120,7 @@ func NewMember(uuid,
 	archived bool,
 	status MemberStatus,
 	familyUUID,
-	familyGroup string,
+	familyName string,
 ) Member {
 	return Member{
 		UUID:              uuid,
@@ -141,7 +141,7 @@ func NewMember(uuid,
 		Archived:          archived,
 		Status:            status,
 		FamilyUUID:        familyUUID,
-		FamilyGroup:       familyGroup,
+		FamilyName:        familyName,
 	}
 }
 
@@ -179,26 +179,34 @@ type MemberDetail struct {
 
 // To be presented on the detail section of the member page
 // Maybe not the best way to get a list of data in order, when we have to write memberDetails[2].Value to get some value.
-func GetMemberDetails(member Member) []MemberDetail {
+func GetMemberDetailsForPresentation(member Member) []MemberDetail {
 	details := []MemberDetail{}
 
-	if member.DOB.IsZero() {
+	if member.UUID == "" {
 		return details
 	}
 
 	details = append(details, MemberDetail{"UUID", member.UUID})
 	details = append(details, MemberDetail{"FamilyUUID", member.FamilyUUID})
-	details = append(details, MemberDetail{"FamilyGroup", member.FamilyGroup})
+	details = append(details, MemberDetail{"FamilyName", member.FamilyName})
+	details = append(details, MemberDetail{"Name", member.Name})
 	details = append(details, MemberDetail{"ID", member.ID})
 	details = append(details, MemberDetail{"Date of Birth", util.Time2String(member.DOB)})
 	details = append(details, MemberDetail{"Personnummer", member.Personnummer})
-	details = append(details, MemberDetail{"Name", member.Name})
 	details = append(details, MemberDetail{"Email", member.Email})
 	details = append(details, MemberDetail{"Mobile", member.Mobile})
 	details = append(details, MemberDetail{"Address1", member.Address.Address1})
 	details = append(details, MemberDetail{"Address2", member.Address.Address2})
 	details = append(details, MemberDetail{"Poststed", member.Address.Postnummer + " " + member.Address.Poststed})
 	details = append(details, MemberDetail{"Status", string(member.Status)})
+	details = append(details, MemberDetail{"Synagogueseat", member.Synagogueseat})
+	details = append(details, MemberDetail{"MembershipFeeTier", member.MembershipFeeTier})
+	details = append(details, MemberDetail{"RegisteredDate", util.Time2String(member.RegisteredDate)})
+	details = append(details, MemberDetail{"DeregisteredDate", util.Time2String(member.DeregisteredDate)})
+	details = append(details, MemberDetail{"ReceiveEmail", util.Bool2String(member.ReceiveEmail)})
+	details = append(details, MemberDetail{"ReceiveMail", util.Bool2String(member.ReceiveMail)})
+	details = append(details, MemberDetail{"ReceiveHatikva", util.Bool2String(member.ReceiveHatikva)})
+	details = append(details, MemberDetail{"Archived", util.Bool2String(member.Archived)})
 
 	return details
 }

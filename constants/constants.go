@@ -2,7 +2,7 @@ package constants
 
 const (
 	DATE_FRMT = "2006-01-02"
-	DATE_MIN  = "1000-01-01"
+	DATE_MIN  = "0001-01-01"
 	DATE_MAX  = "3000-01-01"
 )
 

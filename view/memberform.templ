@@ -128,9 +128,9 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 					<div class="mt-2">
 						@vctx.Select("status", string(member.Status), "Status", vctx.MemberStatuses)
 					</div>
-					// family_group (family_uuid)
+					// family_name (family_uuid)
 					<div class="mt-2">
-						@vctx.SelectFamilies("family_group", "Family", member.FamilyUUID, families)
+						@vctx.SelectFamilies("family_uuid", "Family", member.FamilyUUID, families)
 					</div>
 					// groups (groups uuid)
 					<div class="mt-2">
