@@ -31,6 +31,7 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	}
 
 	memberDetails := entity.GetMemberDetailsForPresentation(member)
+	// fmt.Println("[MH]: F", f)
 	return h.renderView(c, h.ViewCtx.Members(members, memberDetails, groups, f))
 }
 
@@ -179,7 +180,7 @@ func (h *HandlerContext) CreatetMemberFromForm(c echo.Context, uuid string) (ent
 	deregisteredDateStr := c.FormValue("deregistered_date")
 	receiveEmailStr := c.FormValue("receive_email")
 	receiveMailStr := c.FormValue("receive_mail")
-	receiveHatikvaStr := c.FormValue("receive_hatikva")
+	receiveHatikvaStr := c.FormValue("receive_hatikvah")
 	status := c.FormValue("status")
 	familyUUID := c.FormValue("family_uuid")
 	familyName := ""

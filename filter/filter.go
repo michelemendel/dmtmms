@@ -22,12 +22,16 @@ func MakeFilter(opts Opts) *Filter {
 }
 
 type Opts struct {
-	MemberUUID  string
-	FamilyUUID  string
-	GroupUUID   string
-	SearchTerms string
-	From        string
-	To          string
+	MemberUUID     string
+	FamilyUUID     string
+	GroupUUID      string
+	SearchTerms    string
+	From           string
+	To             string
+	ReceiveEmail   string
+	ReceiveMail    string
+	ReceiveHatikva string
+	Archived       string
 }
 
 func MakeOpts() Opts {
@@ -74,6 +78,26 @@ func (o Opts) WithTo(to string) Opts {
 	return o
 }
 
+func (o Opts) WithReceiveEmail(receiveEmail string) Opts {
+	o.ReceiveEmail = receiveEmail
+	return o
+}
+
+func (o Opts) WithReceiveMail(receiveMail string) Opts {
+	o.ReceiveMail = receiveMail
+	return o
+}
+
+func (o Opts) WithReceiveHatikva(receiveHatikva string) Opts {
+	o.ReceiveHatikva = receiveHatikva
+	return o
+}
+
+func (o Opts) WithArchived(archived string) Opts {
+	o.Archived = archived
+	return o
+}
+
 //--------------------------------------------------------------------------------
 // Filter from query parameters
 
@@ -83,5 +107,7 @@ func FilterFromQuery(c echo.Context) Filter {
 	searchTerms := c.QueryParam("searchterms")
 	fromStr := c.QueryParam("from")
 	toStr := c.QueryParam("to")
-	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr)}
+	receiveEmail := c.QueryParam("receiveEmail")
+	// fmt.Println("FilterFromQuery", fuuid, guuid, searchTerms, fromStr, toStr, receiveEmail)
+	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr).WithReceiveEmail(receiveEmail)}
 }

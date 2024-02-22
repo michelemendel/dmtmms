@@ -44,7 +44,6 @@ const (
 	LEFT JOIN groups as g on mg.group_uuid = g.uuid
 	WHERE m.dob BETWEEN julianday(?) AND julianday(?)
 	`
-	// WHERE m.archived=1
 )
 
 func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, error) {
@@ -78,6 +77,11 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 	if filter.MemberUUID != "" {
 		q = q + "AND m.uuid=?"
 		args = append(args, filter.MemberUUID)
+	}
+
+	if filter.ReceiveEmail != "" {
+		q = q + "AND m.receive_email=?"
+		args = append(args, filter.ReceiveEmail)
 	}
 
 	q = q + " GROUP BY m.uuid ORDER BY m.name;"

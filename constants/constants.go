@@ -101,3 +101,8 @@ const (
 	ROLE_EDIT  = "edit"
 	ROLE_READ  = "read"
 )
+
+// CSS
+const (
+	ClassIndeterminate = "relative peer shrink-0 appearance-none w-4 h-4 text-red-600 border-2 border-blue-500 rounded-sm bg-white mt-1 checked:bg-red-600 checked:border-0 focus:outline-none focus:ring-offset-0 focus:ring-2 focus:ring-gray-100"
+)
