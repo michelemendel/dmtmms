@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
@@ -37,7 +36,6 @@ func (h *HandlerContext) FamilyCreateHandler(c echo.Context) error {
 		Name: familyName,
 	}
 	err := h.Repo.CreateFamily(family)
-	fmt.Printf("[CREATE]: %v\n%[1]T\n", err)
 	if err != nil {
 		inputErrors["form"] = entity.NewInputError("form", err)
 		return h.renderView(c, h.ViewCtx.Families(families, family, constants.OP_CREATE, inputErrors))

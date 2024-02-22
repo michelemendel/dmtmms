@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
@@ -81,7 +80,7 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 	groups, _ := h.Repo.SelectGroups()
 	//
 	uuid := util.GenerateUUID()
-	member, selectedGroupUUIDs := CreatetMemberFromForm(c, uuid)
+	member, selectedGroupUUIDs := h.CreatetMemberFromForm(c, uuid)
 	inputErrors, areErrors := ValidateInput(member)
 	if areErrors {
 		c.Response().Header().Set("HX-Retarget", "#memberForm")
@@ -139,28 +138,26 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 		member = members[0]
 		selectedGroupUUIDsAsStrings = entity.Groups2UUIDsAsStrings(selectedGroupUUIDs)
 	}
+
 	return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, entity.InputErrors{}))
 }
 
 func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
 	families, _ := h.Repo.SelectFamilies()
 	groups, _ := h.Repo.SelectGroups()
-	uuid := c.Param("uuid")
-	member, selectedGroupUUIDs := CreatetMemberFromForm(c, uuid)
+	uuid := c.FormValue("uuid")
+	member, selectedGroupUUIDsAsStrings := h.CreatetMemberFromForm(c, uuid)
 
 	inputErrors, areErrors := ValidateInput(member)
 	if areErrors {
-		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
+		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, inputErrors))
 	}
 
-	fmt.Println("[H]:UPDATE", selectedGroupUUIDs)
-	util.PP(member)
-
-	err := h.Repo.UpdateMember(member, selectedGroupUUIDs)
+	err := h.Repo.UpdateMember(member, selectedGroupUUIDsAsStrings)
 	if err != nil {
 		slog.Error(err.Error(), "uuid", uuid, "name", member.Name)
 		inputErrors["form"] = entity.NewInputError("form", err)
-		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDs, families, groups, constants.OP_UPDATE, inputErrors))
+		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, inputErrors))
 	}
 	return h.MembersHandler(c)
 }
@@ -168,7 +165,7 @@ func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
 //--------------------------------------------------------------------------------
 // Helper functions
 
-func CreatetMemberFromForm(c echo.Context, uuid string) (entity.Member, []string) {
+func (h *HandlerContext) CreatetMemberFromForm(c echo.Context, uuid string) (entity.Member, []string) {
 	params, _ := c.FormParams()
 	id := c.FormValue("id")
 	name := c.FormValue("name")
@@ -185,7 +182,10 @@ func CreatetMemberFromForm(c echo.Context, uuid string) (entity.Member, []string
 	receiveHatikvaStr := c.FormValue("receive_hatikva")
 	status := c.FormValue("status")
 	familyUUID := c.FormValue("family_uuid")
-	familyName := c.FormValue("family_name")
+	familyName := ""
+	if familyUUID != "" {
+		familyName, _ = h.Repo.GetFamilyNameByUUID(familyUUID)
+	}
 	//
 	dob := util.String2Time(dobStr)
 	registeredDate := util.String2Time(registeredDateStr)

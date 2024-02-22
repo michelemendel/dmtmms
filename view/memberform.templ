@@ -42,6 +42,8 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 				// --------------------------------------------------------------------------------
 				// Form
 				<form>
+					// uuid
+					<input type="hidden" name="uuid" value={ member.UUID }/>
 					// id
 					<div class="mt-2">
 						@Input("id", member.ID, "", "Id", false, false, inputErrors["id"])
@@ -124,6 +126,12 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 					<div class="mt-1">
 						@Checkbox("receive_hatikvah", member.ReceiveHatikva, "Receive Hatikvah", false)
 					</div>
+					// archived
+					if op == "update" {
+						<div class="mt-1">
+							@Checkbox("archived", member.Archived, "Archived", false)
+						</div>
+					}
 					// status
 					<div class="mt-2">
 						@vctx.Select("status", string(member.Status), "Status", vctx.MemberStatuses)

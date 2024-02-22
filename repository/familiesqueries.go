@@ -23,9 +23,7 @@ func (r *Repo) SelectFamilies() ([]entity.Family, error) {
 			slog.Error(err.Error())
 			return families, err
 		}
-		if uuid != "0" {
-			families = append(families, entity.NewFamily(uuid, name))
-		}
+		families = append(families, entity.NewFamily(uuid, name))
 	}
 	err = rows.Err()
 	if err != nil {

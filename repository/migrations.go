@@ -101,10 +101,10 @@ func (r *Repo) CreateTables() {
 		role TEXT,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER,
-		primary key (member_uuid, group_uuid),
-		FOREIGN KEY(member_uuid) REFERENCES members(uuid),
-		FOREIGN KEY(group_uuid) REFERENCES groups(uuid)
-	); `
+		primary key (member_uuid, group_uuid)
+		); `
+	// FOREIGN KEY(member_uuid) REFERENCES members(uuid) ON UPDATE CASCADE ON DELETE CASCADE,
+	// FOREIGN KEY(group_uuid) REFERENCES groups(uuid)
 
 	r.runStatements(sqlStmts)
 }
@@ -151,7 +151,7 @@ func (r *Repo) InsertUsers() {
 // Families
 func (r *Repo) InsertFamilies() {
 	families := []entity.Family{
-		{UUID: "0", Name: ""},
+		{UUID: "0", Name: "none"},
 		{UUID: "101", Name: "fam1"},
 		{UUID: "102", Name: "fam2"},
 	}
@@ -167,7 +167,7 @@ func (r *Repo) InsertFamilies() {
 // Groups
 func (r *Repo) InsertGroups() {
 	groups := []entity.Group{
-		{UUID: "0", Name: ""},
+		{UUID: "0", Name: "none"},
 		{UUID: "1001", Name: "org1"},
 		{UUID: "1002", Name: "org2"},
 		{UUID: "1003", Name: "org3"},

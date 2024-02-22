@@ -636,7 +636,7 @@ func (vctx *ViewCtx) SelectFamilies(id, label, selectedUUID string, families []e
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(family.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/formelements.templ`, Line: 156, Col: 89}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/formelements.templ`, Line: 155, Col: 89}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -686,7 +686,7 @@ func (vctx *ViewCtx) SelectGroups(id, label string, selectedUUIDs []string, grou
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/formelements.templ`, Line: 167, Col: 10}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/formelements.templ`, Line: 166, Col: 10}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
@@ -738,7 +738,7 @@ func (vctx *ViewCtx) SelectGroups(id, label string, selectedUUIDs []string, grou
 			var templ_7745c5c3_Var20 string
 			templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(group.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/formelements.templ`, Line: 176, Col: 102}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/formelements.templ`, Line: 175, Col: 102}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 			if templ_7745c5c3_Err != nil {

@@ -23,9 +23,7 @@ func (r *Repo) SelectGroups() ([]entity.Group, error) {
 			slog.Error(err.Error())
 			return groups, err
 		}
-		if uuid != "0" {
-			groups = append(groups, entity.NewGroup(uuid, name))
-		}
+		groups = append(groups, entity.NewGroup(uuid, name))
 	}
 	err = rows.Err()
 	if err != nil {
