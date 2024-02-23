@@ -58,140 +58,102 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberDetails []entit
 }
 
 templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
+	// This is not needed somehow.
+	// hx-include="[name='searchterms'], [name='from'], [name='to'], [name='receiveEmail'], [name='receiveMail'], [name='receiveHatikvah']"
 	<form
 		hx-get={ constants.ROUTE_MEMBERS }
-		hx-include="[name='searchterms'], [name='from'], [name='to'], [name='receiveEmail']"
 		hx-target="#members"
 		hx-swap="outerHTML"
 		hx-push-url="true"
 		hx-trigger="keyup[keyCode==13]"
 	>
-		<div id="filterBar" class="flex flex-row">
-			<div>
-				@Input("searchterms", f.SearchTerms, "search", "search", false, false, entity.InputError{})
-			</div>
-			<div class="ml-2">
-				@DatePicker("from", f.From, "From")
-			</div>
-			<div class="ml-2">
-				@DatePicker("to", f.To, "To")
-			</div>
-			<div class="ml-2">
-				@TheCB(f.ReceiveEmail)
-			</div>
-			// 
-			<div class="flex items-center mr-4 mb-2">
-				<input
-					type="checkbox"
-					id="A3-yes"
-					name="A3-confirmation"
-					value="yes"
-					class="opacity-0 absolute h-8 w-8"
-				/>
-				<div class="bg-white border-2 rounded-md border-blue-400 w-8 h-8 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
-					<svg
-						class="fill-current hidden w-3 h-3 text-blue-600 pointer-events-none"
-						version="1.1"
-						viewBox="0 0 17 12"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<g fill="none" fill-rule="evenodd">
-							<g transform="translate(-9 -11)" fill="#1F73F1" fill-rule="nonzero">
-								<path d="m25.576 11.414c0.56558 0.55188 0.56558 1.4439 0 1.9961l-9.404 9.176c-0.28213 0.27529-0.65247 0.41385-1.0228 0.41385-0.37034 0-0.74068-0.13855-1.0228-0.41385l-4.7019-4.588c-0.56584-0.55188-0.56584-1.4442 0-1.9961 0.56558-0.55214 1.4798-0.55214 2.0456 0l3.679 3.5899 8.3812-8.1779c0.56558-0.55214 1.4798-0.55214 2.0456 0z"></path>
-							</g>
-						</g>
-					</svg>
+		<div id="filterBar" class="flex flex-col">
+			<div class="flex flex-row">
+				<div>
+					@Input("searchterms", f.SearchTerms, "search", "search", false, false, entity.InputError{})
 				</div>
-				<label for="A3-yes" class="select-none">Yes</label>
+				<div class="ml-2">
+					@DatePicker("from", f.From, "From")
+				</div>
+				<div class="ml-2">
+					@DatePicker("to", f.To, "To")
+				</div>
+				<div class="ml-2">
+					<button class={ ButtonClass }>
+						Search
+					</button>
+				</div>
 			</div>
-			// 
-			<div class="ml-2">
-				<button class={ ButtonClass }>
-					Search
-				</button>
+			<div class="flex flex-row mt-2">
+				<div class="">
+					@CBElement("receiveEmail", "Email", f.ReceiveEmail)
+				</div>
+				<div class="ml-4">
+					@CBElement("receiveMail", "Mail", f.ReceiveMail)
+				</div>
+				<div class="ml-4">
+					@CBElement("receiveHatikvah", "Hatikvah", f.ReceiveHatikvah)
+				</div>
 			</div>
 		</div>
-		@Consts()
-		@CBInit(f.ReceiveEmail)
-		@Check()
+		@CBInit([]checkbox{
+			{ID: "receiveEmail", Val: f.ReceiveEmail},
+			{ID: "receiveMail", Val: f.ReceiveMail},
+			{ID: "receiveHatikvah", Val: f.ReceiveHatikvah},
+		})
+		@CBOnClick([]string{"receiveEmail", "receiveMail", "receiveHatikvah"})
+		// @CBOnClick([]string{"receiveEmail", "receiveMail"})
 	</form>
 }
 
-templ TheCB(val string) {
-	<div class="flex items-center mr-4 mb-2">
-		<input
-			checked
-			type="checkbox"
-			id="receiveEmail"
-			name="receiveEmail"
-			value={ val }
-		/>
-		<div id="cbSVG" class="bg-white border-2 rounded-md border-blue-400 w-8 h-8 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
-			<svg
-				class="fill-current hidden w-3 h-3 text-blue-600 pointer-events-none"
-				version="1.1"
-				viewBox="0 0 17 12"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<g fill="none" fill-rule="evenodd">
-					<g transform="translate(-9 -11)" fill="#1F73F1" fill-rule="nonzero">
-						<path d="m25.576 11.414c0.56558 0.55188 0.56558 1.4439 0 1.9961l-9.404 9.176c-0.28213 0.27529-0.65247 0.41385-1.0228 0.41385-0.37034 0-0.74068-0.13855-1.0228-0.41385l-4.7019-4.588c-0.56584-0.55188-0.56584-1.4442 0-1.9961 0.56558-0.55214 1.4798-0.55214 2.0456 0l3.679 3.5899 8.3812-8.1779c0.56558-0.55214 1.4798-0.55214 2.0456 0z"></path>
-					</g>
-				</g>
-			</svg>
-		</div>
-		<label
-			for="receiveEmail"
-			class="text-sm font-light"
-		>Email</label>
+type checkbox struct {
+	ID  string
+	Val string
+}
+
+// For alternatives with icons, see inout.css
+templ CBElement(id, label, val string) {
+	<div class="flex items-center">
+		<input checked type="checkbox" id={ id } name={ id } value={ val }/>
+		<label for={ id } class="ml-1 text-sm font-light">{ label }</label>
 	</div>
 }
 
-script Consts() {
-	// classBase = "opacity-10 absolute h-8 w-8 relative peer shrink-0 appearance-none w-4 h-4 border-2 border-blue-500 rounded-sm bg-white mt-1 checked:border-0 "
-	classBase = "opacity-10 absolute h-8 w-8 "
-	classOff = classBase + "text-red-600 checked:bg-red-600"
-	classInclude = classBase + "text-blue-600 checked:bg-blue-600"
-	classExclude = classBase + "text-green-600 checked:bg-green-600"
-	svgOff = ""
-	svgInclude = ""
-	svgExclude = ""
-}
-
-script CBInit(val string) {
-	let checkbox = document.getElementById("receiveEmail");
-		let cbSVG = document.getElementById("svgSVG");
-	if (val == "") {
-		checkbox.setAttribute("class", classOff)
-		sbSVG.innerHTML = "";
-	} else if (val == "1") {
-		checkbox.setAttribute("class", classInclude)
-		sbSVG.innerHTML = svgInclude;
-	} else if (val == "0") {
-		checkbox.setAttribute("class", classExclude)
-		sbSVG.innerHTML = "";
+script CBInit(cbs []checkbox) {
+	for(let i=0; i<cbs.length; i++) {
+		console.log("CBInit:", cbs[i].ID, cbs[i].Val)
+		classBase = "absolute h-4 w-4 relative peer shrink-0 appearance-none rounded-sm checked:bg-none focus:ring-1 hover:ring-1  "
+		classOff = classBase + "checked:text-white checked:bg-white checked:border-1 checked:border-gray-500"
+		classInclude = classBase + "checked:text-green-600 checked:bg-green-600"
+		classExclude = classBase + "checked:text-red-600 checked:bg-red-600"
+		let checkbox = document.getElementById(cbs[i].ID);
+		if (cbs[i].Val == "") {
+			checkbox.setAttribute("class", classOff)
+		} else if (cbs[i].Val == "1") {
+			checkbox.setAttribute("class", classInclude)
+		} else if (cbs[i].Val == "0") {
+			checkbox.setAttribute("class", classExclude)
+		}
 	}
 }
 
-script Check() {
-	let checkbox = document.getElementById("receiveEmail");
-	let cbSVG = document.getElementById("svgSVG");
-	checkbox.addEventListener('change', function () {
-		checkbox.checked = true;
-		if (checkbox.value == "") {			
-			checkbox.value = "1";
-			checkbox.setAttribute("class", classInclude);
-			sbSVG.innerHTML = svgInclude;
-		} else if (checkbox.value == "1"){
-			checkbox.value = "0";
-			checkbox.setAttribute("class", classExclude);
-			sbSVG.innerHTML = "";
-		} else if (checkbox.value == "0"){
-			checkbox.value = "";
-			checkbox.setAttribute("class", classOff);
-			sbSVG.innerHTML = "";
-		}
-	});
+script CBOnClick(ids []string) {
+	for(let id of ids) {
+		let checkbox = document.getElementById(id);
+		checkbox.addEventListener('change', function () {
+			checkbox.checked = true;
+			if (checkbox.value == "") {			
+				checkbox.value = "1";
+				checkbox.setAttribute("class", classInclude);
+			} else if (checkbox.value == "1"){
+				checkbox.value = "0";
+				checkbox.setAttribute("class", classExclude);
+			} else if (checkbox.value == "0"){
+				checkbox.value = "";
+				checkbox.setAttribute("class", classOff);
+			}
+		});
+	}
 }
 
 templ (vctx *ViewCtx) AddMemberButton() {
@@ -265,7 +227,7 @@ templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
 	<td class="whitespace-nowrap px-6 py-4">{ member.FamilyName }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveEmail) }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveMail) }</td>
-	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveHatikva) }</td>
+	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveHatikvah) }</td>
 }
 
 func bool2string(b bool) string {

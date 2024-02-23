@@ -96,7 +96,7 @@ type Member struct {
 	DeregisteredDate  time.Time
 	ReceiveEmail      bool
 	ReceiveMail       bool
-	ReceiveHatikva    bool
+	ReceiveHatikvah   bool
 	Archived          bool
 	Status            MemberStatus
 	FamilyUUID        string
@@ -116,7 +116,7 @@ func NewMember(uuid,
 	deregisteredDate time.Time,
 	receiveEmail bool,
 	receiveMail bool,
-	receiveHatikva bool,
+	receiveHatikvah bool,
 	archived bool,
 	status MemberStatus,
 	familyUUID,
@@ -137,7 +137,7 @@ func NewMember(uuid,
 		DeregisteredDate:  deregisteredDate,
 		ReceiveEmail:      receiveEmail,
 		ReceiveMail:       receiveMail,
-		ReceiveHatikva:    receiveHatikva,
+		ReceiveHatikvah:   receiveHatikvah,
 		Archived:          archived,
 		Status:            status,
 		FamilyUUID:        familyUUID,
@@ -205,7 +205,7 @@ func GetMemberDetailsForPresentation(member Member) []MemberDetail {
 	details = append(details, MemberDetail{"DeregisteredDate", util.Time2String(member.DeregisteredDate)})
 	details = append(details, MemberDetail{"ReceiveEmail", util.Bool2String(member.ReceiveEmail)})
 	details = append(details, MemberDetail{"ReceiveMail", util.Bool2String(member.ReceiveMail)})
-	details = append(details, MemberDetail{"ReceiveHatikva", util.Bool2String(member.ReceiveHatikva)})
+	details = append(details, MemberDetail{"ReceiveHatikvah", util.Bool2String(member.ReceiveHatikvah)})
 	details = append(details, MemberDetail{"Archived", util.Bool2String(member.Archived)})
 
 	return details

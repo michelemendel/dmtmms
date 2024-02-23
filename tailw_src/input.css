@@ -2,6 +2,9 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* Alternative checkbox with icons */
+/* https://jakzaizzat.medium.com/how-to-a-build-custom-checkbox-in-tailwindcss-14e4e9c3c5dc */
+/* https://codepen.io/carsonf92/pen/xEBxwP */
 input:checked + div {
   @apply border-blue-500;
 }

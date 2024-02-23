@@ -67,7 +67,7 @@ func (r *Repo) CreateTables() {
 		deregistered_date REAL,
 		receive_email BOOLEAN,
 		receive_mail BOOLEAN,
-		receive_hatikva BOOLEAN,
+		receive_hatikvah BOOLEAN,
 		status TEXT NOT NULL,
 		archived BOOLEAN,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,

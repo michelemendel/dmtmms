@@ -25,7 +25,7 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 		id, name, dob, personnummer, email, mobile, 
 		address1, address2, postnummer, poststed, 
 		synagogue_seat, membership_fee_tier, registered_date, deregistered_date, 
-		receive_email, receive_mail, receive_hatikva, archived, status, 
+		receive_email, receive_mail, receive_hatikvah, archived, status, 
 		family_uuid, family_name
 		) VALUES(
 			?, 
@@ -40,7 +40,7 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 		member.ID, member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
 		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
-		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status,
+		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikvah, member.Archived, member.Status,
 		familyUUID, familyName,
 	)
 	if err != nil {
@@ -100,7 +100,7 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 		id=?, name=?, dob=julianday(?), personnummer=?, email=?, mobile=?, 
 		address1=?, address2=?, postnummer=?, poststed=?, 
 		synagogue_seat=?, membership_fee_tier=?, registered_date=julianday(?), deregistered_date=julianday(?), 
-		receive_email=?, receive_mail=?, receive_hatikva=?, archived=?, status=?, 
+		receive_email=?, receive_mail=?, receive_hatikvah=?, archived=?, status=?, 
 		family_uuid=?, family_name=? 
 	WHERE uuid=?
 	`
@@ -108,7 +108,7 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 		member.ID, member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
 		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
-		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikva, member.Archived, member.Status,
+		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikvah, member.Archived, member.Status,
 		member.FamilyUUID, member.FamilyName,
 		member.UUID,
 	)

@@ -26,7 +26,7 @@ const (
 	IFNULL(date(m.deregistered_date), ""),
 	IFNULL(m.receive_email, false),
 	IFNULL(m.receive_mail, false),
-	IFNULL(m.receive_hatikva, false),
+	IFNULL(m.receive_hatikvah, false),
 	IFNULL(m.archived, false),
 	m.status, 
 	IFNULL(f.uuid, ""), 
@@ -82,6 +82,16 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 	if filter.ReceiveEmail != "" {
 		q = q + "AND m.receive_email=?"
 		args = append(args, filter.ReceiveEmail)
+	}
+
+	if filter.ReceiveMail != "" {
+		q = q + "AND m.receive_mail=?"
+		args = append(args, filter.ReceiveMail)
+	}
+
+	if filter.ReceiveHatikvah != "" {
+		q = q + "AND m.receive_hatikvah=?"
+		args = append(args, filter.ReceiveHatikvah)
 	}
 
 	q = q + " GROUP BY m.uuid ORDER BY m.name;"

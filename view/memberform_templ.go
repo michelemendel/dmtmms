@@ -205,7 +205,7 @@ func (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []stri
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Checkbox("receive_hatikvah", member.ReceiveHatikva, "Receive Hatikvah", false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Checkbox("receive_hatikvah", member.ReceiveHatikvah, "Receive Hatikvah", false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
