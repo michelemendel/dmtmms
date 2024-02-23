@@ -110,6 +110,7 @@ func FilterFromQuery(c echo.Context) Filter {
 	receiveEmail := c.QueryParam("receiveEmail")
 	receiveMail := c.QueryParam("receiveMail")
 	receiveHatikvah := c.QueryParam("receiveHatikvah")
+	archived := c.QueryParam("archived")
 	// fmt.Println("FilterFromQuery", fuuid, guuid, searchTerms, fromStr, toStr, receiveEmail, receiveMail, receiveHatikvah)
-	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr).WithReceiveEmail(receiveEmail).WithReceiveMail(receiveMail).WithReceiveHatikvah(receiveHatikvah)}
+	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr).WithReceiveEmail(receiveEmail).WithReceiveMail(receiveMail).WithReceiveHatikvah(receiveHatikvah).WithArchived(archived)}
 }

@@ -94,15 +94,18 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 				<div class="ml-4">
 					@CBElement("receiveHatikvah", "Hatikvah", f.ReceiveHatikvah)
 				</div>
+				<div class="ml-4">
+					@CBElement("archived", "Archived", f.Archived)
+				</div>
 			</div>
 		</div>
 		@CBInit([]checkbox{
 			{ID: "receiveEmail", Val: f.ReceiveEmail},
 			{ID: "receiveMail", Val: f.ReceiveMail},
 			{ID: "receiveHatikvah", Val: f.ReceiveHatikvah},
+			{ID: "archived", Val: f.Archived},
 		})
-		@CBOnClick([]string{"receiveEmail", "receiveMail", "receiveHatikvah"})
-		// @CBOnClick([]string{"receiveEmail", "receiveMail"})
+		@CBOnClick([]string{"receiveEmail", "receiveMail", "receiveHatikvah", "archived"})
 	</form>
 }
 

@@ -94,6 +94,11 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 		args = append(args, filter.ReceiveHatikvah)
 	}
 
+	if filter.Archived != "" {
+		q = q + "AND m.archived=?"
+		args = append(args, filter.Archived)
+	}
+
 	q = q + " GROUP BY m.uuid ORDER BY m.name;"
 	return r.ExecuteQuery(q, args...)
 }
