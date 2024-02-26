@@ -8,9 +8,7 @@ import (
 
 func (r *Repo) SelectFamilies() ([]entity.Family, error) {
 	var families []entity.Family
-	var uuid string
-	var name string
-
+	var f entity.Family
 	rows, err := r.DB.Query("SELECT uuid, name FROM families")
 	if err != nil {
 		slog.Error(err.Error())
@@ -18,31 +16,37 @@ func (r *Repo) SelectFamilies() ([]entity.Family, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&uuid, &name)
+		err := rows.Scan(&f.UUID, &f.Name)
 		if err != nil {
 			slog.Error(err.Error())
 			return families, err
 		}
-		families = append(families, entity.NewFamily(uuid, name))
+		families = append(families, entity.NewFamily(f.UUID, f.Name))
 	}
 	err = rows.Err()
 	if err != nil {
 		slog.Error(err.Error())
 		return families, err
 	}
+	// Remove family "none"
+	for i, f := range families {
+		if f.Name == "none" {
+			families = append(families[:i], families[i+1:]...)
+			break
+		}
+	}
+
 	return families, nil
 }
 
 func (r *Repo) SelectFamily(familyUUID string) (entity.Family, error) {
-	var uuid string
-	var name string
-
-	err := r.DB.QueryRow("SELECT uuid, name FROM families WHERE uuid = ?", familyUUID).Scan(&uuid, &name)
+	var f entity.Family
+	err := r.DB.QueryRow("SELECT uuid, name FROM families WHERE uuid = ?", familyUUID).Scan(&f.UUID, &f.Name)
 	if err != nil {
 		slog.Error(err.Error(), "uuid", familyUUID)
 		return entity.Family{}, err
 	}
-	return entity.NewFamily(uuid, name), nil
+	return entity.NewFamily(f.UUID, f.Name), nil
 }
 
 func (r *Repo) GetFamilyNameByUUID(familyUUID string) (string, error) {

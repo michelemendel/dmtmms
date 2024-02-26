@@ -8,8 +8,6 @@ import (
 
 func (r *Repo) SelectUsers() ([]entity.User, error) {
 	var users []entity.User
-	var name string
-	var role string
 
 	rows, err := r.DB.Query("SELECT name, role FROM users")
 	if err != nil {
@@ -17,13 +15,14 @@ func (r *Repo) SelectUsers() ([]entity.User, error) {
 		return users, err
 	}
 	defer rows.Close()
+	var u entity.User
 	for rows.Next() {
-		err := rows.Scan(&name, &role)
+		err := rows.Scan(&u.Name, &u.Role)
 		if err != nil {
 			slog.Error(err.Error())
 			return users, err
 		}
-		users = append(users, entity.NewUser(name, "", role))
+		users = append(users, entity.NewUser(u.Name, "", u.Role))
 	}
 	err = rows.Err()
 	if err != nil {
@@ -34,16 +33,13 @@ func (r *Repo) SelectUsers() ([]entity.User, error) {
 }
 
 func (r *Repo) SelectUser(username string) (entity.User, error) {
-	var name string
-	var pw string
-	var role string
-
-	err := r.DB.QueryRow("SELECT name, password, role FROM users WHERE name = ?", username).Scan(&name, &pw, &role)
+	var u entity.User
+	err := r.DB.QueryRow("SELECT name, password, role FROM users WHERE name = ?", username).Scan(&u.Name, &u.HashedPassword, &u.Role)
 	if err != nil {
 		slog.Error(err.Error(), "name", username)
 		return entity.User{}, err
 	}
-	return entity.NewUser(name, pw, role), nil
+	return entity.NewUser(u.Name, u.HashedPassword, u.Role), nil
 }
 
 func (r *Repo) DoesUsernameExist(username string) bool {

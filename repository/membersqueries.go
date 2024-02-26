@@ -120,38 +120,19 @@ func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member,
 func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 	defer rows.Close()
 	var members []entity.Member
-	//
-	var uuid string
-	var id string
-	var name string
 	var dobStr string
-	var personnummer string
-	var email string
-	var mobile string
-	var address1 string
-	var address2 string
-	var postnummer string
-	var poststed string
-	var synagogueSeat string
-	var membershipFeeTier string
 	var registeredDateStr string
 	var deregisteredDateStr string
-	var receiveEmail bool
-	var receiveMail bool
-	var receiveHatikva bool
-	var archived bool
-	var status string
-	var familyUUID string
-	var familyName string
 	//
+	var m entity.Member
 	for rows.Next() {
 		err := rows.Scan(
-			&uuid, &id, &name, &dobStr, &personnummer,
-			&email, &mobile,
-			&address1, &address2, &postnummer, &poststed,
-			&synagogueSeat, &membershipFeeTier, &registeredDateStr, &deregisteredDateStr,
-			&receiveEmail, &receiveMail, &receiveHatikva, &archived, &status, &familyUUID,
-			&familyName,
+			&m.UUID, &m.ID, &m.Name, &dobStr, &m.Personnummer,
+			&m.Email, &m.Mobile,
+			&m.Address1, &m.Address2, &m.Postnummer, &m.Poststed,
+			&m.Synagogueseat, &m.MembershipFeeTier, &registeredDateStr, &deregisteredDateStr,
+			&m.ReceiveEmail, &m.ReceiveMail, &m.ReceiveHatikvah, &m.Archived, &m.Status, &m.FamilyUUID,
+			&m.FamilyName,
 		)
 		if err != nil {
 			slog.Error(err.Error())
@@ -161,14 +142,14 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 		DOB := util.String2Time(dobStr)
 		registeredDate := util.String2Time(registeredDateStr)
 		deregisteredDate := util.String2Time(deregisteredDateStr)
-		address := entity.NewAddress(address1, address2, postnummer, poststed)
+		address := entity.NewAddress(m.Address1, m.Address2, m.Postnummer, m.Poststed)
 		members = append(members, entity.NewMember(
-			uuid, id, name, DOB, personnummer,
-			email, mobile,
+			m.UUID, m.ID, m.Name, DOB, m.Personnummer,
+			m.Email, m.Mobile,
 			address,
-			synagogueSeat, membershipFeeTier, registeredDate, deregisteredDate, receiveEmail,
-			receiveMail, receiveHatikva, archived, entity.MemberStatus(status), familyUUID,
-			familyName,
+			m.Synagogueseat, m.MembershipFeeTier, registeredDate, deregisteredDate, m.ReceiveEmail,
+			m.ReceiveMail, m.ReceiveHatikvah, m.Archived, entity.MemberStatus(m.Status), m.FamilyUUID,
+			m.FamilyName,
 		))
 	}
 	err := rows.Err()

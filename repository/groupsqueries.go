@@ -8,8 +8,6 @@ import (
 
 func (r *Repo) SelectGroups() ([]entity.Group, error) {
 	var groups []entity.Group
-	var uuid string
-	var name string
 
 	rows, err := r.DB.Query("SELECT uuid, name FROM groups")
 	if err != nil {
@@ -17,32 +15,38 @@ func (r *Repo) SelectGroups() ([]entity.Group, error) {
 		return groups, err
 	}
 	defer rows.Close()
+	var g entity.Group
 	for rows.Next() {
-		err := rows.Scan(&uuid, &name)
+		err := rows.Scan(&g.UUID, &g.Name)
 		if err != nil {
 			slog.Error(err.Error())
 			return groups, err
 		}
-		groups = append(groups, entity.NewGroup(uuid, name))
+		groups = append(groups, entity.NewGroup(g.UUID, g.Name))
 	}
 	err = rows.Err()
 	if err != nil {
 		slog.Error(err.Error())
 		return groups, err
 	}
+	// Remove group "none"
+	for i, g := range groups {
+		if g.Name == "none" {
+			groups = append(groups[:i], groups[i+1:]...)
+			break
+		}
+	}
 	return groups, nil
 }
 
 func (r *Repo) SelectGroup(groupUUID string) (entity.Group, error) {
-	var uuid string
-	var name string
-
-	err := r.DB.QueryRow("SELECT uuid, name FROM groups WHERE uuid = ?", groupUUID).Scan(&uuid, &name)
+	var g entity.Group
+	err := r.DB.QueryRow("SELECT uuid, name FROM groups WHERE uuid = ?", groupUUID).Scan(&g.UUID, &g.Name)
 	if err != nil {
 		slog.Error(err.Error(), "uuid", groupUUID)
 		return entity.Group{}, err
 	}
-	return entity.NewGroup(uuid, name), nil
+	return entity.NewGroup(g.UUID, g.Name), nil
 }
 
 func (r *Repo) DoesGroupNameExist(groupName string) bool {
@@ -59,8 +63,7 @@ func (r *Repo) DoesGroupNameExist(groupName string) bool {
 // Select groups by member
 func (r *Repo) SelectGroupsByMember(memberUUID string) ([]entity.Group, error) {
 	var groups []entity.Group
-	var gUUID string
-	var gName string
+	var g entity.Group
 	rows, err := r.DB.Query(`
 	SELECT g.uuid, g.name
 	FROM groups as g 
@@ -73,12 +76,12 @@ func (r *Repo) SelectGroupsByMember(memberUUID string) ([]entity.Group, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&gUUID, &gName)
+		err := rows.Scan(&g.UUID, &g.Name)
 		if err != nil {
 			slog.Error(err.Error())
 			return groups, err
 		}
-		groups = append(groups, entity.NewGroup(gUUID, gName))
+		groups = append(groups, entity.NewGroup(g.UUID, g.Name))
 	}
 	err = rows.Err()
 	if err != nil {
