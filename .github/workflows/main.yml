@@ -10,10 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: pwd
-      run: pwd
-    - name: ls
-      run: ls -la
     - name: install ssh keys on runner
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
