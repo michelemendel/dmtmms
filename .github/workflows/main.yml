@@ -16,4 +16,4 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
     - name: connect and check
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "pwd && ls -al && exit"
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "ls -al && cd ${{ secrets.WORK_DIR }} && exit"
