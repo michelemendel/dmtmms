@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: install ssh keys
       run:
+        echo 'PWD'
+        pwd
         mkdir -p ~/.sshh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.sshh/id_rsa
         chmod 600 ~/.sshh/id_rsa
