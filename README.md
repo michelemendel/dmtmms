@@ -91,6 +91,8 @@ Templates and CSS are generated on the development machine and pushed to Github.
   - This will first build the application
 
 - Use Github actions
+  - Setup systemd - https://strapengine.com/auto-restart-mechanism-for-golang-program/
+- Setup a cron job to backup the database
 
 ---
 
