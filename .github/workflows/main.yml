@@ -2,24 +2,24 @@ on:
   push:
     branches:
       - main
-
+  workflow_dispatch:
+  
 jobs:
   run_pull:
     name: run pull
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: check pwd
-      run:
-        pwd
-    - name: install ssh keys
-      run:
-        echo
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+    - name: pwd
+      run: pwd
+    - name: ls
+      run: ls -la
+    - name: install ssh keys on runner
+      run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.sshh/known_hosts
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
     - name: connect and pull
       run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
-    - name: cleanup - not on my macbook
-      run: echo 'This is the end'
+    - name: cleanup
+      run: rm -rf ~/.ssh
