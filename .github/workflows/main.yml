@@ -8,8 +8,11 @@ jobs:
   run_pull:
     name: run pull
     runs-on: ubuntu-latest
-    # Uncomment below to use GitHub actions
-    # steps:
+    steps:
+    # Remove when activating the job
+    - name: dummy
+      run: echo
+    # Uncomment below to use the job
     # - name: install ssh keys on runner
     #   run: |
     #     install -m 600 -D /dev/null ~/.ssh/id_rsa
