@@ -90,6 +90,8 @@ Templates and CSS are generated on the development machine and pushed to Github.
 - $> make server
   - This will first build the application
 
+- Use Github actions
+
 ---
 
 ## CLI
