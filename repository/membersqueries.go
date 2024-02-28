@@ -105,6 +105,11 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 		args = append(args, filter.SelectedGroup)
 	}
 
+	if filter.SelectedStatus != "" {
+		q = q + "AND m.status=?"
+		args = append(args, filter.SelectedStatus)
+	}
+
 	q = q + " GROUP BY m.uuid ORDER BY f.name;"
 	return r.ExecuteQuery(q, args...)
 }

@@ -23,7 +23,7 @@ templ Input(id, value, placeholder, label string, required, readonly bool, input
 			}
 			id={ id }
 			name={ id }
-			class="block px-2.5 w-full text-xs leading-[0.5] text-gray-900 bg-transparent rounded border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+			class="block px-2.5 pt-[0.45rem] w-full text-xs leading-[0.2rem] text-gray-900 bg-transparent rounded border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
 			if required {
 				required
 			}
@@ -92,7 +92,7 @@ templ DatePicker(id, val, label string) {
 				value=""
 			}
 			value={ val }
-			class="peer block min-h-[auto] w-full rounded border-1 border-gray-300 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.5] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+			class="peer block min-h-[auto] w-full rounded border-1 border-gray-300 bg-transparent px-3 py-[0.33rem] text-xs leading-[1.2rem] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
 		/>
 		<label
 			for={ id }
@@ -141,15 +141,29 @@ templ (vctx *ViewCtx) Select(id, label, selectedItem string, items []string) {
 	</div>
 }
 
-templ (vctx *ViewCtx) SelectFormGroups(id, label, selectedGroup string, groups []string) {
+templ (vctx *ViewCtx) SelectFormGroups(id, selectedGroup string, groups []string) {
 	<div class="relative flex flex-row">
 		<select
 			id={ id }
 			name={ id }
-			class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[0.8rem] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 		>
 			for _, g := range groups {
 				<option value={ g } selected?={ g == selectedGroup }>{ g }</option>
+			}
+		</select>
+	</div>
+}
+
+templ (vctx *ViewCtx) SelectFormStatuses(id, selectedStatus string, statuses []string) {
+	<div class="relative flex flex-row">
+		<select
+			id={ id }
+			name={ id }
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[0.8rem] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+		>
+			for _, s := range statuses {
+				<option value={ s } selected?={ s == selectedStatus }>{ s }</option>
 			}
 		</select>
 	</div>

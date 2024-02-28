@@ -72,7 +72,10 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter, groups []entity.Group) {
 					@DatePicker("to", f.To, "To")
 				</div>
 				<div class="ml-2">
-					@vctx.SelectFormGroups("selectedGroup", "Group", f.SelectedGroup, groups2Strings(groups))
+					@vctx.SelectFormGroups("selectedGroup", f.SelectedGroup, groups2Strings(groups))
+				</div>
+				<div class="ml-2">
+					@vctx.SelectFormStatuses("selectedStatus", f.SelectedStatus, vctx.MemberStatuses)
 				</div>
 				// Search button
 				<div class="ml-2">
@@ -227,7 +230,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 				for _, member := range members {
 					<tr
 						id={ "member-" + member.UUID }
-						hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + f.GroupUUID + "&from=" + f.From + "&to=" + f.To + "&searchterms=" + f.SearchTerms + "&selectedGroup=" + f.SelectedGroup + "&receiveEmail=" + f.ReceiveEmail + "&receiveMail=" + f.ReceiveMail + "&receiveHatikvah=" + f.ReceiveHatikvah + "&archived=" + f.Archived }
+						hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + f.GroupUUID + "&from=" + f.From + "&to=" + f.To + "&searchterms=" + f.SearchTerms + "&selectedGroup=" + f.SelectedGroup + "&receiveEmail=" + f.ReceiveEmail + "&receiveMail=" + f.ReceiveMail + "&receiveHatikvah=" + f.ReceiveHatikvah + "&archived=" + f.Archived + "&selectedStatus=" + f.SelectedStatus }
 						hx-target="#members"
 						hx-select="#members"
 						hx-swap="outerHTML"

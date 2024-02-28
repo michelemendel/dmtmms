@@ -1503,6 +1503,10 @@ select {
   padding-top: 0.37rem;
 }
 
+.pt-\[0\.45rem\] {
+  padding-top: 0.45rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -1612,6 +1616,50 @@ select {
 
 .leading-\[1\.6\] {
   line-height: 1.6;
+}
+
+.leading-\[1\.1\] {
+  line-height: 1.1;
+}
+
+.leading-\[1\.0\] {
+  line-height: 1.0;
+}
+
+.leading-\[1\.2rem\] {
+  line-height: 1.2rem;
+}
+
+.leading-\[1\.0rem\] {
+  line-height: 1.0rem;
+}
+
+.leading-\[0\.2rem\] {
+  line-height: 0.2rem;
+}
+
+.leading-\[0\.1rem\] {
+  line-height: 0.1rem;
+}
+
+.leading-\[0\.6rem\] {
+  line-height: 0.6rem;
+}
+
+.leading-\[0\.8rem\] {
+  line-height: 0.8rem;
+}
+
+.leading-\[0\.9rem\] {
+  line-height: 0.9rem;
+}
+
+.leading-\[0\.09rem\] {
+  line-height: 0.09rem;
+}
+
+.leading-\[0\.07rem\] {
+  line-height: 0.07rem;
 }
 
 .text-blue-500 {

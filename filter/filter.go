@@ -33,6 +33,7 @@ type Opts struct {
 	ReceiveHatikvah string
 	Archived        string
 	SelectedGroup   string
+	SelectedStatus  string
 }
 
 func MakeOpts() Opts {
@@ -104,6 +105,11 @@ func (o Opts) WithSelectedGroup(group string) Opts {
 	return o
 }
 
+func (o Opts) WithSelectedStatus(status string) Opts {
+	o.SelectedStatus = status
+	return o
+}
+
 //--------------------------------------------------------------------------------
 // Filter from query parameters
 
@@ -118,6 +124,7 @@ func FilterFromQuery(c echo.Context) Filter {
 	receiveHatikvah := c.QueryParam("receiveHatikvah")
 	archived := c.QueryParam("archived")
 	selectedGroup := c.QueryParam("selectedGroup")
+	selectedStatus := c.QueryParam("selectedStatus")
 	// fmt.Println("FilterFromQuery", fuuid, guuid, searchTerms, selectedGroup)
-	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr).WithReceiveEmail(receiveEmail).WithReceiveMail(receiveMail).WithReceiveHatikvah(receiveHatikvah).WithArchived(archived).WithSelectedGroup(selectedGroup)}
+	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr).WithReceiveEmail(receiveEmail).WithReceiveMail(receiveMail).WithReceiveHatikvah(receiveHatikvah).WithArchived(archived).WithSelectedGroup(selectedGroup).WithSelectedStatus(selectedStatus)}
 }
