@@ -91,7 +91,7 @@ templ (vctx *ViewCtx) groupTableRow(group entity.Group, selectedGroup entity.Gro
 				hx-select="#groups"
 				hx-swap="outerHTML"
 				hx-trigger="confirmed"
-				onClick={ groupDeleteConfirm(group.UUID) }
+				onClick={ ConfirmDialog("#delete-"+group.UUID, "Delete group", "Are you sure you want to delete the group?") }
 				class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
 			>
 				<span class="[&>svg]:w-5">
@@ -159,21 +159,4 @@ templ (vctx *ViewCtx) GroupForm(selectedGroup entity.Group, op string, inputErro
 			<div class="block text-red-600 text-xs">{ inputErrors["form"].Err.Error() }</div>
 		</div>
 	}
-}
-
-//--------------------------------------------------------------------------------
-// Confirm dialogs
-
-script groupDeleteConfirm(groupUUID string) {
-	msg = "Are you sure you want to delete the group?";
-	Swal.fire({
-		title: 'Delete group',
-		showCancelButton: true,
-		text: msg,
-	})
-	.then(function(result){
-		if(result.isConfirmed){
-			htmx.trigger("#delete-"+groupUUID, "confirmed");
-		}
-	})
 }

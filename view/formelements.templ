@@ -178,3 +178,18 @@ templ (vctx *ViewCtx) SelectGroups(id, label string, selectedUUIDs []string, gro
 		</select>
 	</div>
 }
+
+script ConfirmDialog(id, title, msg string) {
+	Swal.fire({
+		title: title,
+		showCancelButton: true,
+		confirmButtonColor: '#3b82f6',
+		text: msg,
+		animation: false,
+	})
+	.then(function(result){
+		if(result.isConfirmed){
+			htmx.trigger(id, "confirmed");
+		}
+	})
+}

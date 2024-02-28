@@ -83,7 +83,7 @@ templ (vctx *ViewCtx) userTableRow(user, selectedUser entity.User, tempPW string
 				hx-select="#users"
 				hx-swap="outerHTML"
 				hx-trigger="confirmed"
-				onClick={ userDeleteConfirm(user.Name) }
+				onClick={ ConfirmDialog("#delete-"+user.Name, "Delete user", "Are you sure you want to delete the user? This action cannot be undone.") }
 				class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
 			>
 				<span class="[&>svg]:w-5">
@@ -100,18 +100,22 @@ templ (vctx *ViewCtx) userTableRow(user, selectedUser entity.User, tempPW string
 				hx-select="#users"
 				hx-swap={ "outerHTML" }
 				hx-trigger="confirmed"
-				onClick={ userResetPWConfirm(user.Name) }
+				onClick={ ConfirmDialog("#resetPW-"+user.Name, "Reset password", "By clicking ok, the password will be reset.") }
 				class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
 			>
-				if tempPW != "" && selectedUser.Name == user.Name {
-					<div class="italic block text-blue-600 ml-2 w-48 text-xs text-wrap">
-						The password has been copied to the clipboard
-					</div>
-					@copyToClipboard(tempPW)
-				} else {
-					ResetPW
-				}
+				ResetPW
 			</td>
+			if tempPW != "" && selectedUser.Name == user.Name {
+				<td>
+					<div class="italic block text-blue-600 ml-2 w-48 text-xs text-wrap">
+						Temporary password: 
+						<div class="font-bold">
+							{ tempPW }
+						</div>
+						Copy it now. You won't see it again. User should change it after first login.
+					</div>
+				</td>
+			}
 		}
 	</tr>
 }
@@ -184,41 +188,9 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string,inputErrors e
 }
 
 //--------------------------------------------------------------------------------
-// Confirm dialogs
-
-script userDeleteConfirm(username string) {
-	msg = "Are you sure you want to delete the user? This action cannot be undone.";
-	Swal.fire({
-	title: 'Delete user',
-	showCancelButton: true,
-	text: msg,
-	})
-	.then(function(result){
-    if(result.isConfirmed){
-	// console.log('confirmed');
-	htmx.trigger("#delete-"+username, "confirmed");
-	}
-	})
-}
-
-script userResetPWConfirm(username string) {
-	msg = "By clicking ok, the password will be reset. The password will be copied for you to send to the user. You will not be able to see the password again.";
-	Swal.fire({
-	title: 'Reset password',
-	showCancelButton: true,
-	text: msg,
-	})
-	.then(function(result){
-    if(result.isConfirmed){
-	// console.log('confirmed');
-	htmx.trigger("#resetPW-"+username, "confirmed");
-	}
-	})
-}
-
-//--------------------------------------------------------------------------------
 // Helpers
 
 script copyToClipboard(txt string) {
+	// NOTE: Requires secure contexts, see https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
 	navigator.clipboard.writeText(txt);
 }

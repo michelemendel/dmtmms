@@ -91,7 +91,7 @@ templ (vctx *ViewCtx) familyTableRow(family entity.Family, selectedFamily entity
 				hx-select="#families"
 				hx-swap="outerHTML"
 				hx-trigger="confirmed"
-				onClick={ familyDeleteConfirm(family.UUID) }
+				onClick={ ConfirmDialog("#delete-"+family.UUID, "Delete family", "Are you sure you want to delete the family?") }
 				class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
 			>
 				<span class="[&>svg]:w-5">
@@ -158,21 +158,4 @@ templ (vctx *ViewCtx) FamilyForm(selectedFamily entity.Family, op string,inputEr
 			<div class="block text-red-600 text-xs">{ inputErrors["form"].Err.Error() }</div>
 		</div>
 	}
-}
-
-//--------------------------------------------------------------------------------
-// Confirm dialogs
-
-script familyDeleteConfirm(familyUUID string) {
-	msg = "Are you sure you want to delete the family?";
-	Swal.fire({
-		title: 'Delete family',
-		showCancelButton: true,
-		text: msg,
-	})
-	.then(function(result){
-		if(result.isConfirmed){
-			htmx.trigger("#delete-"+familyUUID, "confirmed");
-		}
-	})
 }
