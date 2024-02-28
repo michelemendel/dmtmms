@@ -389,7 +389,7 @@ func (vctx *ViewCtx) UserForm(selectedUser entity.User, op string, inputErrors e
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = vctx.Select("role", selectedUser.Role, "Role", vctx.Roles).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = vctx.Select("role", "Role", selectedUser.Role, vctx.Roles).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

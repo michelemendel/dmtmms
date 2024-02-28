@@ -177,15 +177,22 @@ type MemberDetail struct {
 	Value string
 }
 
+type MemberDetails struct {
+	MemberDetails []MemberDetail
+	Groups        []Group
+}
+
 // To be presented on the detail section of the member page
 // Maybe not the best way to get a list of data in order, when we have to write memberDetails[2].Value to get some value.
-func GetMemberDetailsForPresentation(member Member) []MemberDetail {
-	details := []MemberDetail{}
-
+func MemberDetailsForPresentation(member Member, groups []Group) MemberDetails {
 	if member.UUID == "" {
-		return details
+		return MemberDetails{
+			MemberDetails: []MemberDetail{},
+			Groups:        []Group{},
+		}
 	}
 
+	details := []MemberDetail{}
 	details = append(details, MemberDetail{"UUID", member.UUID})
 	details = append(details, MemberDetail{"FamilyUUID", member.FamilyUUID})
 	details = append(details, MemberDetail{"FamilyName", member.FamilyName})
@@ -208,7 +215,10 @@ func GetMemberDetailsForPresentation(member Member) []MemberDetail {
 	details = append(details, MemberDetail{"ReceiveHatikvah", util.Bool2String(member.ReceiveHatikvah)})
 	details = append(details, MemberDetail{"Archived", util.Bool2String(member.Archived)})
 
-	return details
+	return MemberDetails{
+		MemberDetails: details,
+		Groups:        groups,
+	}
 }
 
 //--------------------------------------------------------------------------------

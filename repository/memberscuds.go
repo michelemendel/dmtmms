@@ -50,7 +50,7 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 	}
 
 	// Add member to groups
-	groupUUIDs = pruneGroupUUIDs(groupUUIDs)
+	groupUUIDs = ensureGroupUUIDs(groupUUIDs)
 	for _, groupUUID := range groupUUIDs {
 		_, err = tx.Exec(`INSERT INTO members_groups(member_uuid, group_uuid) VALUES(?, ?)`, member.UUID, groupUUID)
 		if err != nil {
@@ -127,7 +127,7 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 	}
 
 	// Add member to groups
-	groupUUIDs = pruneGroupUUIDs(groupUUIDs)
+	groupUUIDs = ensureGroupUUIDs(groupUUIDs)
 	for _, groupUUID := range groupUUIDs {
 		_, err = tx.Exec(`INSERT INTO members_groups(member_uuid, group_uuid) VALUES(?, ?)`, member.UUID, groupUUID)
 		if err != nil {
@@ -143,7 +143,7 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 }
 
 // TODO: Maybe we don't need to set the empty groupUUIDs to "0", since there is no FK constraint on the member_uuid column in the members_groups table.
-func pruneGroupUUIDs(groupUUIDs []string) []string {
+func ensureGroupUUIDs(groupUUIDs []string) []string {
 	if len(groupUUIDs) == 0 { // Ensure there is at least one groupUUID, i.e. "0"
 		groupUUIDs = append(groupUUIDs, "0")
 	} else if len(groupUUIDs) > 1 { // Remove "0" if there are other groupUUIDs

@@ -123,7 +123,7 @@ templ (vctx *ViewCtx) RoleOptions(selectedUser entity.User) {
 // Select, dropdown
 // https://tailwindcomponents.com/component/select-input-field
 // https://tailwindcomponents.com/component/dropdown-with-input-inside-tailwind-css
-templ (vctx *ViewCtx) Select(id, selectedItem, label string, items []string) {
+templ (vctx *ViewCtx) Select(id, label, selectedItem string, items []string) {
 	<div class="relative flex flex-row">
 		<label
 			for={ id }
@@ -136,6 +136,20 @@ templ (vctx *ViewCtx) Select(id, selectedItem, label string, items []string) {
 		>
 			for _, item := range items {
 				<option value={ item } selected?={ item == selectedItem }>{ item }</option>
+			}
+		</select>
+	</div>
+}
+
+templ (vctx *ViewCtx) SelectFormGroups(id, label, selectedGroup string, groups []string) {
+	<div class="relative flex flex-row">
+		<select
+			id={ id }
+			name={ id }
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+		>
+			for _, g := range groups {
+				<option value={ g } selected?={ g == selectedGroup }>{ g }</option>
 			}
 		</select>
 	</div>

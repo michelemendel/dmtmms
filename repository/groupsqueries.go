@@ -9,7 +9,7 @@ import (
 func (r *Repo) SelectGroups() ([]entity.Group, error) {
 	var groups []entity.Group
 
-	rows, err := r.DB.Query("SELECT uuid, name FROM groups")
+	rows, err := r.DB.Query("SELECT uuid, name FROM groups ORDER BY name")
 	if err != nil {
 		slog.Error(err.Error())
 		return groups, err
@@ -29,13 +29,7 @@ func (r *Repo) SelectGroups() ([]entity.Group, error) {
 		slog.Error(err.Error())
 		return groups, err
 	}
-	// Remove group "none"
-	for i, g := range groups {
-		if g.Name == "none" {
-			groups = append(groups[:i], groups[i+1:]...)
-			break
-		}
-	}
+
 	return groups, nil
 }
 
@@ -68,7 +62,8 @@ func (r *Repo) SelectGroupsByMember(memberUUID string) ([]entity.Group, error) {
 	SELECT g.uuid, g.name
 	FROM groups as g 
 	JOIN members_groups as mg on g.uuid = mg.group_uuid 
-	WHERE mg.member_uuid = ?;
+	WHERE mg.member_uuid = ?
+	ORDER BY g.name;
 	`, memberUUID)
 	if err != nil {
 		slog.Error(err.Error())

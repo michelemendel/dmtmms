@@ -150,7 +150,7 @@ templ (vctx *ViewCtx) UserForm(selectedUser entity.User, op string,inputErrors e
 			}
 			// Role selection
 			<div class="ml-2">
-				@vctx.Select("role", selectedUser.Role, "Role", vctx.Roles)
+				@vctx.Select("role", "Role", selectedUser.Role, vctx.Roles)
 			</div>
 			// Submit
 			<div class="ml-2">

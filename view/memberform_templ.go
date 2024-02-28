@@ -231,7 +231,7 @@ func (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []stri
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = vctx.Select("status", string(member.Status), "Status", vctx.MemberStatuses).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = vctx.Select("status", "Status", string(member.Status), vctx.MemberStatuses).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

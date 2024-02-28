@@ -1,8 +1,6 @@
 package filter
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
 )
@@ -34,6 +32,7 @@ type Opts struct {
 	ReceiveMail     string
 	ReceiveHatikvah string
 	Archived        string
+	SelectedGroup   string
 }
 
 func MakeOpts() Opts {
@@ -100,6 +99,11 @@ func (o Opts) WithArchived(archived string) Opts {
 	return o
 }
 
+func (o Opts) WithSelectedGroup(group string) Opts {
+	o.SelectedGroup = group
+	return o
+}
+
 //--------------------------------------------------------------------------------
 // Filter from query parameters
 
@@ -113,6 +117,7 @@ func FilterFromQuery(c echo.Context) Filter {
 	receiveMail := c.QueryParam("receiveMail")
 	receiveHatikvah := c.QueryParam("receiveHatikvah")
 	archived := c.QueryParam("archived")
-	fmt.Println("FilterFromQuery", fuuid, guuid, searchTerms, fromStr, toStr, receiveEmail, receiveMail, receiveHatikvah)
-	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr).WithReceiveEmail(receiveEmail).WithReceiveMail(receiveMail).WithReceiveHatikvah(receiveHatikvah).WithArchived(archived)}
+	selectedGroup := c.QueryParam("selectedGroup")
+	// fmt.Println("FilterFromQuery", fuuid, guuid, searchTerms, selectedGroup)
+	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr).WithReceiveEmail(receiveEmail).WithReceiveMail(receiveMail).WithReceiveHatikvah(receiveHatikvah).WithArchived(archived).WithSelectedGroup(selectedGroup)}
 }

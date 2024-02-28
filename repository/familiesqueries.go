@@ -28,13 +28,6 @@ func (r *Repo) SelectFamilies() ([]entity.Family, error) {
 		slog.Error(err.Error())
 		return families, err
 	}
-	// Remove family "none"
-	for i, f := range families {
-		if f.Name == "none" {
-			families = append(families[:i], families[i+1:]...)
-			break
-		}
-	}
 
 	return families, nil
 }

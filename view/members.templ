@@ -3,7 +3,6 @@ package view
 import "fmt"
 
 import (
-	// "github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/util"
@@ -11,17 +10,17 @@ import (
 	"strings"
 )
 
-templ (vctx *ViewCtx) Members(members []entity.Member, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
+templ (vctx *ViewCtx) Members(members []entity.Member, groups []entity.Group, memberDetails entity.MemberDetails, f filter.Filter) {
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
-		@vctx.MembersPage(members, memberDetails, groups, f)
+		@vctx.MembersPage(members, groups, memberDetails, f)
 	} else {
 		@vctx.AppRoot("") {
-			@vctx.MembersPage(members, memberDetails, groups, f)
+			@vctx.MembersPage(members, groups, memberDetails, f)
 		}
 	}
 }
 
-templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberDetails []entity.MemberDetail, groups []entity.Group, f filter.Filter) {
+templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group, memberDetails entity.MemberDetails, f filter.Filter) {
 	<div id="members">
 		// Placeholder
 		<div id="memberForm">
@@ -33,23 +32,25 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberDetails []entit
 			<div class="w-4/5">
 				<div class="flow-root">
 					<div class="float-left">
-						@vctx.FilterBar(f)
+						@vctx.FilterBar(f, groups)
 					</div>
 					<div class="float-right flex flex-row">
-						<div class="">
-							@vctx.AddMemberButton()
-						</div>
+						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_CREATE) {
+							<div class="">
+								@vctx.AddMemberButton()
+							</div>
+						}
 						<div class="ml-2">
 							@vctx.DownloadForm(f.SearchTerms, f.From, f.To, f.ReceiveEmail, f.ReceiveMail, f.ReceiveHatikvah, f.Archived)
 						</div>
 					</div>
 				</div>
 				<div class="mt-2">
-					@vctx.MembersTable(members, f.GroupUUID, f.From, f.To, f.SearchTerms)
+					@vctx.MembersTable(members, f)
 				</div>
 			</div>
 			<div class="w-1/5 px-4 mt-10">
-				@vctx.MemberDetails(memberDetails, groups)
+				@vctx.MemberDetails(memberDetails)
 			</div>
 		</div>
 		@vctx.Footer()
@@ -57,7 +58,7 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, memberDetails []entit
 	</div>
 }
 
-templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
+templ (vctx *ViewCtx) FilterBar(f filter.Filter, groups []entity.Group) {
 	<form>
 		<div id="filterBar" class="flex flex-col">
 			<div class="flex flex-row">
@@ -70,6 +71,10 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 				<div class="ml-2">
 					@DatePicker("to", f.To, "To")
 				</div>
+				<div class="ml-4">
+					@vctx.SelectFormGroups("selectedGroup", "Group", f.SelectedGroup, groups2Strings(groups))
+				</div>
+				// Search button
 				<div class="ml-2">
 					<button
 						hx-include="[name='searchterms'], [name='from'], [name='to'], [name='receiveEmail'], [name='receiveMail'], [name='receiveHatikvah']"
@@ -83,6 +88,7 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter) {
 						Search
 					</button>
 				</div>
+				// Clear button
 				<div class="ml-2">
 					<button
 						hx-get={ constants.ROUTE_MEMBERS }
@@ -125,7 +131,7 @@ type checkbox struct {
 	Val string
 }
 
-// For alternatives with icons, see inout.css
+// For alternatives with icons, see input.css
 templ CBElement(id, label, val string) {
 	<div class="flex items-center">
 		<input checked type="checkbox" id={ id } name={ id } value={ val }/>
@@ -193,7 +199,7 @@ templ (vctx *ViewCtx) DownloadForm(searchTerms, from, to string, receiveEmail, r
 	</select>
 }
 
-templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVal, searchterms string) {
+templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 	<div class="flex flex-grow overflow-y-scroll flex-col max-h-[50rem]">
 		<table class="w-full text-left text-sm font-light">
 			<thead class="border-1 font-medium dark:border-neutral-500">
@@ -221,7 +227,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 				for _, member := range members {
 					<tr
 						id={ "member-" + member.UUID }
-						hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + guuid + "&from=" + fromVal + "&to=" + toVal + "&searchterms=" + searchterms }
+						hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + f.GroupUUID + "&from=" + f.From + "&to=" + f.To + "&searchterms=" + f.SearchTerms + "&selectedGroup=" + f.SelectedGroup + "&receiveEmail=" + f.ReceiveEmail + "&receiveMail=" + f.ReceiveMail + "&receiveHatikvah=" + f.ReceiveHatikvah + "&archived=" + f.Archived }
 						hx-target="#members"
 						hx-select="#members"
 						hx-swap="outerHTML"
@@ -230,7 +236,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, guuid, fromVal, toVa
 						class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
 					>
 						@vctx.memberTableRowData(member)
-						@vctx.memberTableRowButtons(member, guuid, fromVal, toVal, searchterms)
+						@vctx.memberTableRowButtons(member)
 					</tr>
 				}
 			</tbody>
@@ -256,7 +262,7 @@ func bool2string(b bool) string {
 	return ""
 }
 
-templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member, guuid, fromVal, toVal, searchterms string) {
+templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member) {
 	// Update member
 	if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_UPDATE) {
 		<td
@@ -318,16 +324,16 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member, guuid, fromVal
 	}
 }
 
-templ (vctx *ViewCtx) MemberDetails(memberDetails []entity.MemberDetail, groups []entity.Group) {
+templ (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) {
 	<div
 		id="memberDetails"
 		class="px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700"
 	>
-		if len(memberDetails) == 0 {
+		if len(memberDetails.MemberDetails) == 0 {
 			<p class="text-sm italic">Click on a member to view details</p>
 		} else {
 			<ul class=" text-sm">
-				for _, m := range memberDetails[3:] {
+				for _, m := range memberDetails.MemberDetails[3:] {
 					if strings.TrimSpace(m.Value) != "" && strings.TrimSpace(m.Value) != constants.DATE_MIN {
 						<li class="mt-1 text-xs font-semibold dark:border-opacity-50">{ m.Title } </li>
 						<li class="pt-0.25 dark:border-opacity-50">{ m.Value } </li>
@@ -337,28 +343,28 @@ templ (vctx *ViewCtx) MemberDetails(memberDetails []entity.MemberDetail, groups 
 					Family
 				</li>
 				<li
-					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails[0].Value + "&fuuid=" + memberDetails[1].Value }
+					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&fuuid=" + memberDetails.MemberDetails[1].Value }
 					hx-target="#members"
 					hx-select="#members"
 					hx-swap="outerHTML"
-					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails[0].Value + "&fuuid=" + memberDetails[1].Value }
+					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&fuuid=" + memberDetails.MemberDetails[1].Value }
 					class="w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer"
 				>
 					// Family name
-					{ string(memberDetails[2].Value) }
+					{ string(memberDetails.MemberDetails[2].Value) }
 				</li>
 				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
 					Groups	
 				</li>
 				<li class="pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer">
 					<ul class="text-sm">
-						for _, group := range groups {
+						for _, group := range memberDetails.Groups {
 							<li
-								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails[0].Value + "&guuid=" + group.UUID }
+								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&guuid=" + group.UUID }
 								hx-target="#members"
 								hx-select="#members"
 								hx-swap="outerHTML"
-								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails[0].Value + "&guuid=" + group.UUID }
+								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&guuid=" + group.UUID }
 							>{ group.Name }</li>
 						}
 					</ul>
@@ -397,4 +403,12 @@ script jsFunctions() {
     	var url = this.value;
        	window.open(url, '_self');
 	});
+}
+
+func groups2Strings(groups []entity.Group) []string {
+	groupsAsStrings := []string{"All groups"}
+	for _, g := range groups {
+		groupsAsStrings = append(groupsAsStrings, g.Name)
+	}
+	return groupsAsStrings
 }

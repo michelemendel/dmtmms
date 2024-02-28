@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
@@ -18,21 +19,20 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	members, err := h.MembersFiltered(c, f)
 	if err != nil {
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, filter.Filter{}))
 	}
 
-	var member entity.Member
-	var groups []entity.Group
+	var detailsMember entity.Member
+	var detailsGroups []entity.Group
 	// Error here means that the member details are not available, since we haven't selected a member.
-	member, groups, err = h.MemberDetails(c)
+	detailsMember, detailsGroups, err = h.MemberDetails(c)
 	if err != nil {
-		member = entity.Member{}
-		groups = []entity.Group{}
+		detailsMember = entity.Member{}
+		detailsGroups = []entity.Group{}
 	}
+	memberDetails := entity.MemberDetailsForPresentation(detailsMember, detailsGroups)
 
-	memberDetails := entity.GetMemberDetailsForPresentation(member)
-	// fmt.Println("[MH]: F", f)
-	return h.renderView(c, h.ViewCtx.Members(members, memberDetails, groups, f))
+	return h.renderView(c, h.ViewCtx.Members(members, h.GetGroups(), memberDetails, f))
 }
 
 func (h *HandlerContext) MembersFiltered(c echo.Context, filter filter.Filter) ([]entity.Member, error) {
@@ -73,6 +73,7 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
 	families, _ := h.Repo.SelectFamilies()
 	groups, _ := h.Repo.SelectGroups()
+	fmt.Println("MemberCreateInitHandler", families, groups)
 	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}, []string{}, families, groups, constants.OP_CREATE, entity.InputErrors{}))
 }
 
@@ -107,7 +108,7 @@ func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
 	if err != nil {
 		slog.Error(err.Error(), "uuid", uuid)
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, filter.Filter{}))
 	}
 	return h.MembersHandler(c)
 }
@@ -118,7 +119,7 @@ func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 	if err != nil {
 		slog.Error(err.Error(), "uuid", uuid)
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.MemberDetail{}, []entity.Group{}, filter.Filter{}))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, filter.Filter{}))
 	}
 	return h.MembersHandler(c)
 }
