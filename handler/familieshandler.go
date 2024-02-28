@@ -14,7 +14,7 @@ func (h *HandlerContext) FamiliesHandler(c echo.Context) error {
 }
 
 func (h *HandlerContext) Families(c echo.Context, op string) error {
-	families := h.GetFamilies()
+	families := h.GetFamilies(false)
 	return h.renderView(c, h.ViewCtx.Families(families, entity.Family{}, op, entity.InputErrors{}))
 }
 
@@ -23,7 +23,7 @@ func (h *HandlerContext) Families(c echo.Context, op string) error {
 
 func (h *HandlerContext) FamilyCreateHandler(c echo.Context) error {
 	inputErrors := entity.NewInputErrors()
-	families := h.GetFamilies()
+	families := h.GetFamilies(false)
 	familyName := c.FormValue("name")
 
 	if familyName == "" {
@@ -53,7 +53,7 @@ func (h *HandlerContext) FamilyDeleteHandler(c echo.Context) error {
 	err := h.Repo.DeleteFamily(familyUUID)
 
 	if err != nil {
-		families := h.GetFamilies()
+		families := h.GetFamilies(false)
 		inputErrors["row"] = entity.NewInputError("row", err)
 		return h.renderView(c, h.ViewCtx.Families(families, entity.Family{UUID: familyUUID}, constants.OP_CREATE, inputErrors))
 	}
@@ -65,7 +65,7 @@ func (h *HandlerContext) FamilyDeleteHandler(c echo.Context) error {
 // Update family
 
 func (h *HandlerContext) FamilyUpdateInitHandler(c echo.Context) error {
-	families := h.GetFamilies()
+	families := h.GetFamilies(false)
 	familyUUID := c.Param("uuid")
 	family, err := h.Repo.SelectFamily(familyUUID)
 	if err != nil {
@@ -76,7 +76,7 @@ func (h *HandlerContext) FamilyUpdateInitHandler(c echo.Context) error {
 
 func (h *HandlerContext) FamilyUpdateHandler(c echo.Context) error {
 	inputErrors := entity.NewInputErrors()
-	families := h.GetFamilies()
+	families := h.GetFamilies(false)
 	familyUUID := c.FormValue("uuid")
 	familyName := c.FormValue("name")
 	family := entity.Family{
@@ -100,8 +100,8 @@ func (h *HandlerContext) FamilyUpdateHandler(c echo.Context) error {
 //--------------------------------------------------------------------------------
 // Helper functions
 
-func (h *HandlerContext) GetFamilies() []entity.Family {
-	families, err := h.Repo.SelectFamilies()
+func (h *HandlerContext) GetFamilies(withNone bool) []entity.Family {
+	families, err := h.Repo.SelectFamilies(withNone)
 	if err != nil {
 		families = []entity.Family{}
 	}

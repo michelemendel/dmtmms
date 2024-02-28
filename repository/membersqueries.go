@@ -105,7 +105,7 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 		args = append(args, filter.SelectedGroup)
 	}
 
-	q = q + " GROUP BY m.uuid ORDER BY m.name;"
+	q = q + " GROUP BY m.uuid ORDER BY f.name;"
 	return r.ExecuteQuery(q, args...)
 }
 

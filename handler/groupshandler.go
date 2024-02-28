@@ -14,7 +14,7 @@ func (h *HandlerContext) GroupsHandler(c echo.Context) error {
 }
 
 func (h *HandlerContext) Groups(c echo.Context, op string) error {
-	groups := h.GetGroups()
+	groups := h.GetGroups(false)
 	return h.renderView(c, h.ViewCtx.Groups(groups, entity.Group{}, op, entity.InputErrors{}))
 }
 
@@ -23,7 +23,7 @@ func (h *HandlerContext) Groups(c echo.Context, op string) error {
 
 func (h *HandlerContext) GroupCreateHandler(c echo.Context) error {
 	inputErrors := entity.NewInputErrors()
-	groups := h.GetGroups()
+	groups := h.GetGroups(false)
 	groupName := c.FormValue("name")
 
 	if groupName == "" {
@@ -53,7 +53,7 @@ func (h *HandlerContext) GroupDeleteHandler(c echo.Context) error {
 	groupUUID := c.Param("uuid")
 	err := h.Repo.DeleteGroup(groupUUID)
 	if err != nil {
-		groups := h.GetGroups()
+		groups := h.GetGroups(false)
 		inputErrors["row"] = entity.NewInputError("row", err)
 		return h.renderView(c, h.ViewCtx.Groups(groups, entity.Group{UUID: groupUUID}, constants.OP_CREATE, inputErrors))
 	}
@@ -65,7 +65,7 @@ func (h *HandlerContext) GroupDeleteHandler(c echo.Context) error {
 // Update group
 
 func (h *HandlerContext) GroupUpdateInitHandler(c echo.Context) error {
-	groups := h.GetGroups()
+	groups := h.GetGroups(false)
 	groupUUID := c.Param("uuid")
 	group, err := h.Repo.SelectGroup(groupUUID)
 	if err != nil {
@@ -76,7 +76,7 @@ func (h *HandlerContext) GroupUpdateInitHandler(c echo.Context) error {
 
 func (h *HandlerContext) GroupUpdateHandler(c echo.Context) error {
 	inputErrors := entity.NewInputErrors()
-	groups := h.GetGroups()
+	groups := h.GetGroups(false)
 	groupUUID := c.FormValue("uuid")
 	groupName := c.FormValue("name")
 	group := entity.Group{
@@ -100,8 +100,8 @@ func (h *HandlerContext) GroupUpdateHandler(c echo.Context) error {
 //--------------------------------------------------------------------------------
 // Helper functions
 
-func (h *HandlerContext) GetGroups() []entity.Group {
-	groups, err := h.Repo.SelectGroups()
+func (h *HandlerContext) GetGroups(withNone bool) []entity.Group {
+	groups, err := h.Repo.SelectGroups(withNone)
 	if err != nil {
 		groups = []entity.Group{}
 	}

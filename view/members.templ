@@ -71,7 +71,7 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter, groups []entity.Group) {
 				<div class="ml-2">
 					@DatePicker("to", f.To, "To")
 				</div>
-				<div class="ml-4">
+				<div class="ml-2">
 					@vctx.SelectFormGroups("selectedGroup", "Group", f.SelectedGroup, groups2Strings(groups))
 				</div>
 				// Search button

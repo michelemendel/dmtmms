@@ -32,7 +32,7 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	}
 	memberDetails := entity.MemberDetailsForPresentation(detailsMember, detailsGroups)
 
-	return h.renderView(c, h.ViewCtx.Members(members, h.GetGroups(), memberDetails, f))
+	return h.renderView(c, h.ViewCtx.Members(members, h.GetGroups(true), memberDetails, f))
 }
 
 func (h *HandlerContext) MembersFiltered(c echo.Context, filter filter.Filter) ([]entity.Member, error) {
@@ -71,15 +71,15 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 // Create member
 
 func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
-	families, _ := h.Repo.SelectFamilies()
-	groups, _ := h.Repo.SelectGroups()
+	families, _ := h.Repo.SelectFamilies(true)
+	groups, _ := h.Repo.SelectGroups(true)
 	fmt.Println("MemberCreateInitHandler", families, groups)
 	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}, []string{}, families, groups, constants.OP_CREATE, entity.InputErrors{}))
 }
 
 func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
-	families, _ := h.Repo.SelectFamilies()
-	groups, _ := h.Repo.SelectGroups()
+	families, _ := h.Repo.SelectFamilies(true)
+	groups, _ := h.Repo.SelectGroups(true)
 	//
 	uuid := util.GenerateUUID()
 	member, selectedGroupUUIDs := h.CreatetMemberFromForm(c, uuid)
@@ -128,8 +128,8 @@ func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 // Update member
 
 func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
-	families, _ := h.Repo.SelectFamilies()
-	groups, _ := h.Repo.SelectGroups()
+	families, _ := h.Repo.SelectFamilies(true)
+	groups, _ := h.Repo.SelectGroups(true)
 	memberUUID := c.Param("uuid")
 	filter := filter.MakeFilter(filter.MakeOpts().WithMemberUUID(memberUUID))
 	member := entity.Member{}
@@ -145,8 +145,8 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 }
 
 func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
-	families, _ := h.Repo.SelectFamilies()
-	groups, _ := h.Repo.SelectGroups()
+	families, _ := h.Repo.SelectFamilies(true)
+	groups, _ := h.Repo.SelectGroups(true)
 	uuid := c.FormValue("uuid")
 	member, selectedGroupUUIDsAsStrings := h.CreatetMemberFromForm(c, uuid)
 

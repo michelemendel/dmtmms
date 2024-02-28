@@ -10,7 +10,7 @@
 <form><div id=\"filterBar\" class=\"flex flex-col\"><div class=\"flex flex-row\"><div>
 </div><div class=\"ml-2\">
 </div><div class=\"ml-2\">
-</div><div class=\"ml-4\">
+</div><div class=\"ml-2\">
 </div><div class=\"ml-2\">
 <button hx-include=\"[name=&#39;searchterms&#39;], [name=&#39;from&#39;], [name=&#39;to&#39;], [name=&#39;receiveEmail&#39;], [name=&#39;receiveMail&#39;], [name=&#39;receiveHatikvah&#39;]\" hx-get=\"
 \" hx-target=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"keyup[keyCode==13]\" class=\"

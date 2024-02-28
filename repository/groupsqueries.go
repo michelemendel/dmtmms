@@ -6,7 +6,7 @@ import (
 	"github.com/michelemendel/dmtmms/entity"
 )
 
-func (r *Repo) SelectGroups() ([]entity.Group, error) {
+func (r *Repo) SelectGroups(withNone bool) ([]entity.Group, error) {
 	var groups []entity.Group
 
 	rows, err := r.DB.Query("SELECT uuid, name FROM groups ORDER BY name")
@@ -28,6 +28,16 @@ func (r *Repo) SelectGroups() ([]entity.Group, error) {
 	if err != nil {
 		slog.Error(err.Error())
 		return groups, err
+	}
+
+	// Remove group "none"
+	if !withNone {
+		for i, g := range groups {
+			if g.Name == "none" {
+				groups = append(groups[:i], groups[i+1:]...)
+				break
+			}
+		}
 	}
 
 	return groups, nil

@@ -6,10 +6,10 @@ import (
 	"github.com/michelemendel/dmtmms/entity"
 )
 
-func (r *Repo) SelectFamilies() ([]entity.Family, error) {
+func (r *Repo) SelectFamilies(withNone bool) ([]entity.Family, error) {
 	var families []entity.Family
 	var f entity.Family
-	rows, err := r.DB.Query("SELECT uuid, name FROM families")
+	rows, err := r.DB.Query("SELECT uuid, name FROM families ORDER BY name")
 	if err != nil {
 		slog.Error(err.Error())
 		return families, err
@@ -27,6 +27,16 @@ func (r *Repo) SelectFamilies() ([]entity.Family, error) {
 	if err != nil {
 		slog.Error(err.Error())
 		return families, err
+	}
+
+	// Remove family "none"
+	if !withNone {
+		for i, f := range families {
+			if f.Name == "none" {
+				families = append(families[:i], families[i+1:]...)
+				break
+			}
+		}
 	}
 
 	return families, nil
