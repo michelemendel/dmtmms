@@ -41,22 +41,35 @@ const (
 	queryMembers = selectMember + `
 	LEFT JOIN families as f ON m.family_uuid=f.uuid
 	LEFT JOIN members_groups as mg on m.uuid = mg.member_uuid
-	LEFT JOIN groups as g on mg.group_uuid = g.uuid
-	WHERE m.dob BETWEEN julianday(?) AND julianday(?)
+	LEFT JOIN groups as g on mg.group_uuid = g.uuid	
 	`
 )
 
 func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, error) {
 	q := queryMembers
-	from := constants.DATE_MIN
-	to := constants.DATE_MAX
-	if filter.From != "" {
-		from = filter.From
+	args := []any{}
+
+	if len(filter.SelectedAges) > 0 && filter.SelectedAges[0] != "" {
+		qs := []string{}
+		for _, age := range filter.SelectedAges {
+			year := util.GetYearFromAge(age)
+			qs = append(qs, "strftime('%Y',dob)=? ")
+			args = append(args, year)
+		}
+		q = q + "WHERE (" + strings.Join(qs, " OR ") + ") "
+	} else {
+		q = q + "WHERE m.dob BETWEEN julianday(?) AND julianday(?)"
+		from := constants.DATE_MIN
+		to := constants.DATE_MAX
+		if filter.From != "" {
+			from = filter.From
+		}
+		if filter.To != "" {
+			to = filter.To
+		}
+		args = append(args, from)
+		args = append(args, to)
 	}
-	if filter.To != "" {
-		to = filter.To
-	}
-	args := []any{from, to}
 
 	if strings.TrimSpace(filter.SearchTerms) != "" {
 		q = q + "AND (m.name LIKE ? OR m.email LIKE ? OR f.name LIKE ?)"
@@ -111,6 +124,7 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 	}
 
 	q = q + " GROUP BY m.uuid ORDER BY f.name;"
+
 	return r.ExecuteQuery(q, args...)
 }
 

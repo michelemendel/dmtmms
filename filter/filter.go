@@ -28,6 +28,7 @@ type Opts struct {
 	SearchTerms     string
 	From            string
 	To              string
+	SelectedAges    []string
 	ReceiveEmail    string
 	ReceiveMail     string
 	ReceiveHatikvah string
@@ -44,27 +45,27 @@ func MakeOpts() Opts {
 	}
 }
 
-func (o Opts) WithMemberUUID(memberUUID string) Opts {
+func (o Opts) WMemUUID(memberUUID string) Opts {
 	o.MemberUUID = memberUUID
 	return o
 }
 
-func (o Opts) WithFamilyUUID(familyUUID string) Opts {
+func (o Opts) WFamUUID(familyUUID string) Opts {
 	o.FamilyUUID = familyUUID
 	return o
 }
 
-func (o Opts) WithGroupUUID(groupUUID string) Opts {
+func (o Opts) WGroupUUID(groupUUID string) Opts {
 	o.GroupUUID = groupUUID
 	return o
 }
 
-func (o Opts) WithSearchTerms(searchTerms string) Opts {
+func (o Opts) WSearch(searchTerms string) Opts {
 	o.SearchTerms = searchTerms
 	return o
 }
 
-func (o Opts) WithFrom(from string) Opts {
+func (o Opts) WFrom(from string) Opts {
 	// if from == "" {
 	// from = constants.DATE_MIN
 	// }
@@ -72,7 +73,7 @@ func (o Opts) WithFrom(from string) Opts {
 	return o
 }
 
-func (o Opts) WithTo(to string) Opts {
+func (o Opts) WTo(to string) Opts {
 	// if to == "" {
 	// to = constants.DATE_MAX
 	// }
@@ -80,32 +81,37 @@ func (o Opts) WithTo(to string) Opts {
 	return o
 }
 
-func (o Opts) WithReceiveEmail(receiveEmail string) Opts {
+func (o Opts) WSelAges(SelectedAges []string) Opts {
+	o.SelectedAges = SelectedAges
+	return o
+}
+
+func (o Opts) WRecEmail(receiveEmail string) Opts {
 	o.ReceiveEmail = receiveEmail
 	return o
 }
 
-func (o Opts) WithReceiveMail(receiveMail string) Opts {
+func (o Opts) WRecMail(receiveMail string) Opts {
 	o.ReceiveMail = receiveMail
 	return o
 }
 
-func (o Opts) WithReceiveHatikvah(receiveHatikvah string) Opts {
+func (o Opts) WRecHatikvah(receiveHatikvah string) Opts {
 	o.ReceiveHatikvah = receiveHatikvah
 	return o
 }
 
-func (o Opts) WithArchived(archived string) Opts {
+func (o Opts) WArchived(archived string) Opts {
 	o.Archived = archived
 	return o
 }
 
-func (o Opts) WithSelectedGroup(group string) Opts {
+func (o Opts) WSelGroup(group string) Opts {
 	o.SelectedGroup = group
 	return o
 }
 
-func (o Opts) WithSelectedStatus(status string) Opts {
+func (o Opts) WSelStatus(status string) Opts {
 	o.SelectedStatus = status
 	return o
 }
@@ -125,6 +131,46 @@ func FilterFromQuery(c echo.Context) Filter {
 	archived := c.QueryParam("archived")
 	selectedGroup := c.QueryParam("selectedGroup")
 	selectedStatus := c.QueryParam("selectedStatus")
-	// fmt.Println("FilterFromQuery", fuuid, guuid, searchTerms, selectedGroup)
-	return Filter{MakeOpts().WithFamilyUUID(fuuid).WithGroupUUID(guuid).WithSearchTerms(searchTerms).WithFrom(fromStr).WithTo(toStr).WithReceiveEmail(receiveEmail).WithReceiveMail(receiveMail).WithReceiveHatikvah(receiveHatikvah).WithArchived(archived).WithSelectedGroup(selectedGroup).WithSelectedStatus(selectedStatus)}
+	selectedAges := c.QueryParams()["selectedAges"]
+
+	// fmt.Println("FilterFromQuery:SelAges:", selectedAges, ", len", len(selectedAges))
+
+	return Filter{MakeOpts().
+		WFamUUID(fuuid).
+		WGroupUUID(guuid).
+		WSearch(searchTerms).
+		WFrom(fromStr).
+		WTo(toStr).
+		WRecEmail(receiveEmail).
+		WRecMail(receiveMail).
+		WRecHatikvah(receiveHatikvah).
+		WArchived(archived).
+		WSelGroup(selectedGroup).
+		WSelStatus(selectedStatus).
+		WSelAges(selectedAges),
+	}
+}
+
+func (f Filter) URLQuery(memberUUID string) string {
+	selAges := ""
+	for _, age := range f.SelectedAges {
+		selAges = "&selectedAges=" + age
+	}
+
+	return "?muuid=" + memberUUID +
+		"&guuid=" + f.GroupUUID +
+		"&from=" + f.From +
+		"&to=" + f.To +
+		"&searchterms=" + f.SearchTerms +
+		"&selectedGroup=" + f.SelectedGroup +
+		"&receiveEmail=" + f.ReceiveEmail +
+		"&receiveMail=" + f.ReceiveMail +
+		"&receiveHatikvah=" + f.ReceiveHatikvah +
+		"&archived=" + f.Archived +
+		"&selectedStatus=" + f.SelectedStatus +
+		selAges
+}
+
+func (f Filter) URLForDownloadLink(downloadType string) string {
+	return "/download" + f.URLQuery("") + "&t=" + downloadType
 }

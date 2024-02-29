@@ -4,6 +4,7 @@ import (
 	"slices"
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
+	"github.com/michelemendel/dmtmms/util"
 )
 
 templ Input(id, value, placeholder, label string, required, readonly bool, inputError entity.InputError, inputType ...string) {
@@ -141,7 +142,7 @@ templ (vctx *ViewCtx) Select(id, label, selectedItem string, items []string) {
 	</div>
 }
 
-templ (vctx *ViewCtx) SelectFormGroups(id, selectedGroup string, groups []string) {
+templ (vctx *ViewCtx) FilterSelectGroups(id, selectedGroup string, groups []string) {
 	<div class="relative flex flex-row">
 		<select
 			id={ id }
@@ -155,7 +156,7 @@ templ (vctx *ViewCtx) SelectFormGroups(id, selectedGroup string, groups []string
 	</div>
 }
 
-templ (vctx *ViewCtx) SelectFormStatuses(id, selectedStatus string, statuses []string) {
+templ (vctx *ViewCtx) FilterSelectStatuses(id, selectedStatus string, statuses []string) {
 	<div class="relative flex flex-row">
 		<select
 			id={ id }
@@ -164,6 +165,25 @@ templ (vctx *ViewCtx) SelectFormStatuses(id, selectedStatus string, statuses []s
 		>
 			for _, s := range statuses {
 				<option value={ s } selected?={ s == selectedStatus }>{ s }</option>
+			}
+		</select>
+	</div>
+}
+
+templ (vctx *ViewCtx) FilterSelectAges(id, label string, selectedAges []string) {
+	<div class="relative flex flex-row">
+		<label
+			for={ id }
+			class="inline-block align-baseline text-nowrap mt-2 mr-1 text-xs font-medium text-gray-900 dark:text-gray-400"
+		>{ label }</label>
+		<select
+			id={ id }
+			name={ id }
+			multiple
+			class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+		>
+			for _, age := range util.MakeAges() {
+				<option value={ age.Val } selected?={ slices.Contains(selectedAges, age.Val) }>{ age.Name }</option>
 			}
 		</select>
 	</div>
@@ -200,7 +220,6 @@ templ (vctx *ViewCtx) SelectGroups(id, label string, selectedUUIDs []string, gro
 			multiple
 		>
 			for _, group := range groups {
-				// <option value={ group.UUID } selected?={ IsInGroup(group.UUID, selectedUUIDs) }>{ group.Name }</option>
 				<option value={ group.UUID } selected?={ slices.Contains(selectedUUIDs, group.UUID) }>{ group.Name }</option>
 			}
 		</select>

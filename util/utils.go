@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -69,6 +70,20 @@ func String2Time(s string) time.Time {
 	return t
 }
 
+func GetYearFromAge(age string) string {
+	year := time.Now().Year() - String2Int(age)
+	return Int2String(year)
+}
+
+func String2Int(s string) int {
+	i, _ := strconv.Atoi(s)
+	return i
+}
+
+func Int2String(i int) string {
+	return strconv.Itoa(i)
+}
+
 func String2Bool(s string) bool {
 	if s != "" {
 		return true
@@ -106,4 +121,27 @@ func PrettyStruct(data interface{}) (string, error) {
 		return "", err
 	}
 	return string(val), nil
+}
+
+type Age struct {
+	Val  string
+	Name string
+}
+
+func MakeAges() []Age {
+	ages := []Age{{Val: "", Name: ""}}
+
+	for i := 0; i <= 5; i++ {
+		ages = append(ages, Age{Val: fmt.Sprintf("%d", i), Name: fmt.Sprintf("%d", i)})
+	}
+
+	for i := 6; i <= 18; i++ {
+		ages = append(ages, Age{Val: fmt.Sprintf("%d", i), Name: fmt.Sprintf("%d, %d kl", i, i-5)})
+	}
+
+	for i := 19; i <= 120; i++ {
+		ages = append(ages, Age{Val: fmt.Sprintf("%d", i), Name: fmt.Sprintf("%d", i)})
+	}
+
+	return ages
 }

@@ -1,6 +1,6 @@
 package view
 
-import "fmt"
+// import "fmt"
 
 import (
 	"github.com/michelemendel/dmtmms/entity"
@@ -35,14 +35,14 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group
 						@vctx.FilterBar(f, groups)
 					</div>
 					<div class="float-right flex flex-row">
+						<div class="ml-0">
+							@vctx.DownloadForm(f)
+						</div>
 						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_CREATE) {
-							<div class="">
+							<div class="ml-2">
 								@vctx.AddMemberButton()
 							</div>
 						}
-						<div class="ml-2">
-							@vctx.DownloadForm(f.SearchTerms, f.From, f.To, f.ReceiveEmail, f.ReceiveMail, f.ReceiveHatikvah, f.Archived)
-						</div>
 					</div>
 				</div>
 				<div class="mt-2">
@@ -66,19 +66,39 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter, groups []entity.Group) {
 					@Input("searchterms", f.SearchTerms, "search", "search", false, false, entity.InputError{})
 				</div>
 				<div class="ml-2">
+					@vctx.FilterSelectGroups("selectedGroup", f.SelectedGroup, groups2Strings(groups))
+				</div>
+				<div class="ml-2">
+					@vctx.FilterSelectStatuses("selectedStatus", f.SelectedStatus, vctx.MemberStatuses)
+				</div>
+				// booleans
+				<div class="mt-1 flex flex-row">
+					<div class="ml-4">
+						@CBElement("receiveEmail", "Email", f.ReceiveEmail)
+					</div>
+					<div class="ml-2">
+						@CBElement("receiveMail", "Mail", f.ReceiveMail)
+					</div>
+					<div class="ml-2">
+						@CBElement("receiveHatikvah", "Hatikvah", f.ReceiveHatikvah)
+					</div>
+					<div class="ml-2">
+						@CBElement("archived", "Archived", f.Archived)
+					</div>
+				</div>
+			</div>
+			<div class="flex flex-row mt-2">
+				<div class="ml-0">
 					@DatePicker("from", f.From, "From")
 				</div>
 				<div class="ml-2">
 					@DatePicker("to", f.To, "To")
 				</div>
 				<div class="ml-2">
-					@vctx.SelectFormGroups("selectedGroup", f.SelectedGroup, groups2Strings(groups))
-				</div>
-				<div class="ml-2">
-					@vctx.SelectFormStatuses("selectedStatus", f.SelectedStatus, vctx.MemberStatuses)
+					@vctx.FilterSelectAges("selectedAges", "or use ages", f.SelectedAges)
 				</div>
 				// Search button
-				<div class="ml-2">
+				<div class="ml-[6rem]">
 					<button
 						hx-include="[name='searchterms'], [name='from'], [name='to'], [name='receiveEmail'], [name='receiveMail'], [name='receiveHatikvah']"
 						hx-get={ constants.ROUTE_MEMBERS }
@@ -102,20 +122,6 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter, groups []entity.Group) {
 					>
 						Clear
 					</button>
-				</div>
-			</div>
-			<div class="flex flex-row mt-2">
-				<div class="">
-					@CBElement("receiveEmail", "Email", f.ReceiveEmail)
-				</div>
-				<div class="ml-4">
-					@CBElement("receiveMail", "Mail", f.ReceiveMail)
-				</div>
-				<div class="ml-4">
-					@CBElement("receiveHatikvah", "Hatikvah", f.ReceiveHatikvah)
-				</div>
-				<div class="ml-4">
-					@CBElement("archived", "Archived", f.Archived)
 				</div>
 			</div>
 		</div>
@@ -190,15 +196,16 @@ templ (vctx *ViewCtx) AddMemberButton() {
 	>Add member</button>
 }
 
-templ (vctx *ViewCtx) DownloadForm(searchTerms, from, to string, receiveEmail, receiveMail, receiveHatikvah, archived string) {
+// templ (vctx *ViewCtx) DownloadForm(searchTerms, from, to string, receiveEmail, receiveMail, receiveHatikvah, archived string) {
+templ (vctx *ViewCtx) DownloadForm(f filter.Filter) {
 	<select
 		id="download"
 		class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 	>
 		<option>Download</option>
-		<option value={ fmt.Sprintf("/download?searchterms=%s&from=%s&to=%s&receiveEmail=%s&receiveMail=%s&receiveHatikvah=%s&archived=%s&t=%s", searchTerms, from, to, receiveEmail, receiveMail, receiveHatikvah, archived, "csv") }>CSV</option>
-		<option value={ fmt.Sprintf("/download?searchterms=%s&from=%s&to=%s&receiveEmail=%s&receiveMail=%s&receiveHatikvah=%s&archived=%s&t=%s", searchTerms, from, to, receiveEmail, receiveMail, receiveHatikvah, archived, "fnr") }>Fødselsnummer</option>
-		<option value={ fmt.Sprintf("/download?searchterms=%s&from=%s&to=%s&receiveEmail=%s&receiveMail=%s&receiveHatikvah=%s&archived=%s&t=%s", searchTerms, from, to, receiveEmail, receiveMail, receiveHatikvah, archived, "emails") }>Emails</option>
+		<option value={ f.URLForDownloadLink("csv") }>CSV</option>
+		<option value={ f.URLForDownloadLink("fnr") }>Fødselsnummer</option>
+		<option value={ f.URLForDownloadLink("emails") }>Emails</option>
 	</select>
 }
 
@@ -230,7 +237,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 				for _, member := range members {
 					<tr
 						id={ "member-" + member.UUID }
-						hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + member.UUID + "&guuid=" + f.GroupUUID + "&from=" + f.From + "&to=" + f.To + "&searchterms=" + f.SearchTerms + "&selectedGroup=" + f.SelectedGroup + "&receiveEmail=" + f.ReceiveEmail + "&receiveMail=" + f.ReceiveMail + "&receiveHatikvah=" + f.ReceiveHatikvah + "&archived=" + f.Archived + "&selectedStatus=" + f.SelectedStatus }
+						hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(member.UUID) }
 						hx-target="#members"
 						hx-select="#members"
 						hx-swap="outerHTML"

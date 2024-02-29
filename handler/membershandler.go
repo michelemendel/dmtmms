@@ -15,7 +15,6 @@ import (
 
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	f := filter.FilterFromQuery(c)
-
 	members, err := h.MembersFiltered(c, f)
 	if err != nil {
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
@@ -49,7 +48,7 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 		return entity.Member{}, nil, nil
 	}
 
-	filter := filter.MakeFilter(filter.MakeOpts().WithMemberUUID(memberUUID))
+	filter := filter.MakeFilter(filter.MakeOpts().WMemUUID(memberUUID))
 	members, err := h.Repo.SelectMembersByFilter(*filter)
 	if err != nil {
 		return entity.Member{}, []entity.Group{}, err
@@ -131,7 +130,7 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	families, _ := h.Repo.SelectFamilies(true)
 	groups, _ := h.Repo.SelectGroups(true)
 	memberUUID := c.Param("uuid")
-	filter := filter.MakeFilter(filter.MakeOpts().WithMemberUUID(memberUUID))
+	filter := filter.MakeFilter(filter.MakeOpts().WMemUUID(memberUUID))
 	member := entity.Member{}
 	members, _ := h.Repo.SelectMembersByFilter(*filter)
 	selectedGroupUUIDsAsStrings := []string{}
@@ -168,7 +167,6 @@ func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
 // Helper functions
 
 func (h *HandlerContext) CreatetMemberFromForm(c echo.Context, uuid string) (entity.Member, []string) {
-	params, _ := c.FormParams()
 	id := c.FormValue("id")
 	name := c.FormValue("name")
 	dobStr := c.FormValue("dob")
@@ -203,6 +201,7 @@ func (h *HandlerContext) CreatetMemberFromForm(c echo.Context, uuid string) (ent
 		receiveEmail, receiveMail, receiveHatikva, false, entity.MemberStatus(status),
 		familyUUID, familyName,
 	)
+	params, _ := c.FormParams()
 	groupUUIDs := params["groups"]
 	return member, groupUUIDs
 }

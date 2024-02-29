@@ -1,28 +1,29 @@
 <div id=\"members\"><div id=\"memberForm\"><div id=\"closeMemberForm\"></div></div><div class=\"flex flex-row px-4 py-5\"><div class=\"w-4/5\"><div class=\"flow-root\"><div class=\"float-left\">
-</div><div class=\"float-right flex flex-row\">
-<div class=\"\">
+</div><div class=\"float-right flex flex-row\"><div class=\"ml-0\">
 </div>
 <div class=\"ml-2\">
-</div></div></div><div class=\"mt-2\">
+</div>
+</div></div><div class=\"mt-2\">
 </div></div><div class=\"w-1/5 px-4 mt-10\">
 </div></div>
 </div>
 <form><div id=\"filterBar\" class=\"flex flex-col\"><div class=\"flex flex-row\"><div>
 </div><div class=\"ml-2\">
 </div><div class=\"ml-2\">
+</div><div class=\"mt-1 flex flex-row\"><div class=\"ml-4\">
 </div><div class=\"ml-2\">
 </div><div class=\"ml-2\">
 </div><div class=\"ml-2\">
+</div></div></div><div class=\"flex flex-row mt-2\"><div class=\"ml-0\">
+</div><div class=\"ml-2\">
+</div><div class=\"ml-2\">
+</div><div class=\"ml-[6rem]\">
 <button hx-include=\"[name=&#39;searchterms&#39;], [name=&#39;from&#39;], [name=&#39;to&#39;], [name=&#39;receiveEmail&#39;], [name=&#39;receiveMail&#39;], [name=&#39;receiveHatikvah&#39;]\" hx-get=\"
 \" hx-target=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"keyup[keyCode==13]\" class=\"
 \">Search</button></div><div class=\"ml-2\">
 <button hx-get=\"
 \" hx-target=\"#main\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"
-\">Clear</button></div></div><div class=\"flex flex-row mt-2\"><div class=\"\">
-</div><div class=\"ml-4\">
-</div><div class=\"ml-4\">
-</div><div class=\"ml-4\">
-</div></div></div>
+\">Clear</button></div></div></div>
 </form>
 <div class=\"flex items-center\"><input checked type=\"checkbox\" id=\"
 \" name=\"

@@ -14,11 +14,15 @@ import (
 )
 
 func (h *HandlerContext) DownloadHandler(c echo.Context) error {
-	downloadType := c.QueryParam("t")
-	var data []byte
-	members, _ := h.GetMembers(c)
+	f := filter.FilterFromQuery(c)
+	members, err := h.MembersFiltered(c, f)
+	if err != nil {
+		slog.Error("error getting members", "err", err)
+		return err
+	}
 
-	switch downloadType {
+	var data []byte
+	switch c.QueryParam("t") {
 	case "csv":
 		c.Response().Header().Set("Content-Disposition", "attachment; filename=members.csv")
 		data, _ = h.MembersAsCSV(members, h.MembersTransformer)
@@ -79,16 +83,6 @@ func (h *HandlerContext) PersonnummerTransformer(members []entity.Member) [][]st
 		})
 	}
 	return items
-}
-
-func (h *HandlerContext) GetMembers(c echo.Context) ([]entity.Member, error) {
-	f := filter.FilterFromQuery(c)
-	members, err := h.MembersFiltered(c, f)
-	if err != nil {
-		slog.Error("error getting members", "err", err)
-		return nil, err
-	}
-	return members, nil
 }
 
 func (h *HandlerContext) MembersAsCSV(members []entity.Member, transformFn func([]entity.Member) [][]string) ([]byte, error) {
