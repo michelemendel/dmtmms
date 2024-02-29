@@ -252,6 +252,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 			</tbody>
 		</table>
 	</div>
+	// @tableNavigation(f.MemberUUID)
 }
 
 templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
@@ -387,10 +388,6 @@ templ (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) {
 //--------------------------------------------------------------------------------
 // Helpers
 
-script cl(msg string) {
-	console.log(msg)
-}
-
 script jsFunctions() {
 	// Focus on search input
 	let search = document.getElementById("searchterms");
@@ -413,6 +410,41 @@ script jsFunctions() {
     	var url = this.value;
        	window.open(url, '_self');
 	});
+}
+
+script tableNavigation(muuid string) {
+	let table = document.querySelector('body');
+	let tbody = table.querySelector('tbody');
+	let rows = tbody.querySelectorAll('tr');
+	// let selectedRow = null;
+	console.log("SEL_ROW_X", muuid)
+
+	table.addEventListener('keydown', (e) => {
+		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+			e.preventDefault();
+			// console.log(e.key, ", ROW", selectedRow.id)
+			let index = Array.from(rows).indexOf(selectedRow);
+			if (index === -1) {
+				index = 0;
+			}
+			if (e.key === 'ArrowDown') {
+				index = Math.min(index + 1, rows.length - 1);
+			} else {
+				index = Math.max(index - 1, 0);
+			}
+			selectedRow = rows[index];
+			selectedRow.focus();
+		}
+	});
+	
+	// table.addEventListener('click', (e) => {
+	// 	console.log(e.target.tagName)
+	// 	if (e.target.tagName === 'TD') {
+	// 		selectedRow = e.target.parentElement;
+	// 		selectedRow.focus();
+	// 		console.log(selectedRow.id);
+	// 	}
+	// });
 }
 
 func groups2Strings(groups []entity.Group) []string {

@@ -34,9 +34,9 @@ const (
 	FROM members as m
 	`
 
-	// queryMember = selectMember + `
-	// LEFT JOIN families as f ON m.family_uuid=f.uuid
-	// `
+	queryMember = selectMember + `
+	LEFT JOIN families as f ON m.family_uuid=f.uuid
+	`
 
 	queryMembers = selectMember + `
 	LEFT JOIN families as f ON m.family_uuid=f.uuid
@@ -49,6 +49,7 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 	q := queryMembers
 	args := []any{}
 
+	// Use either ages or from/to
 	if len(filter.SelectedAges) > 0 && filter.SelectedAges[0] != "" {
 		qs := []string{}
 		for _, age := range filter.SelectedAges {
@@ -88,11 +89,6 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 		args = append(args, filter.GroupUUID)
 	}
 
-	if filter.MemberUUID != "" {
-		q = q + "AND m.uuid=?"
-		args = append(args, filter.MemberUUID)
-	}
-
 	if filter.ReceiveEmail != "" {
 		q = q + "AND m.receive_email=?"
 		args = append(args, filter.ReceiveEmail)
@@ -128,11 +124,7 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 	return r.ExecuteQuery(q, args...)
 }
 
-//--------------------------------------------------------------------------------
-//
-
 func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member, error) {
-	// fmt.Println("ExecuteQuery", query, args)
 	rows, err := r.DB.Query(query, args...)
 	if err != nil {
 		slog.Error(err.Error())
@@ -183,4 +175,20 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 		return members, err
 	}
 	return members, nil
+}
+
+//--------------------------------------------------------------------------------
+// Member
+
+func (r *Repo) SelectMember(uuid string) (entity.Member, error) {
+	q := queryMember + "WHERE m.uuid=?"
+	args := []any{uuid}
+	ms, err := r.ExecuteQuery(q, args...)
+	if err != nil {
+		return entity.Member{}, err
+	}
+	if len(ms) == 0 {
+		return entity.Member{}, nil
+	}
+	return ms[0], nil
 }

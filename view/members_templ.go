@@ -644,7 +644,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(member.ID)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 257, Col: 64}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 258, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
@@ -657,7 +657,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(member.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 258, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 259, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
@@ -670,7 +670,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(strings.Replace(util.Time2String(member.DOB), "-", "", -1) + "-" + member.Personnummer)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 259, Col: 124}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 260, Col: 124}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -683,7 +683,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(member.FamilyName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 260, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 261, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
@@ -696,7 +696,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(bool2string(member.ReceiveEmail))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 261, Col: 85}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 262, Col: 85}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
@@ -709,7 +709,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(bool2string(member.ReceiveMail))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 262, Col: 84}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 263, Col: 84}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
@@ -722,7 +722,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(bool2string(member.ReceiveHatikvah))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 263, Col: 88}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 264, Col: 88}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
@@ -735,7 +735,7 @@ func (vctx *ViewCtx) memberTableRowData(member entity.Member) templ.Component {
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(bool2string(member.Archived))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 264, Col: 81}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 265, Col: 81}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
@@ -907,7 +907,7 @@ func (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) templ.Com
 					var templ_7745c5c3_Var26 string
 					templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(m.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 347, Col: 77}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 348, Col: 77}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 					if templ_7745c5c3_Err != nil {
@@ -920,7 +920,7 @@ func (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) templ.Com
 					var templ_7745c5c3_Var27 string
 					templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(m.Value)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 348, Col: 58}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 349, Col: 58}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 					if templ_7745c5c3_Err != nil {
@@ -955,7 +955,7 @@ func (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) templ.Com
 			var templ_7745c5c3_Var28 string
 			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(string(memberDetails.MemberDetails[2].Value))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 363, Col: 51}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 364, Col: 51}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 			if templ_7745c5c3_Err != nil {
@@ -989,7 +989,7 @@ func (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) templ.Com
 				var templ_7745c5c3_Var29 string
 				templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(group.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 377, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `view/members.templ`, Line: 378, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 				if templ_7745c5c3_Err != nil {
@@ -1018,16 +1018,6 @@ func (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) templ.Com
 
 // --------------------------------------------------------------------------------
 // Helpers
-func cl(msg string) templ.ComponentScript {
-	return templ.ComponentScript{
-		Name: `__templ_cl_259a`,
-		Function: `function __templ_cl_259a(msg){console.log(msg)
-}`,
-		Call:       templ.SafeScript(`__templ_cl_259a`, msg),
-		CallInline: templ.SafeScriptInline(`__templ_cl_259a`, msg),
-	}
-}
-
 func jsFunctions() templ.ComponentScript {
 	return templ.ComponentScript{
 		Name: `__templ_jsFunctions_48fc`,
@@ -1055,6 +1045,47 @@ func jsFunctions() templ.ComponentScript {
 }`,
 		Call:       templ.SafeScript(`__templ_jsFunctions_48fc`),
 		CallInline: templ.SafeScriptInline(`__templ_jsFunctions_48fc`),
+	}
+}
+
+func tableNavigation(muuid string) templ.ComponentScript {
+	return templ.ComponentScript{
+		Name: `__templ_tableNavigation_620e`,
+		Function: `function __templ_tableNavigation_620e(muuid){let table = document.querySelector('body');
+	let tbody = table.querySelector('tbody');
+	let rows = tbody.querySelectorAll('tr');
+	// let selectedRow = null;
+	console.log("SEL_ROW_X", muuid)
+
+	table.addEventListener('keydown', (e) => {
+		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+			e.preventDefault();
+			// console.log(e.key, ", ROW", selectedRow.id)
+			let index = Array.from(rows).indexOf(selectedRow);
+			if (index === -1) {
+				index = 0;
+			}
+			if (e.key === 'ArrowDown') {
+				index = Math.min(index + 1, rows.length - 1);
+			} else {
+				index = Math.max(index - 1, 0);
+			}
+			selectedRow = rows[index];
+			selectedRow.focus();
+		}
+	});
+	
+	// table.addEventListener('click', (e) => {
+	// 	console.log(e.target.tagName)
+	// 	if (e.target.tagName === 'TD') {
+	// 		selectedRow = e.target.parentElement;
+	// 		selectedRow.focus();
+	// 		console.log(selectedRow.id);
+	// 	}
+	// });
+}`,
+		Call:       templ.SafeScript(`__templ_tableNavigation_620e`, muuid),
+		CallInline: templ.SafeScriptInline(`__templ_tableNavigation_620e`, muuid),
 	}
 }
 

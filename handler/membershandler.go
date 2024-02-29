@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"log/slog"
 
 	"github.com/labstack/echo/v4"
@@ -48,8 +47,7 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 		return entity.Member{}, nil, nil
 	}
 
-	filter := filter.MakeFilter(filter.MakeOpts().WMemUUID(memberUUID))
-	members, err := h.Repo.SelectMembersByFilter(*filter)
+	member, err := h.Repo.SelectMember(memberUUID)
 	if err != nil {
 		return entity.Member{}, []entity.Group{}, err
 	}
@@ -59,11 +57,7 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 		return entity.Member{}, []entity.Group{}, err
 	}
 
-	if len(members) > 0 {
-		return members[0], groups, nil
-	} else {
-		return entity.Member{}, groups, nil
-	}
+	return member, groups, nil
 }
 
 //--------------------------------------------------------------------------------
@@ -72,7 +66,6 @@ func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.
 func (h *HandlerContext) MemberCreateInitHandler(c echo.Context) error {
 	families, _ := h.Repo.SelectFamilies(true)
 	groups, _ := h.Repo.SelectGroups(true)
-	fmt.Println("MemberCreateInitHandler", families, groups)
 	return h.renderView(c, h.ViewCtx.MemberFormModal(entity.Member{}, []string{}, families, groups, constants.OP_CREATE, entity.InputErrors{}))
 }
 
@@ -130,15 +123,9 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	families, _ := h.Repo.SelectFamilies(true)
 	groups, _ := h.Repo.SelectGroups(true)
 	memberUUID := c.Param("uuid")
-	filter := filter.MakeFilter(filter.MakeOpts().WMemUUID(memberUUID))
-	member := entity.Member{}
-	members, _ := h.Repo.SelectMembersByFilter(*filter)
-	selectedGroupUUIDsAsStrings := []string{}
+	member, _ := h.Repo.SelectMember(memberUUID)
 	selectedGroupUUIDs, _ := h.Repo.SelectGroupsByMember(memberUUID)
-	if len(members) > 0 {
-		member = members[0]
-		selectedGroupUUIDsAsStrings = entity.Groups2UUIDsAsStrings(selectedGroupUUIDs)
-	}
+	selectedGroupUUIDsAsStrings := entity.Groups2UUIDsAsStrings(selectedGroupUUIDs)
 
 	return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, entity.InputErrors{}))
 }

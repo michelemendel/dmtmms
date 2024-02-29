@@ -917,6 +917,10 @@ select {
   margin-bottom: 1.5rem;
 }
 
+.ml-0 {
+  margin-left: 0px;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -929,8 +933,16 @@ select {
   margin-left: 1rem;
 }
 
+.ml-\[6rem\] {
+  margin-left: 6rem;
+}
+
 .mr-0 {
   margin-right: 0px;
+}
+
+.mr-1 {
+  margin-right: 0.25rem;
 }
 
 .mr-2 {
@@ -975,62 +987,6 @@ select {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.ml-0 {
-  margin-left: 0px;
-}
-
-.ml-20 {
-  margin-left: 5rem;
-}
-
-.ml-48 {
-  margin-left: 12rem;
-}
-
-.ml-40 {
-  margin-left: 10rem;
-}
-
-.ml-36 {
-  margin-left: 9rem;
-}
-
-.ml-32 {
-  margin-left: 8rem;
-}
-
-.ml-28 {
-  margin-left: 7rem;
-}
-
-.mr-\[2px\] {
-  margin-right: 2px;
-}
-
-.ml-\[28\] {
-  margin-left: 28;
-}
-
-.ml-\[28rem\] {
-  margin-left: 28rem;
-}
-
-.ml-\[12rem\] {
-  margin-left: 12rem;
-}
-
-.ml-\[8rem\] {
-  margin-left: 8rem;
-}
-
-.ml-\[6rem\] {
-  margin-left: 6rem;
-}
-
-.mr-1 {
-  margin-right: 0.25rem;
 }
 
 .box-content {
@@ -1167,10 +1123,6 @@ select {
 
 .w-full {
   width: 100%;
-}
-
-.w-12 {
-  width: 3rem;
 }
 
 .max-w-\[18rem\] {
@@ -1336,11 +1288,6 @@ select {
 
 .text-nowrap {
   text-wrap: nowrap;
-}
-
-.break-normal {
-  overflow-wrap: normal;
-  word-break: normal;
 }
 
 .rounded {

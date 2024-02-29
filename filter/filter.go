@@ -120,6 +120,7 @@ func (o Opts) WSelStatus(status string) Opts {
 // Filter from query parameters
 
 func FilterFromQuery(c echo.Context) Filter {
+	muuid := c.QueryParam("muuid")
 	fuuid := c.QueryParam("fuuid")
 	guuid := c.QueryParam("guuid")
 	searchTerms := c.QueryParam("searchterms")
@@ -133,9 +134,8 @@ func FilterFromQuery(c echo.Context) Filter {
 	selectedStatus := c.QueryParam("selectedStatus")
 	selectedAges := c.QueryParams()["selectedAges"]
 
-	// fmt.Println("FilterFromQuery:SelAges:", selectedAges, ", len", len(selectedAges))
-
 	return Filter{MakeOpts().
+		WMemUUID(muuid).
 		WFamUUID(fuuid).
 		WGroupUUID(guuid).
 		WSearch(searchTerms).
@@ -151,13 +151,13 @@ func FilterFromQuery(c echo.Context) Filter {
 	}
 }
 
-func (f Filter) URLQuery(memberUUID string) string {
+func (f Filter) URLQuery(mUUID string) string {
 	selAges := ""
 	for _, age := range f.SelectedAges {
-		selAges = "&selectedAges=" + age
+		selAges += "&selectedAges=" + age
 	}
 
-	return "?muuid=" + memberUUID +
+	return "?muuid=" + mUUID +
 		"&guuid=" + f.GroupUUID +
 		"&from=" + f.From +
 		"&to=" + f.To +
