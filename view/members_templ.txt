@@ -43,9 +43,10 @@
 <th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th>
 <th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th>
 </tr></thead> <tbody>
-<tr id=\"
+<tr tabindex=\"
+\" id=\"
 \" hx-get=\"
-\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"click\" class=\"border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer\">
+\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"click\" class=\"border-b dark:border-neutral-500 focus:bg-blue-100 hover:bg-neutral-100 cursor-pointer\">
 </tr>
 </tbody></table></div>
 <td class=\"whitespace-nowrap px-6 py-4 font-medium\">

@@ -1,8 +1,7 @@
 package view
 
-// import "fmt"
-
 import (
+	"strconv"
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/util"
@@ -234,8 +233,9 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 				</tr>
 			</thead>
 			<tbody>
-				for _, member := range members {
+				for i, member := range members {
 					<tr
+						tabindex={ strconv.Itoa(i + 1) }
 						id={ "member-" + member.UUID }
 						hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(member.UUID) }
 						hx-target="#members"
@@ -243,7 +243,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 						hx-swap="outerHTML"
 						hx-push-url="true"
 						hx-trigger="click"
-						class="border-b dark:border-neutral-500 hover:bg-neutral-100 cursor-pointer"
+						class="border-b dark:border-neutral-500 focus:bg-blue-100 hover:bg-neutral-100 cursor-pointer"
 					>
 						@vctx.memberTableRowData(member)
 						@vctx.memberTableRowButtons(member)
@@ -252,6 +252,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 			</tbody>
 		</table>
 	</div>
+	// Currently in lab mode
 	// @tableNavigation(f.MemberUUID)
 }
 
@@ -413,11 +414,13 @@ script jsFunctions() {
 }
 
 script tableNavigation(muuid string) {
+	// Currently in lab mode
 	let table = document.querySelector('body');
 	let tbody = table.querySelector('tbody');
 	let rows = tbody.querySelectorAll('tr');
 	// let selectedRow = null;
-	console.log("SEL_ROW_X", muuid)
+	let selectedID = "member-" + muuid;
+	console.log("SEL_ID", selectedID)
 
 	table.addEventListener('keydown', (e) => {
 		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
