@@ -3,7 +3,6 @@ package repo
 import (
 	"fmt"
 	"log/slog"
-	"strconv"
 
 	"time"
 
@@ -25,11 +24,21 @@ func (r *Repo) runStatements(sqlStmts map[string]string) {
 func (r *Repo) DropTables() {
 	var sqlStmts = make(map[string]string)
 
+	// Tables
 	sqlStmts["drop_users"] = `DROP TABLE IF EXISTS users;`
 	sqlStmts["drop_members"] = `DROP TABLE IF EXISTS members;`
 	sqlStmts["drop_families"] = `DROP TABLE IF EXISTS families;`
 	sqlStmts["drop_groups"] = `DROP TABLE IF EXISTS groups;`
 	sqlStmts["drop_members_groups"] = `DROP TABLE IF EXISTS members_groups;`
+
+	// Triggers
+	sqlStmts["drop_trigger_inc_member_id"] = `DROP TRIGGER IF EXISTS inc_member_id;`
+
+	// Indexes
+	sqlStmts["drop_index_members_uuid"] = `DROP INDEX IF EXISTS idx_members_uuid;`
+	sqlStmts["drop_index_families_uuid"] = `DROP INDEX IF EXISTS idx_families_uuid;`
+	sqlStmts["drop_index_groups_uuid"] = `DROP INDEX IF EXISTS idx_groups_uuid;`
+	sqlStmts["drop_index_members_groups"] = `DROP INDEX IF EXISTS idx_members_groups;`
 
 	r.runStatements(sqlStmts)
 }
@@ -52,7 +61,7 @@ func (r *Repo) CreateTables() {
 	sqlStmts["create_members"] = `
 	CREATE TABLE IF NOT EXISTS members (
 		uuid TEXT PRIMARY KEY,
-		id TEXT,
+		id INTEGER UNIQUE,
 		name TEXT NOT NULL,
 		dob REAL,
 		personnummer TEXT,
@@ -69,7 +78,7 @@ func (r *Repo) CreateTables() {
 		receive_email BOOLEAN,
 		receive_mail BOOLEAN,
 		receive_hatikvah BOOLEAN,
-		status TEXT NOT NULL,
+		status TEXT,
 		archived BOOLEAN,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER,
@@ -103,12 +112,32 @@ func (r *Repo) CreateTables() {
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER,
 		primary key (member_uuid, group_uuid)
+		FOREIGN KEY(member_uuid) REFERENCES members(uuid),
+		FOREIGN KEY(group_uuid) REFERENCES groups(uuid)
 		); `
 	// FOREIGN KEY(member_uuid) REFERENCES members(uuid) ON UPDATE CASCADE ON DELETE CASCADE,
 	// FOREIGN KEY(group_uuid) REFERENCES groups(uuid)
 
 	r.runStatements(sqlStmts)
 }
+
+// SELECT name FROM sqlite_master WHERE type = 'trigger';
+func (r *Repo) CreateTriggers() {
+	var sqlStmts = make(map[string]string)
+
+	// CREATE TRIGGER inc_member_id AFTER INSERT ON names WHEN new.id IS NULL BEGIN UPDATE names SET id=(SELECT coalesce(max(id),0)+1 FROM names) WHERE uuid=new.uuid; END;
+
+	sqlStmts["trigger_inc_member_id"] = `
+	CREATE TRIGGER trigger_inc_member_id AFTER INSERT ON members
+	WHEN new.id IS NULL BEGIN 
+		UPDATE members SET id=(SELECT coalesce(max(id),0)+1 FROM members) 
+			WHERE uuid=new.uuid; 
+	END;`
+
+	r.runStatements(sqlStmts)
+}
+
+// SELECT name FROM sqlite_master WHERE type = 'index';
 func (r *Repo) CreateIndexes() {
 	var sqlStmts = make(map[string]string)
 
@@ -153,8 +182,10 @@ func (r *Repo) InsertUsers() {
 func (r *Repo) InsertFamilies() {
 	families := []entity.Family{
 		{UUID: "0", Name: "none"},
-		{UUID: "101", Name: "fam1"},
-		{UUID: "102", Name: "fam2"},
+		{UUID: util.GenerateUUID(), Name: "Cohen"},
+		{UUID: util.GenerateUUID(), Name: "Levi"},
+		{UUID: util.GenerateUUID(), Name: "Israel"},
+		{UUID: util.GenerateUUID(), Name: "Hoffman"},
 	}
 
 	for _, family := range families {
@@ -169,10 +200,12 @@ func (r *Repo) InsertFamilies() {
 func (r *Repo) InsertGroups() {
 	groups := []entity.Group{
 		{UUID: "0", Name: "none"},
-		{UUID: "1001", Name: "org1"},
-		{UUID: "1002", Name: "org2"},
-		{UUID: "1003", Name: "org3"},
-		{UUID: "1004", Name: "org4"},
+		{UUID: util.GenerateUUID(), Name: "styret"},
+		{UUID: util.GenerateUUID(), Name: "chevre"},
+		{UUID: util.GenerateUUID(), Name: "kiddush"},
+		{UUID: util.GenerateUUID(), Name: "ligning"},
+		{UUID: util.GenerateUUID(), Name: "teacher"},
+		{UUID: util.GenerateUUID(), Name: "barnehage"},
 	}
 	for _, group := range groups {
 		err := r.CreateGroup(group)
@@ -184,7 +217,7 @@ func (r *Repo) InsertGroups() {
 
 // Members
 type member struct {
-	uuid         string
+	name         string
 	receiveEmail bool
 	archived     bool
 	familyUUID   string
@@ -193,52 +226,35 @@ type member struct {
 }
 
 var members = map[string]member{
-	"11": {uuid: "11", receiveEmail: true, archived: false, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1001", "1002"}},
-	"12": {uuid: "12", receiveEmail: true, archived: false, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1002", "1003"}},
-	"13": {uuid: "13", receiveEmail: false, archived: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1001", "1002"}},
-	"14": {uuid: "14", receiveEmail: true, archived: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1003"}},
-	"15": {uuid: "15", receiveEmail: false, archived: true, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1004"}},
+	"11": {name: "abe", receiveEmail: true, archived: false, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1001", "1002"}},
+	"12": {name: "bob", receiveEmail: true, archived: false, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1002", "1003"}},
+	"13": {name: "carl", receiveEmail: false, archived: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1001", "1002"}},
+	"14": {name: "dave", receiveEmail: true, archived: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1003"}},
+	"15": {name: "eve", receiveEmail: false, archived: true, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1004"}},
 }
 
 func (r *Repo) InsertMembers() {
-	nofMembers := 5
-	nrStart := 100
-	memberUUID := 11
+	// First member is a special case,since we are using triggers on id, and we need a start value.
+	r.InitMember()
+
+	// Create members
 	dob := util.String2Time("1980-02-01")
 	personnummer := "12345"
-	memberIdPrefix := "99"
-	namePrefix := "mem"
 	phonePrefix := "12377"
-	address1 := ""
-	address2 := ""
-	postnummer := ""
-	poststed := ""
 	var status entity.MemberStatus = entity.MemberStatusActive
-	for i := 0; i < nofMembers; i++ {
-		memberId := memberIdPrefix + strconv.Itoa(nrStart+i)
-		name := namePrefix + strconv.Itoa(memberUUID)
-		email := name + "@test.com"
-		mobile := phonePrefix + strconv.Itoa(nrStart+i)
-		address := entity.NewAddress(address1, address2, postnummer, poststed)
-		receiveEmail := true
-		archived := false
+	for i, m := range members {
+		memberUUID := util.GenerateUUID()
+		email := m.name + "@test.com"
+		mobile := phonePrefix + i
 		familyUUID := ""
 		familyName := ""
 		groupUUIDs := []string{}
-		if m, ok := members[strconv.Itoa(memberUUID)]; ok {
-			receiveEmail = m.receiveEmail
-			archived = m.archived
-			familyUUID = m.familyUUID
-			familyName = m.familyName
-			groupUUIDs = m.groupUUIDs
-		}
 
-		member := entity.NewMember(strconv.Itoa(memberUUID), memberId, name, dob, personnummer, email, mobile, address, "", "", util.String2Time("2020-01-01"), time.Time{}, receiveEmail, false, false, archived, status, familyUUID, familyName)
+		member := entity.NewMember(memberUUID, 0, m.name, dob, personnummer, email, mobile, entity.Address{}, "", "", util.String2Time("2020-01-01"), time.Time{}, m.receiveEmail, false, false, m.archived, status, familyUUID, familyName)
 		err := r.CreateMember(member, groupUUIDs)
 		if err != nil {
 			slog.Error(err.Error())
 		}
-		memberUUID++
 		dob = dob.AddDate(0, 1, 1)
 	}
 }

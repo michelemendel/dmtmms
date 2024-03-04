@@ -58,7 +58,7 @@ Linux Debian 12
 
 ---
 
-## Start development environment
+## Development environment
 
 See also Makefile
 
@@ -82,7 +82,7 @@ See tailwind.config.js for more details
 
 ---
 
-## Start production environment
+## Production environment
 
 Templates and CSS are generated on the development machine and pushed to Github.
 
@@ -122,6 +122,10 @@ setting PRAGMA in Go, see https://gist.github.com/dgsb/6061941d2185f761848b143f0
 - sqlite3 mydb.db ".backup '20240123T1658_mydb.db'"
   - This file will have to be moved to a safe place
 - Alt. use litestream
+
+### Restore
+
+- sqlite3 mydb.db ".restore '20240123T1658_mydb.db'"
 
 ### Some sqlite3 CLI commands
 

@@ -83,7 +83,7 @@ func NewAddress(address1, address2, postnummer, poststed string) Address {
 // ok Hatikva?
 type Member struct {
 	UUID         string
-	ID           string
+	ID           int
 	Name         string
 	DOB          time.Time
 	Personnummer string
@@ -103,8 +103,10 @@ type Member struct {
 	FamilyName        string
 }
 
-func NewMember(uuid,
-	id, name string,
+func NewMember(
+	uuid string,
+	id int,
+	name string,
 	dob time.Time,
 	personnummer,
 	email,
@@ -197,7 +199,7 @@ func MemberDetailsForPresentation(member Member, groups []Group) MemberDetails {
 	details = append(details, MemberDetail{"FamilyUUID", member.FamilyUUID})
 	details = append(details, MemberDetail{"FamilyName", member.FamilyName})
 	details = append(details, MemberDetail{"Name", member.Name})
-	details = append(details, MemberDetail{"ID", member.ID})
+	details = append(details, MemberDetail{"ID", string(member.ID)})
 	details = append(details, MemberDetail{"Date of Birth", util.Time2String(member.DOB)})
 	details = append(details, MemberDetail{"Personnummer", member.Personnummer})
 	details = append(details, MemberDetail{"Email", member.Email})

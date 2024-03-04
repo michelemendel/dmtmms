@@ -10,6 +10,18 @@ import (
 	"github.com/michelemendel/dmtmms/entity"
 )
 
+func (r *Repo) InitMember() error {
+	tx, _ := r.DB.Begin()
+	_, err := tx.Exec(`INSERT INTO members(uuid, id, name) VALUES(?, ?, ?)`, "0", 1000, "dummy")
+	if err != nil {
+		slog.Error(err.Error(), "uuid", "0", "name", "dummy")
+		tx.Rollback()
+		return e.ErrCreatingMember
+	}
+	tx.Commit()
+	return nil
+}
+
 func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 	tx, _ := r.DB.Begin()
 	familyUUID := "0"
@@ -22,14 +34,14 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 	_, err := tx.Exec(`
 	INSERT INTO members(
 		uuid, 
-		id, name, dob, personnummer, email, mobile, 
+		name, dob, personnummer, email, mobile, 
 		address1, address2, postnummer, poststed, 
 		synagogue_seat, membership_fee_tier, registered_date, deregistered_date, 
 		receive_email, receive_mail, receive_hatikvah, archived, status, 
 		family_uuid, family_name
 		) VALUES(
 			?, 
-			?, ?, julianday(?), ?, ?, ?, 
+			?, julianday(?), ?, ?, ?, 
 			?, ?, ?, ?, 
 			?, ?, julianday(?), julianday(?), 
 			?, ?, ?, ?, ?, 
@@ -37,7 +49,7 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 		)
 		`,
 		member.UUID,
-		member.ID, member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
+		member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
 		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
 		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikvah, member.Archived, member.Status,

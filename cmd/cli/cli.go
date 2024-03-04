@@ -25,6 +25,7 @@ func main() {
 		case "reset":
 			repo.DropTables()
 			repo.CreateTables()
+			repo.CreateTriggers()
 			repo.CreateIndexes()
 			repo.InsertUsers()
 			repo.InsertFamilies()
@@ -48,6 +49,7 @@ func main() {
 		switch *create {
 		case "tables":
 			repo.CreateTables()
+			repo.CreateTriggers()
 			repo.CreateIndexes()
 		default:
 			fmt.Println("no op specified")
