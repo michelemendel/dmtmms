@@ -34,9 +34,11 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group
 						@vctx.FilterBar(f, groups)
 					</div>
 					<div class="float-right flex flex-row">
-						<div class="ml-0">
-							@vctx.DownloadForm(f)
-						</div>
+						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_DOWNLOAD) {
+							<div class="ml-0">
+								@vctx.DownloadForm(f)
+							</div>
+						}
 						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_CREATE) {
 							<div class="ml-2">
 								@vctx.AddMemberButton()
@@ -213,7 +215,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 		<table class="w-full text-left text-sm font-light">
 			<thead class="border-1 font-medium dark:border-neutral-500">
 				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
-					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">TriplexID</th>
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">ID</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Name</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Fødselsnummer</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Family</th>
@@ -257,7 +259,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 }
 
 templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
-	<td class="whitespace-nowrap px-6 py-4 font-medium">{ member.ID }</td>
+	<td class="whitespace-nowrap px-6 py-4 font-medium">{ util.Int2String(member.ID) }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ strings.Replace(util.Time2String(member.DOB),"-","",-1) +"-"+ member.Personnummer }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.FamilyName }</td>

@@ -182,10 +182,10 @@ func (r *Repo) InsertUsers() {
 func (r *Repo) InsertFamilies() {
 	families := []entity.Family{
 		{UUID: "0", Name: "none"},
-		{UUID: util.GenerateUUID(), Name: "Cohen"},
-		{UUID: util.GenerateUUID(), Name: "Levi"},
-		{UUID: util.GenerateUUID(), Name: "Israel"},
-		{UUID: util.GenerateUUID(), Name: "Hoffman"},
+		{UUID: "101", Name: "Cohen"},
+		{UUID: "102", Name: "Levi"},
+		{UUID: "103", Name: "Israel"},
+		{UUID: "104", Name: "Hoffman"},
 	}
 
 	for _, family := range families {
@@ -200,12 +200,12 @@ func (r *Repo) InsertFamilies() {
 func (r *Repo) InsertGroups() {
 	groups := []entity.Group{
 		{UUID: "0", Name: "none"},
-		{UUID: util.GenerateUUID(), Name: "styret"},
-		{UUID: util.GenerateUUID(), Name: "chevre"},
-		{UUID: util.GenerateUUID(), Name: "kiddush"},
-		{UUID: util.GenerateUUID(), Name: "ligning"},
-		{UUID: util.GenerateUUID(), Name: "teacher"},
-		{UUID: util.GenerateUUID(), Name: "barnehage"},
+		{UUID: "1001", Name: "styret"},
+		{UUID: "1002", Name: "chevre"},
+		{UUID: "1003", Name: "kiddush"},
+		{UUID: "1004", Name: "ligning"},
+		{UUID: "1005", Name: "teacher"},
+		{UUID: "1006", Name: "barnehage"},
 	}
 	for _, group := range groups {
 		err := r.CreateGroup(group)
@@ -246,12 +246,9 @@ func (r *Repo) InsertMembers() {
 		memberUUID := util.GenerateUUID()
 		email := m.name + "@test.com"
 		mobile := phonePrefix + i
-		familyUUID := ""
-		familyName := ""
-		groupUUIDs := []string{}
 
-		member := entity.NewMember(memberUUID, 0, m.name, dob, personnummer, email, mobile, entity.Address{}, "", "", util.String2Time("2020-01-01"), time.Time{}, m.receiveEmail, false, false, m.archived, status, familyUUID, familyName)
-		err := r.CreateMember(member, groupUUIDs)
+		member := entity.NewMember(memberUUID, 0, m.name, dob, personnummer, email, mobile, entity.Address{}, "", "", util.String2Time("2020-01-01"), time.Time{}, m.receiveEmail, false, false, m.archived, status, m.familyUUID, m.familyName)
+		err := r.CreateMember(member, m.groupUUIDs)
 		if err != nil {
 			slog.Error(err.Error())
 		}

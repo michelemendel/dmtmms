@@ -181,7 +181,7 @@ func (h *HandlerContext) CreatetMemberFromForm(c echo.Context, uuid string) (ent
 	receiveMail := util.String2Bool(receiveMailStr)
 	receiveHatikva := util.String2Bool(receiveHatikvaStr)
 	member := entity.NewMember(uuid,
-		id, name, dob, personnummer, email,
+		util.String2Int(id), name, dob, personnummer, email,
 		mobile,
 		entity.Address{},
 		synagogueseat, membershipFeeTier, registeredDate, deregisteredDate,

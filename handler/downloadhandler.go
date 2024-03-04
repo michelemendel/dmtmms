@@ -52,7 +52,7 @@ func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string 
 	items = append(items, []string{"ID", "Name", "Fødselsnummer", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah", "Archived"})
 	for _, m := range members {
 		items = append(items, []string{
-			m.ID,
+			util.Int2String(m.ID),
 			m.Name,
 			strings.Replace(util.Time2String(m.DOB), "-", "", -1) + "-" + m.Personnummer,
 			m.Email,

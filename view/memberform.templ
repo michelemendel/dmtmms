@@ -45,9 +45,9 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 					// uuid
 					<input type="hidden" name="uuid" value={ member.UUID }/>
 					// id
-					<div class="mt-2">
-						@Input("id", member.ID, "", "Id", false, false, inputErrors["id"])
-					</div>
+					// <div class="mt-2">
+					// @Input("id", util.Int2String(member.ID), "", "Id", false, false, inputErrors["id"])
+					// </div>
 					// name
 					<div class="mt-2">
 						@Input("name", member.Name, "", "Name", true, false, inputErrors["name"])
@@ -138,11 +138,19 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 					</div>
 					// family_name (family_uuid)
 					<div class="mt-2">
-						@vctx.SelectFamilies("family_uuid", "Family", member.FamilyUUID, families)
+						if op == "create" {
+							@vctx.SelectFamilies("family_uuid", "Family", "0", families)
+						} else {
+							@vctx.SelectFamilies("family_uuid", "Family", member.FamilyUUID, families)
+						}
 					</div>
 					// groups (groups uuid)
 					<div class="mt-2">
-						@vctx.SelectGroups("groups", "Groups", selectedGroups, groups)
+						if op == "create" {
+							@vctx.SelectGroups("groups", "Groups", []string{"0"}, groups)
+						} else {
+							@vctx.SelectGroups("groups", "Groups", selectedGroups, groups)
+						}
 					</div>
 					// 
 					// --------------------------------------------------------------------------------

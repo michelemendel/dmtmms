@@ -1,0 +1,88 @@
+<div id=\"members\"><div id=\"memberForm\"><div id=\"closeMemberForm\"></div></div><div class=\"flex flex-row px-4 py-5\"><div class=\"w-4/5\"><div class=\"flow-root\"><div class=\"float-left\">
+</div><div class=\"float-right flex flex-row\">
+<div class=\"ml-0\">
+</div>
+<div class=\"ml-2\">
+</div>
+</div></div><div class=\"mt-2\">
+</div></div><div class=\"w-1/5 px-4 mt-10\">
+</div></div>
+</div>
+<form><div id=\"filterBar\" class=\"flex flex-col\"><div class=\"flex flex-row\"><div>
+</div><div class=\"ml-2\">
+</div><div class=\"ml-2\">
+</div><div class=\"mt-1 flex flex-row\"><div class=\"ml-4\">
+</div><div class=\"ml-2\">
+</div><div class=\"ml-2\">
+</div><div class=\"ml-2\">
+</div></div></div><div class=\"flex flex-row mt-2\"><div class=\"ml-0\">
+</div><div class=\"ml-2\">
+</div><div class=\"ml-2\">
+</div><div class=\"ml-[6rem]\">
+<button hx-include=\"[name=&#39;searchterms&#39;], [name=&#39;from&#39;], [name=&#39;to&#39;], [name=&#39;receiveEmail&#39;], [name=&#39;receiveMail&#39;], [name=&#39;receiveHatikvah&#39;]\" hx-get=\"
+\" hx-target=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"keyup[keyCode==13]\" class=\"
+\">Search</button></div><div class=\"ml-2\">
+<button hx-get=\"
+\" hx-target=\"#main\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"
+\">Clear</button></div></div></div>
+</form>
+<div class=\"flex items-center\"><input checked type=\"checkbox\" id=\"
+\" name=\"
+\" value=\"
+\"> <label for=\"
+\" class=\"ml-1 text-sm font-light\">
+</label></div>
+<button id=\"openMemberForm\" hx-get=\"
+\" hx-target=\"#memberForm\" hx-select=\"#memberForm\" hx-swap=\"outerHTML\" hx-push-url=\"false\" class=\"
+\">Add member</button>
+<select id=\"download\" class=\"bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500\"><option>Download</option> <option value=\"
+\">CSV</option> <option value=\"
+\">Fødselsnummer</option> <option value=\"
+\">Emails</option></select>
+<div class=\"flex flex-grow overflow-y-scroll flex-col max-h-[50rem]\"><table class=\"w-full text-left text-sm font-light\"><thead class=\"border-1 font-medium dark:border-neutral-500\"><tr class=\"sticky top-0 px-6 py-2 text-slate-200 bg-slate-500\"><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">ID</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Name</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Fødselsnummer</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Family</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Email</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Mail</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Hatikvah</th><th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\">Archived</th>
+<th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th>
+<th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th>
+<th scope=\"col\" class=\"px-6 py-2 text-slate-200 bg-slate-500\"></th>
+</tr></thead> <tbody>
+<tr tabindex=\"
+\" id=\"
+\" hx-get=\"
+\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"click\" class=\"border-b dark:border-neutral-500 focus:bg-blue-100 hover:bg-neutral-100 cursor-pointer\">
+</tr>
+</tbody></table></div>
+<td class=\"whitespace-nowrap px-6 py-4 font-medium\">
+</td><td class=\"whitespace-nowrap px-6 py-4\">
+</td><td class=\"whitespace-nowrap px-6 py-4\">
+</td><td class=\"whitespace-nowrap px-6 py-4\">
+</td><td class=\"whitespace-nowrap px-6 py-4 font-bold\">
+</td><td class=\"whitespace-nowrap px-6 py-4 font-bold\">
+</td><td class=\"whitespace-nowrap px-6 py-4 font-bold\">
+</td><td class=\"whitespace-nowrap px-6 py-4 font-bold\">
+</td>
+<td id=\"
+\" hx-get=\"
+\" hx-target=\"#memberForm\" hx-select=\"#memberForm\" hx-swap=\"outerHTML\" hx-push-url=\"false\" hx-trigger=\"click consume\" class=\"w-3 font-medium cursor-pointer whitespace-nowrap py-4\"><span class=\"[&amp;&gt;svg]:w-5\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" class=\"w-6 h-6\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10\"></path></svg></span></td>
+<td id=\"
+\" hx-delete=\"
+\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-trigger=\"confirmed\" hx-push-url=\"false\" onClick=\"
+\" class=\"w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4\"><span class=\"[&amp;&gt;svg]:w-5\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" class=\"w-6 h-6\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z\"></path></svg></span></td>
+<td id=\"
+\" hx-delete=\"
+\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-trigger=\"confirmed\" hx-push-url=\"false\" onClick=\"
+\" class=\"w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4\"><span class=\"[&amp;&gt;svg]:w-5\"><svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" class=\"w-6 h-6\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0\"></path></svg></span></td>
+<div id=\"memberDetails\" class=\"px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700\">
+<p class=\"text-sm italic\">Click on a member to view details</p>
+<ul class=\" text-sm\">
+<li class=\"mt-1 text-xs font-semibold dark:border-opacity-50\">
+</li><li class=\"pt-0.25 dark:border-opacity-50\">
+</li>
+<li class=\"text-xs font-semibold pt-2 dark:border-opacity-50\">Family</li><li hx-get=\"
+\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"
+\" class=\"w-full pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer\">
+</li><li class=\"text-xs font-semibold pt-2 dark:border-opacity-50\">Groups\t</li><li class=\"pt-0.25 text-sky-700 dark:border-opacity-50 cursor-pointer\"><ul class=\"text-sm\">
+<li hx-get=\"
+\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"
+\">
+</li>
+</ul></li></ul>
+</div>

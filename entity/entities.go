@@ -199,7 +199,7 @@ func MemberDetailsForPresentation(member Member, groups []Group) MemberDetails {
 	details = append(details, MemberDetail{"FamilyUUID", member.FamilyUUID})
 	details = append(details, MemberDetail{"FamilyName", member.FamilyName})
 	details = append(details, MemberDetail{"Name", member.Name})
-	details = append(details, MemberDetail{"ID", string(member.ID)})
+	details = append(details, MemberDetail{"ID", util.Int2String(member.ID)})
 	details = append(details, MemberDetail{"Date of Birth", util.Time2String(member.DOB)})
 	details = append(details, MemberDetail{"Personnummer", member.Personnummer})
 	details = append(details, MemberDetail{"Email", member.Email})

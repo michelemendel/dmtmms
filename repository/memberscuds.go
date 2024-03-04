@@ -109,7 +109,7 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 	tx, _ := r.DB.Begin()
 	q := `
 	UPDATE members SET 
-		id=?, name=?, dob=julianday(?), personnummer=?, email=?, mobile=?, 
+		name=?, dob=julianday(?), personnummer=?, email=?, mobile=?, 
 		address1=?, address2=?, postnummer=?, poststed=?, 
 		synagogue_seat=?, membership_fee_tier=?, registered_date=julianday(?), deregistered_date=julianday(?), 
 		receive_email=?, receive_mail=?, receive_hatikvah=?, archived=?, status=?, 
@@ -117,7 +117,7 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 	WHERE uuid=?
 	`
 	_, err := tx.Exec(q,
-		member.ID, member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
+		member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
 		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
 		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikvah, member.Archived, member.Status,
