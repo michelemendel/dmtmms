@@ -248,7 +248,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 					}
 					// Count
 					<th scope="col" class="py-2 text-slate-200 text-right italic text-sm font-normal">count:</th>
-					<th scope="col" class="pr-4 py-2 text-slate-200 italic text-sm font-normal">{ fmt.Sprint(len(members)) }</th>
+					<th scope="col" class="pr-2 py-2 text-slate-200 italic text-sm font-normal">{ fmt.Sprint(len(members)) }</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -310,7 +310,7 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member) {
 			hx-swap="outerHTML"
 			hx-push-url="false"
 			hx-trigger="click consume"
-			class="w-3 font-medium cursor-pointer whitespace-nowrap py-4"
+			class="w-3 font-medium cursor-pointer whitespace-nowrap px-2 py-4"
 		>
 			<span class="[&>svg]:w-5">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -350,7 +350,7 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member) {
 			hx-trigger="confirmed"
 			hx-push-url="false"
 			onClick={ ConfirmDialog("#delete-"+member.UUID, "Delete member", "Are you sure you want to delete this member?") }
-			class="w-3 font-medium cursor-pointer whitespace-nowrap pl-2 py-4"
+			class="w-3 font-medium cursor-pointer whitespace-nowrap px-2 py-4"
 		>
 			<span class="[&>svg]:w-5">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
