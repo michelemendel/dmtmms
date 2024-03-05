@@ -2,10 +2,10 @@ package view
 
 import "github.com/michelemendel/dmtmms/constants"
 
-templ (vctx *ViewCtx) AppRoot(title string) {
+templ (vctx *ViewCtx) AppRoot() {
 	<!DOCTYPE html>
 	<html>
-		@vctx.Head(title)
+		@vctx.Head()
 		// comment="https://htmx.org/events/#htmx:afterSwap"
 		// hx-on::after-settle="showMain();"
 		<body
@@ -21,9 +21,9 @@ templ (vctx *ViewCtx) AppRoot(title string) {
 	</html>
 }
 
-templ (vctx *ViewCtx) Head(title string) {
+templ (vctx *ViewCtx) Head() {
 	<head>
-		<title>{ title }</title>
+		<title>DMT</title>
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -40,7 +40,7 @@ templ (vctx *ViewCtx) Head(title string) {
 }
 
 templ (vctx *ViewCtx) NavBar() {
-	<nav class="flex-no-wrap relative flex w-full items-center justify-between text-neutral-800 bg-blue-200 py-2 shadow-md shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10 flex-wrap justify-start py-4">
+	<nav class="flex-no-wrap relative flex w-full items-center justify-between text-white bg-blue-600 shadow-md shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10 flex-wrap justify-start">
 		<div class="flex w-full justify-between px-3">
 			<div
 				id="navbarSupportedContent1"
@@ -48,13 +48,13 @@ templ (vctx *ViewCtx) NavBar() {
 			>
 				<!-- Logo -->
 				<a
-					class="mb-4 ml-2 mr-0 mt-3 flex items-center text-neutral-950 hover:text-neutral-900 focus:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 mb-0 mt-0"
+					class="flex items-center mb-2 mt-1 ml-2"
 					href="#"
 				>
 					<img
-						src="https://tecdn.b-cdn.net/img/logo/te-transparent-noshadows.webp"
-						style="height: 15px"
-						alt="TE Logo"
+						src="./public/logo_dmt_transparent_3.png"
+						style="height: 40px"
+						alt="dmt logo"
 						loading="lazy"
 					/>
 				</a>
@@ -67,7 +67,7 @@ templ (vctx *ViewCtx) NavBar() {
 							hx-target="#main"
 							hx-swap="innerHTML"
 							hx-push-url="true"
-							class="text-lg leading-3 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+							class="text-lg leading-3 transition duration-200 hover:text-neutral-300 hover:ease-in-out focus:text-neutral-300 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-100 dark:focus:text-neutral-100 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 						>Members</a>
 					</li>
 					<!-- Families -->
@@ -78,7 +78,7 @@ templ (vctx *ViewCtx) NavBar() {
 								hx-target="#main"
 								hx-swap="innerHTML"
 								hx-push-url="true"
-								class="text-sm transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								class="text-sm transition duration-200 hover:text-neutral-300 hover:ease-in-out focus:text-neutral-300 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 							>Families</a>
 						</li>
 					}
@@ -90,7 +90,7 @@ templ (vctx *ViewCtx) NavBar() {
 								hx-target="#main"
 								hx-swap="innerHTML"
 								hx-push-url="true"
-								class="text-sm transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								class="text-sm transition duration-200 hover:text-neutral-300 hover:ease-in-out focus:text-neutral-300 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 							>Groups</a>
 						</li>
 					}
@@ -102,7 +102,7 @@ templ (vctx *ViewCtx) NavBar() {
 								hx-target="#main"
 								hx-swap="innerHTML"
 								hx-push-url="true"
-								class="text-sm transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								class="text-sm transition duration-200 hover:text-neutral-300 hover:ease-in-out focus:text-neutral-300 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 							>Users</a>
 						</li>
 					}
@@ -116,7 +116,7 @@ templ (vctx *ViewCtx) NavBar() {
 					hx-target="#main"
 					hx-swap="innerHTML"
 					hx-push-url="true"
-					class="cursor-pointer mr-2 text-neutral-600 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
+					class="cursor-pointer mr-2 transition duration-200 hover:text-neutral-300 hover:ease-in-out focus:text-neutral-300 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
 				>
 					<div class="flex flex-row">
 						<span class="[&>svg]:w-5">
@@ -137,7 +137,7 @@ templ (vctx *ViewCtx) NavBar() {
 							hx-target="#appRoot"
 							hx-swap="innerHTML"
 							hx-push-url="/"
-							class="text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+							class="transition duration-200 hover:text-neutral-300 hover:ease-in-out focus:text-neutral-300 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 						>logout</a>
 					</li>
 				</ul>
@@ -147,10 +147,10 @@ templ (vctx *ViewCtx) NavBar() {
 }
 
 templ (vctx *ViewCtx) Footer() {
-	<footer class="fixed bottom-0 w-full text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left">
-		<div class="bg-blue-200 p-4 text-center dark:bg-neutral-700">
+	<footer class="fixed bottom-0 w-full text-center text-white bg-blue-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left">
+		<div class="py-1 text-center">
 			<span>© 2023 Copyright:</span>
-			<a class="font-semibold text-neutral-600 dark:text-neutral-400" href="https://warnerbros.fandom.com/wiki/ACME_Corporation">Acme Corporation</a>
+			<a class="font-semibold dark:text-neutral-400" href="https://warnerbros.fandom.com/wiki/ACME_Corporation">Acme Corporation</a>
 		</div>
 	</footer>
 	// <script src="/node_modules/tw-elements/dist/js/tw-elements.umd.min.js" type="text/javascript"></script>

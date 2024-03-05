@@ -9,7 +9,7 @@ templ (vctx *ViewCtx) Families(families []entity.Family, selectedFamily entity.F
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
 		@vctx.FamiliesPage(families, selectedFamily, op, inputErrors)
 	} else {
-		@vctx.AppRoot("") {
+		@vctx.AppRoot() {
 			@vctx.FamiliesPage(families, selectedFamily, op, inputErrors)
 		}
 	}

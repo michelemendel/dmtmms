@@ -9,7 +9,7 @@ templ (vctx *ViewCtx) Groups(groups []entity.Group, selectedGroup entity.Group, 
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
 		@vctx.GroupsPage(groups, selectedGroup, op, inputErrors)
 	} else {
-		@vctx.AppRoot("") {
+		@vctx.AppRoot() {
 			@vctx.GroupsPage(groups, selectedGroup, op, inputErrors)
 		}
 	}

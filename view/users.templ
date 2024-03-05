@@ -9,7 +9,7 @@ templ (vctx *ViewCtx) Users(users []entity.User, selectedUser entity.User, tempP
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
 		@vctx.UsersPage(users, selectedUser, tempPW, op, inputErrors)
 	} else {
-		@vctx.AppRoot("") {
+		@vctx.AppRoot() {
 			@vctx.UsersPage(users, selectedUser, tempPW, op, inputErrors)
 		}
 	}

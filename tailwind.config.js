@@ -6,6 +6,11 @@ module.exports = {
     './view/**/*_templ.txt',
   ],
   theme: {
+    extend: {
+      colors: {
+        'i-blue': '#0038b8',
+      },
+    }
   },
   variants: {
     extend: {
