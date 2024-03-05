@@ -44,7 +44,6 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 	e.GET(constants.ROUTE_MEMBER_FORM_CLOSE, hCtx.MembersHandlerFormClose)
 	e.GET(constants.ROUTE_MEMBER_CREATE, hCtx.MemberCreateInitHandler)
 	e.POST(constants.ROUTE_MEMBER_CREATE, hCtx.MemberCreateHandler)
-	// e.DELETE(constants.ROUTE_MEMBER_ARCHIVE+"/:uuid", hCtx.MemberArchiveHandler)
 	e.DELETE(constants.ROUTE_MEMBER_DELETE+"/:uuid", hCtx.MemberDeleteHandler)
 	e.GET(constants.ROUTE_MEMBER_UPDATE+"/:uuid", hCtx.MemberUpdateInitHandler)
 	e.PUT(constants.ROUTE_MEMBER_UPDATE, hCtx.MemberUpdateHandler)

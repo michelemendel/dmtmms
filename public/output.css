@@ -1539,6 +1539,11 @@ select {
   padding-bottom: 0.25rem;
 }
 
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
 .pl-0 {
   padding-left: 0px;
 }
@@ -1575,12 +1580,24 @@ select {
   padding-left: 1rem;
 }
 
+.pr-2 {
+  padding-right: 0.5rem;
+}
+
+.pr-4 {
+  padding-right: 1rem;
+}
+
 .text-left {
   text-align: left;
 }
 
 .text-center {
   text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .-indent-\[999px\] {

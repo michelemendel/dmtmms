@@ -56,7 +56,8 @@ func (r *Repo) CreateTables() {
 		name TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL,
 		role TEXT NOT NULL,
-		created_at INTEGER DEFAULT CURRENT_TIMESTAMP
+		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
+		updated_at INTEGER
 	); `
 
 	// id - this is an id shared by dmt and tripletex
@@ -149,16 +150,22 @@ func (r *Repo) CreateTriggers() {
 		UPDATE families SET updated_at=CURRENT_TIMESTAMP WHERE uuid=new.uuid; 
 	END;`
 
-	sqlStmts["trigger_u_users_updated_at"] = `
-	CREATE TRIGGER IF NOT EXISTS trigger_u_users_updated_at AFTER UPDATE ON users
+	sqlStmts["trigger_u_groups_updated_at"] = `
+	CREATE TRIGGER IF NOT EXISTS trigger_u_groups_updated_at AFTER UPDATE ON groups
 	BEGIN 
-		UPDATE users SET updated_at=CURRENT_TIMESTAMP WHERE uuid=new.uuid; 
+		UPDATE groups SET updated_at=CURRENT_TIMESTAMP WHERE uuid=new.uuid; 
 	END;`
 
 	sqlStmts["trigger_u_members_groups_updated_at"] = `
 	CREATE TRIGGER IF NOT EXISTS trigger_u_members_groups_updated_at AFTER UPDATE ON members_groups
 	BEGIN 
 		UPDATE members_groups SET updated_at=CURRENT_TIMESTAMP WHERE uuid=new.uuid; 
+	END;`
+
+	sqlStmts["trigger_u_users_updated_at"] = `
+	CREATE TRIGGER IF NOT EXISTS trigger_u_users_updated_at AFTER UPDATE ON users
+	BEGIN 
+		UPDATE users SET updated_at=CURRENT_TIMESTAMP WHERE name=new.name; 
 	END;`
 
 	r.runStatements(sqlStmts)

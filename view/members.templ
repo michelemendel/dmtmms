@@ -246,18 +246,9 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 							}
 						</th>
 					}
-					// Table header update button
-					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_UPDATE) {
-						<th scope="col" class="px-4 py-2 text-slate-200"></th>
-					}
-					// Table header archive button
-					// if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_ARCHIVE) {
-					// 	<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500"></th>
-					// }
-					// Table header delete button
-					if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_DELETE) {
-						<th scope="col" class="px-6 py-2 text-slate-200"></th>
-					}
+					// Count
+					<th scope="col" class="py-2 text-slate-200 text-right italic text-sm font-normal">count:</th>
+					<th scope="col" class="pr-4 py-2 text-slate-200 italic text-sm font-normal">{ fmt.Sprint(len(members)) }</th>
 				</tr>
 			</thead>
 			<tbody>
