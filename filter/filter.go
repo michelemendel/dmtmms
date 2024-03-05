@@ -1,8 +1,12 @@
 package filter
 
 import (
+	"fmt"
+	"sort"
+
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
+	"github.com/michelemendel/dmtmms/entity"
 )
 
 type Filter struct {
@@ -35,6 +39,8 @@ type Opts struct {
 	// Archived        string
 	SelectedGroup  string
 	SelectedStatus string
+	SortCol        string
+	SortOrder      string
 }
 
 func MakeOpts() Opts {
@@ -116,10 +122,31 @@ func (o Opts) WSelStatus(status string) Opts {
 	return o
 }
 
+func (o Opts) WSort(sort, order string) Opts {
+	o.SortCol = sort
+	o.SortOrder = order
+	return o
+}
+
 //--------------------------------------------------------------------------------
 // Filter from query parameters
 
 func FilterFromQuery(c echo.Context) Filter {
+	sort := c.QueryParam("sort")
+	order := c.QueryParam("order")
+	withSort := c.QueryParam("wsort")
+	if sort == "" {
+		sort = "f.name"
+	}
+	if withSort == "true" {
+		if order == "" || order == "DESC" {
+			order = "ASC"
+		} else {
+			order = "DESC"
+		}
+	}
+
+	//
 	muuid := c.QueryParam("muuid")
 	fuuid := c.QueryParam("fuuid")
 	guuid := c.QueryParam("guuid")
@@ -147,11 +174,12 @@ func FilterFromQuery(c echo.Context) Filter {
 		// WArchived(archived).
 		WSelGroup(selectedGroup).
 		WSelStatus(selectedStatus).
-		WSelAges(selectedAges),
+		WSelAges(selectedAges).
+		WSort(sort, order),
 	}
 }
 
-func (f Filter) URLQuery(mUUID string) string {
+func (f Filter) URLQuery(mUUID, sortCol, sortOrder, withSort string) string {
 	selAges := ""
 	for _, age := range f.SelectedAges {
 		selAges += "&selectedAges=" + age
@@ -168,9 +196,77 @@ func (f Filter) URLQuery(mUUID string) string {
 		"&receiveHatikvah=" + f.ReceiveHatikvah +
 		// "&archived=" + f.Archived +
 		"&selectedStatus=" + f.SelectedStatus +
+		"&wsort=" + withSort +
+		"&sort=" + sortCol +
+		"&order=" + sortOrder +
 		selAges
 }
 
 func (f Filter) URLForDownloadLink(downloadType string) string {
-	return "/download" + f.URLQuery("") + "&t=" + downloadType
+	return "/download" + f.URLQuery("", "", "", "false") + "&t=" + downloadType
+}
+
+func (f Filter) SortMembers(members []entity.Member) []entity.Member {
+	fmt.Println("[Filter.SortMembers]:", f.SortCol, f.SortOrder)
+
+	switch f.SortCol {
+	case "ID":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].ID < members[j].ID
+			}
+			return members[i].ID > members[j].ID
+		})
+	case "Name":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].Name < members[j].Name
+			}
+			return members[i].Name > members[j].Name
+		})
+	case "Fødselsnummer":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].DOB.Before(members[j].DOB)
+			}
+			return members[i].DOB.After(members[j].DOB)
+		})
+	case "Age":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].Age < members[j].Age
+			}
+			return members[i].Age > members[j].Age
+		})
+	case "Family":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].FamilyName < members[j].FamilyName
+			}
+			return members[i].FamilyName > members[j].FamilyName
+		})
+	case "RecEmail":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].ReceiveEmail
+			}
+			return members[j].ReceiveEmail
+		})
+	case "RecMail":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].ReceiveMail
+			}
+			return members[j].ReceiveMail
+		})
+	case "RecHatikvah":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].ReceiveHatikvah
+			}
+			return members[j].ReceiveHatikvah
+		})
+	}
+
+	return members
 }

@@ -2,6 +2,8 @@ package handler
 
 import (
 	"errors"
+	"fmt"
+
 	// "fmt"
 	"log/slog"
 	"time"
@@ -15,10 +17,13 @@ import (
 )
 
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
+	fmt.Println("MembersHandler:URI:", c.Request().RequestURI)
 	return h.Members(c, false)
 }
 
 func (h *HandlerContext) MembersHandlerFormClose(c echo.Context) error {
+	fmt.Println("MembersHandlerFormClose:URI:", c.Request().RequestURI)
+	// We need to refresh the page when the form is closed.
 	return h.Members(c, true)
 }
 
@@ -37,8 +42,9 @@ func (h *HandlerContext) Members(c echo.Context, doRefresh bool) error {
 	return h.renderView(c, h.ViewCtx.Members(members, h.GetGroups(true), memberDetails, f))
 }
 
-func (h *HandlerContext) MembersFiltered(c echo.Context, filter filter.Filter) ([]entity.Member, error) {
-	members, err := h.Repo.SelectMembersByFilter(filter)
+func (h *HandlerContext) MembersFiltered(c echo.Context, f filter.Filter) ([]entity.Member, error) {
+	members, err := h.Repo.SelectMembersByFilter(f)
+	members = f.SortMembers(members)
 	if err != nil {
 		return []entity.Member{}, err
 	}

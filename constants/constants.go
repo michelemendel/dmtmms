@@ -64,8 +64,9 @@ const (
 	ROUTE_MEMBERS       = "/members"
 	ROUTE_MEMBER_CREATE = "/member/create"
 	// ROUTE_MEMBER_ARCHIVE = "/member/archive"
-	ROUTE_MEMBER_DELETE     = "/member/delete"
-	ROUTE_MEMBER_UPDATE     = "/member/update"
+	ROUTE_MEMBER_DELETE = "/member/delete"
+	ROUTE_MEMBER_UPDATE = "/member/update"
+	// TODO: Remove and add data query parameter instead
 	ROUTE_MEMBER_FORM_CLOSE = "/member/form/close"
 
 	//
