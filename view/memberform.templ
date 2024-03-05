@@ -14,23 +14,23 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 		<div class="flex items-center justify-center min-h-screen bg-gray-300 bg-opacity-40">
 			<div class="bg-white w-1/2 p-6 rounded shadow-md">
 				<div class="flex justify-end">
-					<!-- Close Button -->
-					<button id="closeMemberForm" class="text-gray-700 hover:text-red-500">
-						<svg
-							class="w-6 h-6"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M6 18L18 6M6 6l12 12"
-							></path>
-						</svg>
-					</button>
+					<!-- Close button -->
+					// <button id="closeMemberForm" class="text-gray-700 hover:text-red-500">
+					// 	<svg
+					// 		class="w-6 h-6"
+					// 		fill="none"
+					// 		stroke="currentColor"
+					// 		viewBox="0 0 24 24"
+					// 		xmlns="http://www.w3.org/2000/svg"
+					// 	>
+					// 		<path
+					// 			stroke-linecap="round"
+					// 			stroke-linejoin="round"
+					// 			stroke-width="2"
+					// 			d="M6 18L18 6M6 6l12 12"
+					// 		></path>
+					// 	</svg>
+					// </button>
 				</div>
 				<h2 class="text-lg font-bold text-gray-900">
 					if op == "create" {
@@ -66,7 +66,7 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 							if member.DOB.IsZero() {
 								@DatePicker("dob", "", "DOB")
 							} else {
-								@DatePicker("dob", util.Time2String(member.DOB), "DOB")
+								@DatePicker("dob", util.Date2String(member.DOB), "DOB")
 							}
 						</div>
 						<div class="ml-2 w-[60px]">
@@ -103,7 +103,7 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 						if member.RegisteredDate.IsZero() {
 							@DatePicker("registered_date", "", "Reg.date")
 						} else {
-							@DatePicker("registered_date", util.Time2String(member.RegisteredDate), "Reg.date")
+							@DatePicker("registered_date", util.Date2String(member.RegisteredDate), "Reg.date")
 						}
 					</div>
 					// deregistered_date 
@@ -111,8 +111,11 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 						if member.DeregisteredDate.IsZero() {
 							@DatePicker("deregistered_date", "", "Dereg.date")
 						} else {
-							@DatePicker("deregistered_date", util.Time2String(member.RegisteredDate), "Dereg.date")
+							@DatePicker("deregistered_date", util.Date2String(member.RegisteredDate), "Dereg.date")
 						}
+					</div>
+					<div class="mt-2">
+						@vctx.Select("status", "Status", string(member.Status), vctx.MemberStatuses)
 					</div>
 					// receive_email
 					<div class="mt-2">
@@ -127,15 +130,12 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 						@Checkbox("receive_hatikvah", member.ReceiveHatikvah, "Receive Hatikvah", false)
 					</div>
 					// archived
-					if op == "update" {
-						<div class="mt-1">
-							@Checkbox("archived", member.Archived, "Archived", false)
-						</div>
-					}
+					// if op == "update" {
+					// <div class="mt-1">
+					// @Checkbox("archived", member.Archived, "Archived", false)
+					// </div>
+					// }
 					// status
-					<div class="mt-2">
-						@vctx.Select("status", "Status", string(member.Status), vctx.MemberStatuses)
-					</div>
 					// family_name (family_uuid)
 					<div class="mt-2">
 						if op == "create" {
@@ -154,25 +154,37 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 					</div>
 					// 
 					// --------------------------------------------------------------------------------
-					// Button
-					<div class="mt-4">
-						<button
-							if op == "create" {
-								hx-post={ constants.ROUTE_MEMBER_CREATE }
-							} else {
-								hx-put={ constants.ROUTE_MEMBER_UPDATE }
-							}
-							hx-target="#members"
-							hx-swap="outerHTML"
-							type="button"
-							class={ ButtonClass }
-						>
-							if op == "create" {
-								Add
-							} else {
-								Update
-							}
-						</button>
+					// Buttons
+					<div class="flex flex-row mt-4">
+						// Submit button
+						<div>
+							<button
+								if op == "create" {
+									hx-post={ constants.ROUTE_MEMBER_CREATE }
+								} else {
+									hx-put={ constants.ROUTE_MEMBER_UPDATE }
+								}
+								hx-target="#members"
+								hx-swap="outerHTML"
+								type="button"
+								class={ ButtonClass }
+							>
+								if op == "create" {
+									Add
+								} else {
+									Update
+								}
+							</button>
+						</div>
+						// Cancel Button
+						<div class="ml-2">
+							<button
+								id="closeMemberForm"
+								class={ ButtonClass }
+							>
+								Cancel
+							</button>
+						</div>
 					</div>
 				</form>
 				// Error message
@@ -187,6 +199,7 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 			var memberForm = document.getElementById('memberForm');
 			var closeMemberFormButton = document.getElementById('closeMemberForm');
 			closeMemberFormButton.addEventListener('click', () => {
+				console.log('closeMemberFormButton clicked');
 				memberForm.classList.add('hidden');
 			});
 		</script>

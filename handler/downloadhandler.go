@@ -49,12 +49,13 @@ func (h *HandlerContext) Emails(members []entity.Member) []byte {
 
 func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string {
 	var items [][]string
-	items = append(items, []string{"ID", "Name", "Fødselsnummer", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah", "Archived"})
+	// items = append(items, []string{"ID", "Name", "Fødselsnummer", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah", "Archived"})
+	items = append(items, []string{"ID", "Name", "Fødselsnummer", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah"})
 	for _, m := range members {
 		items = append(items, []string{
 			util.Int2String(m.ID),
 			m.Name,
-			strings.Replace(util.Time2String(m.DOB), "-", "", -1) + "-" + m.Personnummer,
+			strings.Replace(util.Date2String(m.DOB), "-", "", -1) + "-" + m.Personnummer,
 			m.Email,
 			m.Mobile,
 			m.Address1,
@@ -62,12 +63,12 @@ func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string 
 			m.Postnummer,
 			m.Poststed,
 			string(m.Status),
-			util.Time2String(m.RegisteredDate),
-			util.Time2String(m.DeregisteredDate),
+			util.Date2String(m.RegisteredDate),
+			util.Date2String(m.DeregisteredDate),
 			util.Bool2String(m.ReceiveEmail),
 			util.Bool2String(m.ReceiveMail),
 			util.Bool2String(m.ReceiveHatikvah),
-			util.Bool2String(m.Archived),
+			// util.Bool2String(m.Archived),
 		})
 	}
 	return items
@@ -79,7 +80,7 @@ func (h *HandlerContext) PersonnummerTransformer(members []entity.Member) [][]st
 	for _, m := range members {
 		items = append(items, []string{
 			m.Name,
-			strings.Replace(util.Time2String(m.DOB), "-", "", -1) + "-" + m.Personnummer,
+			strings.Replace(util.Date2String(m.DOB), "-", "", -1) + "-" + m.Personnummer,
 		})
 	}
 	return items

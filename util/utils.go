@@ -57,14 +57,33 @@ func GeneratePassword() string {
 	return strings.ToLower(aLongString[0:8])
 }
 
-func Time2String(t time.Time) string {
+func Date2String(t time.Time) string {
 	return t.Format(constants.DATE_FRMT)
 }
 
-func String2Time(s string) time.Time {
+func String2Date(s string) time.Time {
 	t, err := time.Parse(constants.DATE_FRMT, s)
 	if err != nil {
 		// slog.Error("Error parsing date", "error", err)
+		return time.Time{}
+	}
+	return t
+}
+
+func DateTime2String(t time.Time) string {
+	loc, err := time.LoadLocation("Europe/Oslo")
+	if err != nil {
+		slog.Error("Error loading location", "error", err)
+		return ""
+	}
+	t = t.In(loc)
+	return t.Format(constants.DATE_TIME_FRMT)
+}
+
+func String2DateTime(s string) time.Time {
+	t, err := time.Parse(constants.DATE_TIME_FRMT, s)
+	if err != nil {
+		slog.Error("Error parsing date time", "error", err)
 		return time.Time{}
 	}
 	return t
@@ -85,10 +104,7 @@ func Int2String(i int) string {
 }
 
 func String2Bool(s string) bool {
-	if s != "" {
-		return true
-	}
-	return false
+	return s != ""
 }
 
 func Bool2String(b bool) string {

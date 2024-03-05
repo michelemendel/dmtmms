@@ -2,7 +2,9 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/michelemendel/dmtmms/constants"
@@ -14,6 +16,7 @@ import (
 
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	f := filter.FilterFromQuery(c)
+	fmt.Println("FILTER: ", f)
 	members, err := h.MembersFiltered(c, f)
 	if err != nil {
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
@@ -28,7 +31,8 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 		detailsMember = entity.Member{}
 		detailsGroups = []entity.Group{}
 	}
-	memberDetails := entity.MemberDetailsForPresentation(detailsMember, detailsGroups)
+
+	memberDetails := view.MemberDetailsForPresentation(detailsMember, detailsGroups)
 
 	return h.renderView(c, h.ViewCtx.Members(members, h.GetGroups(true), memberDetails, f))
 }
@@ -94,16 +98,16 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 //--------------------------------------------------------------------------------
 // Archive & Delete member
 
-func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
-	uuid := c.Param("uuid")
-	err := h.Repo.ArchiveMember(uuid)
-	if err != nil {
-		slog.Error(err.Error(), "uuid", uuid)
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, filter.Filter{}))
-	}
-	return h.MembersHandler(c)
-}
+// func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
+// 	uuid := c.Param("uuid")
+// 	err := h.Repo.ArchiveMember(uuid)
+// 	if err != nil {
+// 		slog.Error(err.Error(), "uuid", uuid)
+// 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
+// 		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, filter.Filter{}))
+// 	}
+// 	return h.MembersHandler(c)
+// }
 
 func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 	uuid := c.Param("uuid")
@@ -125,7 +129,7 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	memberUUID := c.Param("uuid")
 	member, _ := h.Repo.SelectMember(memberUUID)
 	selectedGroupUUIDs, _ := h.Repo.SelectGroupsByMember(memberUUID)
-	selectedGroupUUIDsAsStrings := entity.Groups2UUIDsAsStrings(selectedGroupUUIDs)
+	selectedGroupUUIDsAsStrings := view.Groups2UUIDsAsStrings(selectedGroupUUIDs)
 
 	return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, entity.InputErrors{}))
 }
@@ -148,6 +152,7 @@ func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
 		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, inputErrors))
 	}
 	return h.MembersHandler(c)
+	// return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, entity.InputErrors{}))
 }
 
 //--------------------------------------------------------------------------------
@@ -174,9 +179,9 @@ func (h *HandlerContext) CreatetMemberFromForm(c echo.Context, uuid string) (ent
 		familyName, _ = h.Repo.GetFamilyNameByUUID(familyUUID)
 	}
 	//
-	dob := util.String2Time(dobStr)
-	registeredDate := util.String2Time(registeredDateStr)
-	deregisteredDate := util.String2Time(deregisteredDateStr)
+	dob := util.String2Date(dobStr)
+	registeredDate := util.String2Date(registeredDateStr)
+	deregisteredDate := util.String2Date(deregisteredDateStr)
 	receiveEmail := util.String2Bool(receiveEmailStr)
 	receiveMail := util.String2Bool(receiveMailStr)
 	receiveHatikva := util.String2Bool(receiveHatikvaStr)
@@ -185,8 +190,9 @@ func (h *HandlerContext) CreatetMemberFromForm(c echo.Context, uuid string) (ent
 		mobile,
 		entity.Address{},
 		synagogueseat, membershipFeeTier, registeredDate, deregisteredDate,
-		receiveEmail, receiveMail, receiveHatikva, false, entity.MemberStatus(status),
+		receiveEmail, receiveMail, receiveHatikva, entity.MemberStatus(status),
 		familyUUID, familyName,
+		time.Time{}, time.Time{},
 	)
 	params, _ := c.FormParams()
 	groupUUIDs := params["groups"]

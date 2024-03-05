@@ -43,8 +43,8 @@ func (s *Session) IsAuthorized(userRole string, path string) bool {
 			return false
 		case constants.ROUTE_MEMBER_UPDATE:
 			return false
-		case constants.ROUTE_MEMBER_ARCHIVE:
-			return false
+		// case constants.ROUTE_MEMBER_ARCHIVE:
+		// return false
 		case constants.ROUTE_MEMBER_DELETE:
 			return false
 		}

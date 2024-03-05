@@ -32,9 +32,9 @@ type Opts struct {
 	ReceiveEmail    string
 	ReceiveMail     string
 	ReceiveHatikvah string
-	Archived        string
-	SelectedGroup   string
-	SelectedStatus  string
+	// Archived        string
+	SelectedGroup  string
+	SelectedStatus string
 }
 
 func MakeOpts() Opts {
@@ -101,10 +101,10 @@ func (o Opts) WRecHatikvah(receiveHatikvah string) Opts {
 	return o
 }
 
-func (o Opts) WArchived(archived string) Opts {
-	o.Archived = archived
-	return o
-}
+// func (o Opts) WArchived(archived string) Opts {
+// 	o.Archived = archived
+// 	return o
+// }
 
 func (o Opts) WSelGroup(group string) Opts {
 	o.SelectedGroup = group
@@ -129,7 +129,7 @@ func FilterFromQuery(c echo.Context) Filter {
 	receiveEmail := c.QueryParam("receiveEmail")
 	receiveMail := c.QueryParam("receiveMail")
 	receiveHatikvah := c.QueryParam("receiveHatikvah")
-	archived := c.QueryParam("archived")
+	// archived := c.QueryParam("archived")
 	selectedGroup := c.QueryParam("selectedGroup")
 	selectedStatus := c.QueryParam("selectedStatus")
 	selectedAges := c.QueryParams()["selectedAges"]
@@ -144,7 +144,7 @@ func FilterFromQuery(c echo.Context) Filter {
 		WRecEmail(receiveEmail).
 		WRecMail(receiveMail).
 		WRecHatikvah(receiveHatikvah).
-		WArchived(archived).
+		// WArchived(archived).
 		WSelGroup(selectedGroup).
 		WSelStatus(selectedStatus).
 		WSelAges(selectedAges),
@@ -166,7 +166,7 @@ func (f Filter) URLQuery(mUUID string) string {
 		"&receiveEmail=" + f.ReceiveEmail +
 		"&receiveMail=" + f.ReceiveMail +
 		"&receiveHatikvah=" + f.ReceiveHatikvah +
-		"&archived=" + f.Archived +
+		// "&archived=" + f.Archived +
 		"&selectedStatus=" + f.SelectedStatus +
 		selAges
 }

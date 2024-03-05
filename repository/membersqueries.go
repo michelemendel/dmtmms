@@ -27,10 +27,9 @@ const (
 	IFNULL(m.receive_email, false),
 	IFNULL(m.receive_mail, false),
 	IFNULL(m.receive_hatikvah, false),
-	IFNULL(m.archived, false),
 	m.status, 
-	IFNULL(f.uuid, ""), 
-	IFNULL(f.name, "")
+	IFNULL(f.uuid, ""), IFNULL(f.name, ""),
+	m.created_at, m.updated_at
 	FROM members as m
 	`
 
@@ -104,10 +103,10 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 		args = append(args, filter.ReceiveHatikvah)
 	}
 
-	if filter.Archived != "" {
-		q = q + "AND m.archived=?"
-		args = append(args, filter.Archived)
-	}
+	// if filter.Archived != "" {
+	// 	q = q + "AND m.archived=?"
+	// 	args = append(args, filter.Archived)
+	// }
 
 	if filter.SelectedGroup != "" && filter.SelectedGroup != "All groups" {
 		q = q + "AND g.name=?"
@@ -140,6 +139,8 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 	var dobStr string
 	var registeredDateStr string
 	var deregisteredDateStr string
+	var createdAtStr string
+	var updatedAtStr string
 	//
 	var m entity.Member
 	for rows.Next() {
@@ -148,25 +149,30 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 			&m.Email, &m.Mobile,
 			&m.Address1, &m.Address2, &m.Postnummer, &m.Poststed,
 			&m.Synagogueseat, &m.MembershipFeeTier, &registeredDateStr, &deregisteredDateStr,
-			&m.ReceiveEmail, &m.ReceiveMail, &m.ReceiveHatikvah, &m.Archived, &m.Status, &m.FamilyUUID,
-			&m.FamilyName,
+			// &m.ReceiveEmail, &m.ReceiveMail, &m.ReceiveHatikvah, &m.Archived, &m.Status, &m.FamilyUUID,
+			&m.ReceiveEmail, &m.ReceiveMail, &m.ReceiveHatikvah, &m.Status, &m.FamilyUUID, &m.FamilyName,
+			&createdAtStr, &updatedAtStr,
 		)
 		if err != nil {
 			slog.Error(err.Error())
 			return members, err
 		}
 
-		DOB := util.String2Time(dobStr)
-		registeredDate := util.String2Time(registeredDateStr)
-		deregisteredDate := util.String2Time(deregisteredDateStr)
+		DOB := util.String2Date(dobStr)
+		registeredDate := util.String2Date(registeredDateStr)
+		deregisteredDate := util.String2Date(deregisteredDateStr)
 		address := entity.NewAddress(m.Address1, m.Address2, m.Postnummer, m.Poststed)
+		createdAt := util.String2DateTime(createdAtStr)
+		updatedAt := util.String2DateTime(updatedAtStr)
+
 		members = append(members, entity.NewMember(
 			m.UUID, m.ID, m.Name, DOB, m.Personnummer,
 			m.Email, m.Mobile,
 			address,
 			m.Synagogueseat, m.MembershipFeeTier, registeredDate, deregisteredDate, m.ReceiveEmail,
-			m.ReceiveMail, m.ReceiveHatikvah, m.Archived, entity.MemberStatus(m.Status), m.FamilyUUID,
-			m.FamilyName,
+			// m.ReceiveMail, m.ReceiveHatikvah, m.Archived, entity.MemberStatus(m.Status), m.FamilyUUID,
+			m.ReceiveMail, m.ReceiveHatikvah, entity.MemberStatus(m.Status), m.FamilyUUID,
+			m.FamilyName, createdAt, updatedAt,
 		))
 	}
 	err := rows.Err()
@@ -190,5 +196,6 @@ func (r *Repo) SelectMember(uuid string) (entity.Member, error) {
 	if len(ms) == 0 {
 		return entity.Member{}, nil
 	}
+
 	return ms[0], nil
 }

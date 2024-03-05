@@ -2,8 +2,6 @@ package entity
 
 import (
 	"time"
-
-	"github.com/michelemendel/dmtmms/util"
 )
 
 type InputError struct {
@@ -97,10 +95,12 @@ type Member struct {
 	ReceiveEmail      bool
 	ReceiveMail       bool
 	ReceiveHatikvah   bool
-	Archived          bool
-	Status            MemberStatus
-	FamilyUUID        string
-	FamilyName        string
+	// Archived          bool
+	Status     MemberStatus
+	FamilyUUID string
+	FamilyName string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 func NewMember(
@@ -119,10 +119,12 @@ func NewMember(
 	receiveEmail bool,
 	receiveMail bool,
 	receiveHatikvah bool,
-	archived bool,
+	// archived bool,
 	status MemberStatus,
 	familyUUID,
 	familyName string,
+	createdAt time.Time,
+	updatedAt time.Time,
 ) Member {
 	return Member{
 		UUID:              uuid,
@@ -140,10 +142,12 @@ func NewMember(
 		ReceiveEmail:      receiveEmail,
 		ReceiveMail:       receiveMail,
 		ReceiveHatikvah:   receiveHatikvah,
-		Archived:          archived,
-		Status:            status,
-		FamilyUUID:        familyUUID,
-		FamilyName:        familyName,
+		// Archived:          archived,
+		Status:     status,
+		FamilyUUID: familyUUID,
+		FamilyName: familyName,
+		CreatedAt:  createdAt,
+		UpdatedAt:  updatedAt,
 	}
 }
 
@@ -182,54 +186,4 @@ type MemberDetail struct {
 type MemberDetails struct {
 	MemberDetails []MemberDetail
 	Groups        []Group
-}
-
-// To be presented on the detail section of the member page
-// Maybe not the best way to get a list of data in order, when we have to write memberDetails[2].Value to get some value.
-func MemberDetailsForPresentation(member Member, groups []Group) MemberDetails {
-	if member.UUID == "" {
-		return MemberDetails{
-			MemberDetails: []MemberDetail{},
-			Groups:        []Group{},
-		}
-	}
-
-	details := []MemberDetail{}
-	details = append(details, MemberDetail{"UUID", member.UUID})
-	details = append(details, MemberDetail{"FamilyUUID", member.FamilyUUID})
-	details = append(details, MemberDetail{"FamilyName", member.FamilyName})
-	details = append(details, MemberDetail{"Name", member.Name})
-	details = append(details, MemberDetail{"ID", util.Int2String(member.ID)})
-	details = append(details, MemberDetail{"Date of Birth", util.Time2String(member.DOB)})
-	details = append(details, MemberDetail{"Personnummer", member.Personnummer})
-	details = append(details, MemberDetail{"Email", member.Email})
-	details = append(details, MemberDetail{"Mobile", member.Mobile})
-	details = append(details, MemberDetail{"Address1", member.Address.Address1})
-	details = append(details, MemberDetail{"Address2", member.Address.Address2})
-	details = append(details, MemberDetail{"Poststed", member.Address.Postnummer + " " + member.Address.Poststed})
-	details = append(details, MemberDetail{"Status", string(member.Status)})
-	details = append(details, MemberDetail{"Synagogueseat", member.Synagogueseat})
-	details = append(details, MemberDetail{"MembershipFeeTier", member.MembershipFeeTier})
-	details = append(details, MemberDetail{"RegisteredDate", util.Time2String(member.RegisteredDate)})
-	details = append(details, MemberDetail{"DeregisteredDate", util.Time2String(member.DeregisteredDate)})
-	details = append(details, MemberDetail{"ReceiveEmail", util.Bool2String(member.ReceiveEmail)})
-	details = append(details, MemberDetail{"ReceiveMail", util.Bool2String(member.ReceiveMail)})
-	details = append(details, MemberDetail{"ReceiveHatikvah", util.Bool2String(member.ReceiveHatikvah)})
-	details = append(details, MemberDetail{"Archived", util.Bool2String(member.Archived)})
-
-	return MemberDetails{
-		MemberDetails: details,
-		Groups:        groups,
-	}
-}
-
-//--------------------------------------------------------------------------------
-//
-
-func Groups2UUIDsAsStrings(groups []Group) []string {
-	groupUUIDs := []string{}
-	for _, group := range groups {
-		groupUUIDs = append(groupUUIDs, group.UUID)
-	}
-	return groupUUIDs
 }

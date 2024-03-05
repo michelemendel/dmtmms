@@ -32,7 +32,11 @@ func (r *Repo) DropTables() {
 	sqlStmts["drop_members_groups"] = `DROP TABLE IF EXISTS members_groups;`
 
 	// Triggers
-	sqlStmts["drop_trigger_inc_member_id"] = `DROP TRIGGER IF EXISTS inc_member_id;`
+	sqlStmts["drop_trigger_inc_member_id"] = `DROP TRIGGER IF EXISTS trigger_inc_member_id;`
+	sqlStmts["drop_trigger_u_members_updated_at"] = `DROP TRIGGER IF EXISTS trigger_u_members_updated_at;`
+	sqlStmts["drop_trigger_u_families_updated_at"] = `DROP TRIGGER IF EXISTS trigger_u_families_updated_at;`
+	sqlStmts["drop_trigger_u_users_updated_at"] = `DROP TRIGGER IF EXISTS trigger_u_users_updated_at;`
+	sqlStmts["drop_trigger_u_members_groups_updated_at"] = `DROP TRIGGER IF EXISTS trigger_u_members_groups_updated_at;`
 
 	// Indexes
 	sqlStmts["drop_index_members_uuid"] = `DROP INDEX IF EXISTS idx_members_uuid;`
@@ -79,7 +83,6 @@ func (r *Repo) CreateTables() {
 		receive_mail BOOLEAN,
 		receive_hatikvah BOOLEAN,
 		status TEXT,
-		archived BOOLEAN,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		updated_at INTEGER,
 		family_uuid TEXT,
@@ -128,10 +131,34 @@ func (r *Repo) CreateTriggers() {
 	// CREATE TRIGGER inc_member_id AFTER INSERT ON names WHEN new.id IS NULL BEGIN UPDATE names SET id=(SELECT coalesce(max(id),0)+1 FROM names) WHERE uuid=new.uuid; END;
 
 	sqlStmts["trigger_inc_member_id"] = `
-	CREATE TRIGGER trigger_inc_member_id AFTER INSERT ON members
+	CREATE TRIGGER IF NOT EXISTS trigger_inc_member_id AFTER INSERT ON members
 	WHEN new.id IS NULL BEGIN 
 		UPDATE members SET id=(SELECT coalesce(max(id),0)+1 FROM members) 
 			WHERE uuid=new.uuid; 
+	END;`
+
+	sqlStmts["trigger_u_members_updated_at"] = `
+	CREATE TRIGGER IF NOT EXISTS trigger_u_member_updated_at AFTER UPDATE ON members
+	BEGIN 
+		UPDATE members SET updated_at=CURRENT_TIMESTAMP WHERE uuid=new.uuid; 
+	END;`
+
+	sqlStmts["trigger_u_families_updated_at"] = `
+	CREATE TRIGGER IF NOT EXISTS trigger_u_families_updated_at AFTER UPDATE ON families
+	BEGIN 
+		UPDATE families SET updated_at=CURRENT_TIMESTAMP WHERE uuid=new.uuid; 
+	END;`
+
+	sqlStmts["trigger_u_users_updated_at"] = `
+	CREATE TRIGGER IF NOT EXISTS trigger_u_users_updated_at AFTER UPDATE ON users
+	BEGIN 
+		UPDATE users SET updated_at=CURRENT_TIMESTAMP WHERE uuid=new.uuid; 
+	END;`
+
+	sqlStmts["trigger_u_members_groups_updated_at"] = `
+	CREATE TRIGGER IF NOT EXISTS trigger_u_members_groups_updated_at AFTER UPDATE ON members_groups
+	BEGIN 
+		UPDATE members_groups SET updated_at=CURRENT_TIMESTAMP WHERE uuid=new.uuid; 
 	END;`
 
 	r.runStatements(sqlStmts)
@@ -219,18 +246,26 @@ func (r *Repo) InsertGroups() {
 type member struct {
 	name         string
 	receiveEmail bool
-	archived     bool
-	familyUUID   string
-	familyName   string
-	groupUUIDs   []string
+	// archived     bool
+	familyUUID string
+	familyName string
+	groupUUIDs []string
 }
 
-var members = map[string]member{
-	"11": {name: "abe", receiveEmail: true, archived: false, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1001", "1002"}},
-	"12": {name: "bob", receiveEmail: true, archived: false, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1002", "1003"}},
-	"13": {name: "carl", receiveEmail: false, archived: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1001", "1002"}},
-	"14": {name: "dave", receiveEmail: true, archived: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1003"}},
-	"15": {name: "eve", receiveEmail: false, archived: true, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1004"}},
+func getMembers(nofMembers int) map[string]member {
+	members := map[string]member{
+		"11": {name: "abe", receiveEmail: true, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1001", "1002"}},
+		"12": {name: "bob", receiveEmail: true, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1002", "1003"}},
+		"13": {name: "carl", receiveEmail: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1001", "1002"}},
+		"14": {name: "dave", receiveEmail: true, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1003"}},
+		"15": {name: "eve", receiveEmail: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1004"}},
+	}
+
+	for i := 16; i < nofMembers; i++ {
+		members[fmt.Sprintf("%d", i)] = member{name: fmt.Sprintf("m%d", i), receiveEmail: false, familyUUID: "", familyName: "", groupUUIDs: []string{}}
+	}
+
+	return members
 }
 
 func (r *Repo) InsertMembers() {
@@ -238,16 +273,22 @@ func (r *Repo) InsertMembers() {
 	r.InitMember()
 
 	// Create members
-	dob := util.String2Time("1980-02-01")
+	dob := util.String2Date("1980-02-01")
 	personnummer := "12345"
 	phonePrefix := "12377"
 	var status entity.MemberStatus = entity.MemberStatusActive
-	for i, m := range members {
+	for i, m := range getMembers(50) {
 		memberUUID := util.GenerateUUID()
 		email := m.name + "@test.com"
 		mobile := phonePrefix + i
 
-		member := entity.NewMember(memberUUID, 0, m.name, dob, personnummer, email, mobile, entity.Address{}, "", "", util.String2Time("2020-01-01"), time.Time{}, m.receiveEmail, false, false, m.archived, status, m.familyUUID, m.familyName)
+		member := entity.NewMember(
+			memberUUID, 0, m.name, dob, personnummer, email, mobile,
+			entity.Address{}, "", "", util.String2Date("2020-01-01"), time.Time{},
+			m.receiveEmail, false, false, status,
+			m.familyUUID, m.familyName,
+			time.Time{}, time.Time{},
+		)
 		err := r.CreateMember(member, m.groupUUIDs)
 		if err != nil {
 			slog.Error(err.Error())
