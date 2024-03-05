@@ -222,7 +222,7 @@ func (f Filter) SortMembers(members []entity.Member) []entity.Member {
 			}
 			return members[i].Name > members[j].Name
 		})
-	case "Fødselsnummer":
+	case "Fødselsnr":
 		sort.Slice(members, func(i, j int) bool {
 			if f.SortOrder == "ASC" {
 				return members[i].DOB.Before(members[j].DOB)
@@ -242,6 +242,13 @@ func (f Filter) SortMembers(members []entity.Member) []entity.Member {
 				return members[i].FamilyName < members[j].FamilyName
 			}
 			return members[i].FamilyName > members[j].FamilyName
+		})
+	case "SynSeat":
+		sort.Slice(members, func(i, j int) bool {
+			if f.SortOrder == "ASC" {
+				return members[i].Synagogueseat < members[j].Synagogueseat
+			}
+			return members[i].Synagogueseat > members[j].Synagogueseat
 		})
 	case "RecEmail":
 		sort.Slice(members, func(i, j int) bool {

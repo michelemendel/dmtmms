@@ -72,7 +72,9 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 	}
 
 	if strings.TrimSpace(filter.SearchTerms) != "" {
-		q = q + "AND (m.name LIKE ? OR m.email LIKE ? OR f.name LIKE ?)"
+		q = q + "AND (m.name LIKE ? OR m.email LIKE ? OR f.name LIKE ? OR m.synagogue_seat LIKE ? OR m.mobile LIKE ?)"
+		args = append(args, "%"+filter.SearchTerms+"%")
+		args = append(args, "%"+filter.SearchTerms+"%")
 		args = append(args, "%"+filter.SearchTerms+"%")
 		args = append(args, "%"+filter.SearchTerms+"%")
 		args = append(args, "%"+filter.SearchTerms+"%")

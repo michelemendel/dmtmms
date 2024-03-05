@@ -97,7 +97,7 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter, groups []entity.Group) {
 					@DatePicker("to", f.To, "To")
 				</div>
 				<div class="ml-2">
-					@vctx.FilterSelectAges("selectedAges", "or use ages", f.SelectedAges)
+					@vctx.FilterSelectAges("selectedAges", "or use (school) ages", f.SelectedAges)
 				</div>
 				// Search button
 				<div class="ml-[1rem]">
@@ -218,8 +218,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 			<thead class="border-1 font-medium dark:border-neutral-500">
 				<tr class="sticky top-0 px-6 py-2 text-slate-200 bg-slate-500">
 					// Table header member's data
-					for _, col := range []string{"ID", "Name", "Fødselsnummer", "Age", "Family", "RecEmail", "RecMail", "RecHatikvah" /*, "Archived"*/} {
-						// hx-get={ constants.ROUTE_MEMBERS_SORT + f.URLQuery("") + "&sort=" + col + "&order=" + f.SortOrder }
+					for _, col := range []string{"ID", "Name", "Fødselsnr", "Age", "Family", "SynSeat", "RecEmail", "RecMail", "RecHatikvah" /*, "Archived"*/} {
 						<th
 							hx-get={ constants.ROUTE_MEMBERS + f.URLQuery("", col, f.SortOrder, "true") }
 							hx-target="#members"
@@ -290,6 +289,7 @@ templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
 	<td class="whitespace-nowrap px-6 py-4">{ strings.Replace(util.Date2String(member.DOB),"-","",-1) +"-"+ member.Personnummer }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ fmt.Sprint(member.Age) }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.FamilyName }</td>
+	<td class="whitespace-nowrap px-6 py-4">{ member.Synagogueseat }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveEmail) }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveMail) }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveHatikvah) }</td>

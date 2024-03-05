@@ -40,7 +40,7 @@ templ (vctx *ViewCtx) Head(title string) {
 }
 
 templ (vctx *ViewCtx) NavBar() {
-	<nav class="flex-no-wrap relative flex w-full items-center justify-between bg-[#FBFBFB] py-2 shadow-md shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10 flex-wrap justify-start py-4">
+	<nav class="flex-no-wrap relative flex w-full items-center justify-between text-neutral-800 bg-blue-200 py-2 shadow-md shadow-black/5 dark:bg-neutral-600 dark:shadow-black/10 flex-wrap justify-start py-4">
 		<div class="flex w-full justify-between px-3">
 			<div
 				id="navbarSupportedContent1"
@@ -48,7 +48,7 @@ templ (vctx *ViewCtx) NavBar() {
 			>
 				<!-- Logo -->
 				<a
-					class="mb-4 ml-2 mr-0 mt-3 flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 mb-0 mt-0"
+					class="mb-4 ml-2 mr-0 mt-3 flex items-center text-neutral-950 hover:text-neutral-900 focus:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 mb-0 mt-0"
 					href="#"
 				>
 					<img
@@ -67,7 +67,7 @@ templ (vctx *ViewCtx) NavBar() {
 							hx-target="#main"
 							hx-swap="innerHTML"
 							hx-push-url="true"
-							class="text-lg leading-3 text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+							class="text-lg leading-3 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 						>Members</a>
 					</li>
 					<!-- Families -->
@@ -78,7 +78,7 @@ templ (vctx *ViewCtx) NavBar() {
 								hx-target="#main"
 								hx-swap="innerHTML"
 								hx-push-url="true"
-								class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								class="text-sm transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 							>Families</a>
 						</li>
 					}
@@ -90,7 +90,7 @@ templ (vctx *ViewCtx) NavBar() {
 								hx-target="#main"
 								hx-swap="innerHTML"
 								hx-push-url="true"
-								class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								class="text-sm transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 							>Groups</a>
 						</li>
 					}
@@ -102,7 +102,7 @@ templ (vctx *ViewCtx) NavBar() {
 								hx-target="#main"
 								hx-swap="innerHTML"
 								hx-push-url="true"
-								class="text-sm text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
+								class="text-sm transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 motion-reduce:transition-none dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 px-2 [&.active]:text-black/90 dark:[&.active]:text-zinc-400"
 							>Users</a>
 						</li>
 					}
@@ -147,8 +147,8 @@ templ (vctx *ViewCtx) NavBar() {
 }
 
 templ (vctx *ViewCtx) Footer() {
-	<footer class="fixed bottom-0 w-full bg-neutral-100 text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left">
-		<div class="bg-neutral-200 p-4 text-center dark:bg-neutral-700">
+	<footer class="fixed bottom-0 w-full text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left">
+		<div class="bg-blue-200 p-4 text-center dark:bg-neutral-700">
 			<span>© 2023 Copyright:</span>
 			<a class="font-semibold text-neutral-600 dark:text-neutral-400" href="https://warnerbros.fandom.com/wiki/ACME_Corporation">Acme Corporation</a>
 		</div>
