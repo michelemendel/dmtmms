@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"log/slog"
 	"strings"
 
@@ -50,12 +51,13 @@ func (h *HandlerContext) Emails(members []entity.Member) []byte {
 func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string {
 	var items [][]string
 	// items = append(items, []string{"ID", "Name", "Fødselsnummer", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah", "Archived"})
-	items = append(items, []string{"ID", "Name", "Fødselsnummer", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah"})
+	items = append(items, []string{"ID", "Name", "Fødselsnummer", "Age", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah", "Created", "Updated"})
 	for _, m := range members {
 		items = append(items, []string{
 			util.Int2String(m.ID),
 			m.Name,
 			strings.Replace(util.Date2String(m.DOB), "-", "", -1) + "-" + m.Personnummer,
+			fmt.Sprint(m.Age),
 			m.Email,
 			m.Mobile,
 			m.Address1,
@@ -69,6 +71,8 @@ func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string 
 			util.Bool2String(m.ReceiveMail),
 			util.Bool2String(m.ReceiveHatikvah),
 			// util.Bool2String(m.Archived),
+			util.DateTime2String(m.CreatedAt),
+			util.DateTime2String(m.UpdatedAt),
 		})
 	}
 	return items

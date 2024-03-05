@@ -269,7 +269,7 @@ templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
 	<td class="whitespace-nowrap px-6 py-4 font-medium">{ util.Int2String(member.ID) }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ strings.Replace(util.Date2String(member.DOB),"-","",-1) +"-"+ member.Personnummer }</td>
-	<td class="whitespace-nowrap px-6 py-4">{ fmt.Sprintf("%d", member.Age) }</td>
+	<td class="whitespace-nowrap px-6 py-4">{ fmt.Sprint(member.Age) }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.FamilyName }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveEmail) }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveMail) }</td>
