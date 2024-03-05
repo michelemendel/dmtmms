@@ -159,6 +159,7 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 		}
 
 		DOB := util.String2Date(dobStr)
+		age := util.CalculateAge(DOB)
 		registeredDate := util.String2Date(registeredDateStr)
 		deregisteredDate := util.String2Date(deregisteredDateStr)
 		address := entity.NewAddress(m.Address1, m.Address2, m.Postnummer, m.Poststed)
@@ -166,7 +167,7 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 		updatedAt := util.String2DateTime(updatedAtStr)
 
 		members = append(members, entity.NewMember(
-			m.UUID, m.ID, m.Name, DOB, m.Personnummer,
+			m.UUID, m.ID, m.Name, DOB, age, m.Personnummer,
 			m.Email, m.Mobile,
 			address,
 			m.Synagogueseat, m.MembershipFeeTier, registeredDate, deregisteredDate, m.ReceiveEmail,

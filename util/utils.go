@@ -70,6 +70,15 @@ func String2Date(s string) time.Time {
 	return t
 }
 
+func CalculateAge(DOB time.Time) int {
+	today := time.Now()
+	age := today.Year() - DOB.Year()
+	if today.YearDay() < DOB.YearDay() {
+		age--
+	}
+	return age
+}
+
 func DateTime2String(t time.Time) string {
 	loc, err := time.LoadLocation("Europe/Oslo")
 	if err != nil {

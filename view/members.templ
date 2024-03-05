@@ -1,6 +1,7 @@
 package view
 
 import (
+	"fmt"
 	"strconv"
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/constants"
@@ -219,6 +220,7 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">ID</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Name</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Fødselsnummer</th>
+					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Age</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Family</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Email</th>
 					<th scope="col" class="px-6 py-2 text-slate-200 bg-slate-500">Mail</th>
@@ -267,6 +269,7 @@ templ (vctx *ViewCtx) memberTableRowData(member entity.Member) {
 	<td class="whitespace-nowrap px-6 py-4 font-medium">{ util.Int2String(member.ID) }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.Name }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ strings.Replace(util.Date2String(member.DOB),"-","",-1) +"-"+ member.Personnummer }</td>
+	<td class="whitespace-nowrap px-6 py-4">{ fmt.Sprintf("%d", member.Age) }</td>
 	<td class="whitespace-nowrap px-6 py-4">{ member.FamilyName }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveEmail) }</td>
 	<td class="whitespace-nowrap px-6 py-4 font-bold">{ bool2string(member.ReceiveMail) }</td>

@@ -84,6 +84,7 @@ type Member struct {
 	ID           int
 	Name         string
 	DOB          time.Time
+	Age          int
 	Personnummer string
 	Email        string
 	Mobile       string
@@ -108,6 +109,7 @@ func NewMember(
 	id int,
 	name string,
 	dob time.Time,
+	age int,
 	personnummer,
 	email,
 	mobile string,
@@ -131,6 +133,7 @@ func NewMember(
 		ID:                id,
 		Name:              name,
 		DOB:               dob,
+		Age:               age,
 		Personnummer:      personnummer,
 		Email:             email,
 		Mobile:            mobile,

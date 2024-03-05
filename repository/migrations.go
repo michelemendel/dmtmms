@@ -283,7 +283,7 @@ func (r *Repo) InsertMembers() {
 		mobile := phonePrefix + i
 
 		member := entity.NewMember(
-			memberUUID, 0, m.name, dob, personnummer, email, mobile,
+			memberUUID, 0, m.name, dob, 0, personnummer, email, mobile,
 			entity.Address{}, "", "", util.String2Date("2020-01-01"), time.Time{},
 			m.receiveEmail, false, false, status,
 			m.familyUUID, m.familyName,
