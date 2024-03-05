@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"fmt"
 	"sort"
 
 	"github.com/labstack/echo/v4"
@@ -186,6 +185,7 @@ func (f Filter) URLQuery(mUUID, sortCol, sortOrder, withSort string) string {
 	}
 
 	return "?muuid=" + mUUID +
+		"&fuuid=" + f.FamilyUUID +
 		"&guuid=" + f.GroupUUID +
 		"&from=" + f.From +
 		"&to=" + f.To +
@@ -207,8 +207,6 @@ func (f Filter) URLForDownloadLink(downloadType string) string {
 }
 
 func (f Filter) SortMembers(members []entity.Member) []entity.Member {
-	fmt.Println("[Filter.SortMembers]:", f.SortCol, f.SortOrder)
-
 	switch f.SortCol {
 	case "ID":
 		sort.Slice(members, func(i, j int) bool {

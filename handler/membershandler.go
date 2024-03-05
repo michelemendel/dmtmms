@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 
 	// "fmt"
 	"log/slog"
@@ -17,12 +16,10 @@ import (
 )
 
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
-	fmt.Println("MembersHandler:URI:", c.Request().RequestURI)
 	return h.Members(c, false)
 }
 
 func (h *HandlerContext) MembersHandlerFormClose(c echo.Context) error {
-	fmt.Println("MembersHandlerFormClose:URI:", c.Request().RequestURI)
 	// We need to refresh the page when the form is closed.
 	return h.Members(c, true)
 }
