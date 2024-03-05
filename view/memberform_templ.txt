@@ -32,7 +32,8 @@ Update Member
 Add
 Update
 </button></div><div class=\"ml-2\">
-<button id=\"closeMemberForm\" class=\"
+<button id=\"closeMemberForm\" hx-get=\"
+\" hx-target=\"#members\" hx-swap=\"outerHTML\" class=\"
 \">Cancel</button></div></div></form>
 <div id=\"form\" class=\"mb-4\"><div class=\"block text-red-600 text-xs\">
 </div></div>

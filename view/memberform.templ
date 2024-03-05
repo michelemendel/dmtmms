@@ -180,6 +180,9 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 						<div class="ml-2">
 							<button
 								id="closeMemberForm"
+								hx-get={ constants.ROUTE_MEMBER_FORM_CLOSE }
+								hx-target="#members"
+								hx-swap="outerHTML"
 								class={ ButtonClass }
 							>
 								Cancel

@@ -2,7 +2,7 @@ package handler
 
 import (
 	"errors"
-	"fmt"
+	// "fmt"
 	"log/slog"
 	"time"
 
@@ -15,25 +15,25 @@ import (
 )
 
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
+	return h.Members(c, false)
+}
+
+func (h *HandlerContext) MembersHandlerFormClose(c echo.Context) error {
+	return h.Members(c, true)
+}
+
+func (h *HandlerContext) Members(c echo.Context, doRefresh bool) error {
 	f := filter.FilterFromQuery(c)
-	fmt.Println("FILTER: ", f)
 	members, err := h.MembersFiltered(c, f)
 	if err != nil {
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
 		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, filter.Filter{}))
 	}
 
-	var detailsMember entity.Member
-	var detailsGroups []entity.Group
-	// Error here means that the member details are not available, since we haven't selected a member.
-	detailsMember, detailsGroups, err = h.MemberDetails(c)
-	if err != nil {
-		detailsMember = entity.Member{}
-		detailsGroups = []entity.Group{}
+	memberDetails := view.MemberDetailsForPresentation(h.MemberDetails(c))
+	if doRefresh {
+		c.Response().Header().Set("HX-Refresh", "true")
 	}
-
-	memberDetails := view.MemberDetailsForPresentation(detailsMember, detailsGroups)
-
 	return h.renderView(c, h.ViewCtx.Members(members, h.GetGroups(true), memberDetails, f))
 }
 
@@ -45,23 +45,23 @@ func (h *HandlerContext) MembersFiltered(c echo.Context, filter filter.Filter) (
 	return members, nil
 }
 
-func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.Group, error) {
+func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.Group) {
 	memberUUID := c.QueryParam("muuid")
 	if memberUUID == "" {
-		return entity.Member{}, nil, nil
+		return entity.Member{}, []entity.Group{}
 	}
 
 	member, err := h.Repo.SelectMember(memberUUID)
 	if err != nil {
-		return entity.Member{}, []entity.Group{}, err
+		return entity.Member{}, []entity.Group{}
 	}
 
 	groups, err := h.Repo.SelectGroupsByMember(memberUUID)
 	if err != nil {
-		return entity.Member{}, []entity.Group{}, err
+		return entity.Member{}, []entity.Group{}
 	}
 
-	return member, groups, nil
+	return member, groups
 }
 
 //--------------------------------------------------------------------------------
@@ -151,8 +151,10 @@ func (h *HandlerContext) MemberUpdateHandler(c echo.Context) error {
 		inputErrors["form"] = entity.NewInputError("form", err)
 		return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, inputErrors))
 	}
+
+	// To use the current filter, we need to refresh the page.
+	c.Response().Header().Set("HX-Refresh", "true")
 	return h.MembersHandler(c)
-	// return h.renderView(c, h.ViewCtx.MemberFormModal(member, selectedGroupUUIDsAsStrings, families, groups, constants.OP_UPDATE, entity.InputErrors{}))
 }
 
 //--------------------------------------------------------------------------------
