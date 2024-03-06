@@ -17,17 +17,22 @@ import (
 )
 
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
+	nlatest := c.QueryParam("nlatest")
+	fmt.Println("   [MembersHandler]:nlatest:", nlatest)
+	if nlatest != "" {
+		n := util.String2Int(nlatest)
+		return h.NLatestMembers(c, n)
+	}
+
 	formClose := c.QueryParam("formclose")
 	if formClose == "true" {
-		// We need to refresh the page when the form is closed to make a new search with current filter.
+		// true: We need to refresh the page when the form is closed to make a new search with current filter.
 		return h.Members(c, true)
 	}
 	return h.Members(c, false)
 }
 
 func (h *HandlerContext) Members(c echo.Context, doRefresh bool) error {
-	fmt.Println("----------------------------------")
-	// fmt.Println("          [Members]:A:", h.Filter)
 	members, err := h.MembersFiltered(c)
 	if err != nil {
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
@@ -46,14 +51,21 @@ func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error
 	h.Filter.MakeFilterFromQuery(c)
 	members, err := h.Repo.SelectMembersByFilter(h.Filter)
 	members = h.Filter.SortMembers(c, members)
-	// fmt.Println("    [MembersFiltered]:", h.Filter)
-	// fmt.Println("[MembersFiltered]:F:B:", f)
 
 	if err != nil {
 		return []entity.Member{}, err
 	}
 
 	return members, nil
+}
+
+func (h *HandlerContext) NLatestMembers(c echo.Context, n int) error {
+	members, err := h.Repo.SelectNLatestMembers(n)
+	if err != nil {
+		return h.renderView(c, h.ViewCtx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, h.Filter))
+	}
+
+	return h.renderView(c, h.ViewCtx.Members(members, []entity.Group{}, entity.MemberDetails{}, &filter.Filter{}))
 }
 
 func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.Group) {

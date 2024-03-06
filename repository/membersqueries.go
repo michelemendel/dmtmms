@@ -44,6 +44,11 @@ const (
 	`
 )
 
+func (r *Repo) SelectNLatestMembers(n int) ([]entity.Member, error) {
+	q := queryMembers + " GROUP BY m.uuid ORDER BY m.updated_at DESC LIMIT ?"
+	return r.ExecuteQuery(q, n)
+}
+
 func (r *Repo) SelectMembersByFilter(f *filter.Filter) ([]entity.Member, error) {
 	q := queryMembers
 	args := []any{}

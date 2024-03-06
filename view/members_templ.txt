@@ -1,10 +1,11 @@
-<div id=\"members\"><div id=\"memberForm\"><div id=\"closeMemberForm\"></div></div><div class=\"flex flex-row px-4 py-5\"><div class=\"w-4/5\"><div class=\"flow-root\"><div class=\"float-left\">
-</div><div class=\"float-right flex flex-row\">
+<div id=\"members\"><div id=\"memberForm\"><div id=\"closeMemberForm\"></div></div><div class=\"flex flex-row px-4 py-5\"><div class=\"w-4/5\"><div id=\"filterbar\" class=\"flow-root\"><div class=\"float-left\">
+</div><div class=\"float-right\"><div class=\"grid grid-cols-1 gap-2 grid-flow-row\">
 <div class=\"ml-0\">
 </div>
-<div class=\"ml-2\">
+<div class=\"\">
 </div>
-</div></div><div class=\"mt-2\">
+<div class=\"\">
+</div></div></div></div><div id=\"table\" class=\"mt-2\">
 </div></div><div class=\"w-1/5 px-4 mt-[9rem]\">
 </div></div>
 </div>
@@ -31,13 +32,16 @@
 \"> <label for=\"
 \" class=\"ml-1 text-sm font-light\">
 </label></div>
-<button id=\"openMemberForm\" hx-get=\"
-\" hx-target=\"#memberForm\" hx-select=\"#memberForm\" hx-swap=\"outerHTML\" hx-push-url=\"false\" class=\"
-\">Add member</button>
 <select id=\"download\" class=\"bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500\"><option>Download</option> <option value=\"
 \">CSV</option> <option value=\"
 \">Fødselsnummer</option> <option value=\"
 \">Emails</option></select>
+<button id=\"openMemberForm\" hx-get=\"
+\" hx-target=\"#memberForm\" hx-select=\"#memberForm\" hx-swap=\"outerHTML\" hx-push-url=\"false\" class=\"
+\">Add member</button>
+<button hx-get=\"
+\" hx-target=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" class=\"
+\">10 latest updates</button>
 <div class=\"flex flex-grow overflow-y-scroll flex-col max-h-[50rem]\"><table class=\"w-full text-left text-sm font-light\"><thead class=\"border-1 font-medium dark:border-neutral-500\"><tr class=\"sticky top-0 py-2 text-slate-200 bg-blue-600\">
  <th hx-get=\"
 \" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" class=\"pl-4 py-2 text-slate-200 cursor-pointer\">
@@ -51,7 +55,7 @@
  <tr tabindex=\"
 \" id=\"
 \" hx-get=\"
-\" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"click\"
+\" hx-target=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"click\"
  class=\"border-b dark:border-neutral-500 focus:bg-blue-100 hover:bg-neutral-100 cursor-pointer bg-blue-100\"
  class=\"border-b dark:border-neutral-500 focus:bg-blue-100 hover:bg-neutral-100 cursor-pointer\"
 >

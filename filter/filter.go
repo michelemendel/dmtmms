@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"fmt"
 	"sort"
 
 	"github.com/labstack/echo/v4"
@@ -83,11 +82,11 @@ func (f *Filter) URLQuery(mUUID, sortCol, withSort string) string {
 
 func (f *Filter) SortMembers(c echo.Context, members []entity.Member) []entity.Member {
 	col := c.QueryParam("sort")
-	order := c.QueryParam("order")
+	// order := c.QueryParam("order")
 	withSort := c.QueryParam("wsort")
 
-	fmt.Println("   [SortMembers]:CURR:", f, f.SortCol, f.SortOrder, f.WithSort)
-	fmt.Println("   [SortMembers]:QUER:", f, col, order, withSort)
+	// fmt.Println("   [SortMembers]:CURR:", f, f.SortCol, f.SortOrder, f.WithSort)
+	// fmt.Println("   [SortMembers]:QUER:", f, col, order, withSort)
 
 	if col == "" {
 		f.SortCol = "Family"
@@ -102,18 +101,18 @@ func (f *Filter) SortMembers(c echo.Context, members []entity.Member) []entity.M
 		f.WithSort = "false"
 		if f.SortCol != col {
 			f.SortOrder = "ASC"
-			fmt.Println("   [SortMembers]:SWAP:", f)
+			// fmt.Println("   [SortMembers]:SWAP:", f)
 			f.SortCol = col
 		} else if f.SortOrder == "ASC" {
 			f.SortOrder = "DESC"
-			fmt.Println("   [SortMembers]:SWAP:", f)
+			// fmt.Println("   [SortMembers]:SWAP:", f)
 		} else {
 			f.SortOrder = "ASC"
-			fmt.Println("   [SortMembers]:SWAP:", f)
+			// fmt.Println("   [SortMembers]:SWAP:", f)
 		}
 	}
 
-	fmt.Println("   [SortMembers]: NEW:", f)
+	// fmt.Println("   [SortMembers]: NEW:", f)
 
 	switch f.SortCol {
 	case "ID":

@@ -30,27 +30,35 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group
 		// 
 		<div class="flex flex-row px-4 py-5">
 			<div class="w-4/5">
-				<div class="flow-root">
+				// Filter bar, download form, latest updates
+				<div id="filterbar" class="flow-root">
 					<div class="float-left">
 						@vctx.FilterBar(f, groups)
 					</div>
-					<div class="float-right flex flex-row">
-						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_DOWNLOAD) {
-							<div class="ml-0">
-								@vctx.DownloadForm(f)
+					<div class="float-right">
+						<div class="grid grid-cols-1 gap-2 grid-flow-row">
+							if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_DOWNLOAD) {
+								<div class="ml-0">
+									@vctx.DownloadForm(f)
+								</div>
+							}
+							if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_CREATE) {
+								<div class="">
+									@vctx.AddMemberButton()
+								</div>
+							}
+							<div class="">
+								@vctx.NLatestUpdatesButton()
 							</div>
-						}
-						if vctx.Session.IsAuthorized(ctx.Value(constants.CTX_USER_ROLE_KEY).(string) , constants.ROUTE_MEMBER_CREATE) {
-							<div class="ml-2">
-								@vctx.AddMemberButton()
-							</div>
-						}
+						</div>
 					</div>
 				</div>
-				<div class="mt-2">
+				// Table
+				<div id="table" class="mt-2">
 					@vctx.MembersTable(members, f)
 				</div>
 			</div>
+			// Member details
 			<div class="w-1/5 px-4 mt-[9rem]">
 				@vctx.MemberDetails(memberDetails)
 			</div>
@@ -100,6 +108,7 @@ templ (vctx *ViewCtx) FilterBar(f *filter.Filter, groups []entity.Group) {
 					@vctx.FilterSelectAges("selectedAges", "or use (school) ages", f.SelectedAges)
 				</div>
 				// Search button
+				// keyCode==13 is the Enter key
 				<div class="ml-[1rem]">
 					<button
 						hx-get={ constants.ROUTE_MEMBERS }
@@ -186,18 +195,6 @@ script CBOnClick(ids []string) {
 	}
 }
 
-templ (vctx *ViewCtx) AddMemberButton() {
-	<button
-		id="openMemberForm"
-		hx-get={ constants.ROUTE_MEMBER_CREATE }
-		hx-target="#memberForm"
-		hx-select="#memberForm"
-		hx-swap="outerHTML"
-		hx-push-url="false"
-		class={ ButtonClass }
-	>Add member</button>
-}
-
 // templ (vctx *ViewCtx) DownloadForm(searchTerms, from, to string, receiveEmail, receiveMail, receiveHatikvah, archived string) {
 templ (vctx *ViewCtx) DownloadForm(f *filter.Filter) {
 	<select
@@ -209,6 +206,29 @@ templ (vctx *ViewCtx) DownloadForm(f *filter.Filter) {
 		<option value={ f.URLForDownloadLink("fnr") }>Fødselsnummer</option>
 		<option value={ f.URLForDownloadLink("emails") }>Emails</option>
 	</select>
+}
+
+templ (vctx *ViewCtx) AddMemberButton() {
+	<button
+		id="openMemberForm"
+		hx-get={ constants.ROUTE_MEMBER_CREATE }
+		hx-target="#memberForm"
+		hx-select="#memberForm"
+		hx-swap="outerHTML"
+		hx-push-url="false"
+		class={ ButtonClassFullWidth }
+	>Add member</button>
+}
+
+templ (vctx *ViewCtx) NLatestUpdatesButton() {
+	// N latest button
+	<button
+		hx-get={ constants.ROUTE_MEMBERS + "?nlatest=10" }
+		hx-target="#members"
+		hx-swap="outerHTML"
+		hx-push-url="true"
+		class={ ButtonClassFullWidth }
+	>10 latest updates</button>
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member, f *filter.Filter) {
@@ -259,7 +279,6 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f *filter.Filter) {
 						id={ "member-" + member.UUID }
 						hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(member.UUID, f.SortCol, "false") }
 						hx-target="#members"
-						hx-select="#members"
 						hx-swap="outerHTML"
 						hx-push-url="true"
 						hx-trigger="click"
