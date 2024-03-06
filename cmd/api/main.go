@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/michelemendel/dmtmms/auth"
 	consts "github.com/michelemendel/dmtmms/constants"
+	"github.com/michelemendel/dmtmms/filter"
 	"github.com/michelemendel/dmtmms/handler"
 	repo "github.com/michelemendel/dmtmms/repository"
 	"github.com/michelemendel/dmtmms/routes"
@@ -46,7 +47,8 @@ func main() {
 	e.Use(s.Authorize)
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
-	hCtx := handler.NewHandlerContext(e, s, r)
+	f := filter.MakeFilterDefault()
+	hCtx := handler.NewHandlerContext(e, s, r, f)
 	routes.Routes(e, hCtx)
 	slog.Debug("Starting server", "port", webServerPort)
 	e.Logger.Fatal(e.Start(":" + webServerPort))

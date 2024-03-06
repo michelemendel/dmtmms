@@ -13,12 +13,6 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 
 	// Download
 	e.GET(constants.ROUTE_DOWNLOAD, hCtx.DownloadHandler)
-	// e.GET(constants.ROUTE_DOWNLOAD, func(c echo.Context) error {
-	// 	// msCSV, _ := hCtx.MembersAsCSV(c)
-	// 	// c.Response().Header().Set("Content-Disposition", "attachment; filename=members.csv")
-	// 	// return c.Blob(200, "text/csv", msCSV)
-	// 	return nil
-	// })
 
 	// Auth
 	e.GET(constants.ROUTE_LOGIN, hCtx.ViewLoginHandler)
@@ -41,7 +35,6 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 
 	// Members
 	e.GET(constants.ROUTE_MEMBERS, hCtx.MembersHandler)
-	e.GET(constants.ROUTE_MEMBER_FORM_CLOSE, hCtx.MembersHandlerFormClose)
 	e.GET(constants.ROUTE_MEMBER_CREATE, hCtx.MemberCreateInitHandler)
 	e.POST(constants.ROUTE_MEMBER_CREATE, hCtx.MemberCreateHandler)
 	e.DELETE(constants.ROUTE_MEMBER_DELETE+"/:uuid", hCtx.MemberDeleteHandler)

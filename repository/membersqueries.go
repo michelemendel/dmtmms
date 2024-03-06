@@ -44,14 +44,14 @@ const (
 	`
 )
 
-func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, error) {
+func (r *Repo) SelectMembersByFilter(f *filter.Filter) ([]entity.Member, error) {
 	q := queryMembers
 	args := []any{}
 
 	// Use either ages or from/to
-	if len(filter.SelectedAges) > 0 && filter.SelectedAges[0] != "" {
+	if len(f.SelectedAges) > 0 && f.SelectedAges[0] != "" {
 		qs := []string{}
-		for _, age := range filter.SelectedAges {
+		for _, age := range f.SelectedAges {
 			year := util.GetYearFromAge(age)
 			qs = append(qs, "strftime('%Y',dob)=? ")
 			args = append(args, year)
@@ -61,48 +61,48 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 		q = q + "WHERE m.dob BETWEEN julianday(?) AND julianday(?)"
 		from := constants.DATE_MIN
 		to := constants.DATE_MAX
-		if filter.From != "" {
-			from = filter.From
+		if f.From != "" {
+			from = f.From
 		}
-		if filter.To != "" {
-			to = filter.To
+		if f.To != "" {
+			to = f.To
 		}
 		args = append(args, from)
 		args = append(args, to)
 	}
 
-	if strings.TrimSpace(filter.SearchTerms) != "" {
+	if strings.TrimSpace(f.SearchTerms) != "" {
 		q = q + "AND (m.name LIKE ? OR m.email LIKE ? OR f.name LIKE ? OR m.synagogue_seat LIKE ? OR m.mobile LIKE ?)"
-		args = append(args, "%"+filter.SearchTerms+"%")
-		args = append(args, "%"+filter.SearchTerms+"%")
-		args = append(args, "%"+filter.SearchTerms+"%")
-		args = append(args, "%"+filter.SearchTerms+"%")
-		args = append(args, "%"+filter.SearchTerms+"%")
+		args = append(args, "%"+f.SearchTerms+"%")
+		args = append(args, "%"+f.SearchTerms+"%")
+		args = append(args, "%"+f.SearchTerms+"%")
+		args = append(args, "%"+f.SearchTerms+"%")
+		args = append(args, "%"+f.SearchTerms+"%")
 	}
 
-	if filter.FamilyUUID != "" {
+	if f.FamilyUUID != "" {
 		q = q + "AND f.uuid=?"
-		args = append(args, filter.FamilyUUID)
+		args = append(args, f.FamilyUUID)
 	}
 
-	if filter.GroupUUID != "" {
+	if f.GroupUUID != "" {
 		q = q + "AND g.uuid=?"
-		args = append(args, filter.GroupUUID)
+		args = append(args, f.GroupUUID)
 	}
 
-	if filter.ReceiveEmail != "" {
+	if f.ReceiveEmail != "" {
 		q = q + "AND m.receive_email=?"
-		args = append(args, filter.ReceiveEmail)
+		args = append(args, f.ReceiveEmail)
 	}
 
-	if filter.ReceiveMail != "" {
+	if f.ReceiveMail != "" {
 		q = q + "AND m.receive_mail=?"
-		args = append(args, filter.ReceiveMail)
+		args = append(args, f.ReceiveMail)
 	}
 
-	if filter.ReceiveHatikvah != "" {
+	if f.ReceiveHatikvah != "" {
 		q = q + "AND m.receive_hatikvah=?"
-		args = append(args, filter.ReceiveHatikvah)
+		args = append(args, f.ReceiveHatikvah)
 	}
 
 	// if filter.Archived != "" {
@@ -110,14 +110,14 @@ func (r *Repo) SelectMembersByFilter(filter filter.Filter) ([]entity.Member, err
 	// 	args = append(args, filter.Archived)
 	// }
 
-	if filter.SelectedGroup != "" && filter.SelectedGroup != "All groups" {
+	if f.SelectedGroup != "" && f.SelectedGroup != "All groups" {
 		q = q + "AND g.name=?"
-		args = append(args, filter.SelectedGroup)
+		args = append(args, f.SelectedGroup)
 	}
 
-	if filter.SelectedStatus != "" {
+	if f.SelectedStatus != "" {
 		q = q + "AND m.status=?"
-		args = append(args, filter.SelectedStatus)
+		args = append(args, f.SelectedStatus)
 	}
 
 	q = q + " GROUP BY m.uuid ORDER BY f.name ASC"

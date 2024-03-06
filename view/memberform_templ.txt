@@ -1,7 +1,9 @@
-<div id=\"memberForm\" class=\"fixed z-20 inset-0 overflow-y-auto\"><div class=\"flex items-center justify-center min-h-screen bg-gray-300 bg-opacity-40\"><div class=\"bg-white w-1/2 p-6 rounded shadow-md\"><div class=\"flex justify-end\"><!-- Close button --></div><h2 class=\"text-lg font-bold text-gray-900\">
+<div id=\"memberForm\" class=\"fixed z-20 inset-0 overflow-y-auto\"><div class=\"flex items-center justify-center min-h-screen bg-gray-300 bg-opacity-40\"><div class=\"bg-white w-1/2 p-6 rounded shadow-md\"><div class=\"flex justify-end\"></div><h2 class=\"text-lg font-bold text-gray-900\">
 Add Member
 Update Member
 </h2><form><input type=\"hidden\" name=\"uuid\" value=\"
+\"><input type=\"hidden\" name=\"wsort\" value=\"false\"><input type=\"hidden\" name=\"sort\" value=\"
+\"><input type=\"hidden\" name=\"order\" value=\"
 \"><div class=\"mt-2\">
 </div><div class=\"mt-2\">
 </div><div class=\"mt-2\">

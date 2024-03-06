@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-templ (vctx *ViewCtx) Members(members []entity.Member, groups []entity.Group, memberDetails entity.MemberDetails, f filter.Filter) {
+templ (vctx *ViewCtx) Members(members []entity.Member, groups []entity.Group, memberDetails entity.MemberDetails, f *filter.Filter) {
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
 		@vctx.MembersPage(members, groups, memberDetails, f)
 	} else {
@@ -20,7 +20,7 @@ templ (vctx *ViewCtx) Members(members []entity.Member, groups []entity.Group, me
 	}
 }
 
-templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group, memberDetails entity.MemberDetails, f filter.Filter) {
+templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group, memberDetails entity.MemberDetails, f *filter.Filter) {
 	<div id="members">
 		// Placeholder
 		<div id="memberForm">
@@ -60,7 +60,7 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group
 	</div>
 }
 
-templ (vctx *ViewCtx) FilterBar(f filter.Filter, groups []entity.Group) {
+templ (vctx *ViewCtx) FilterBar(f *filter.Filter, groups []entity.Group) {
 	<form>
 		<div id="filterBar" class="flex flex-col">
 			<div class="flex flex-row">
@@ -102,7 +102,6 @@ templ (vctx *ViewCtx) FilterBar(f filter.Filter, groups []entity.Group) {
 				// Search button
 				<div class="ml-[1rem]">
 					<button
-						hx-include="[name='searchterms'], [name='from'], [name='to'], [name='receiveEmail'], [name='receiveMail'], [name='receiveHatikvah']"
 						hx-get={ constants.ROUTE_MEMBERS }
 						hx-target="#members"
 						hx-swap="outerHTML"
@@ -200,7 +199,7 @@ templ (vctx *ViewCtx) AddMemberButton() {
 }
 
 // templ (vctx *ViewCtx) DownloadForm(searchTerms, from, to string, receiveEmail, receiveMail, receiveHatikvah, archived string) {
-templ (vctx *ViewCtx) DownloadForm(f filter.Filter) {
+templ (vctx *ViewCtx) DownloadForm(f *filter.Filter) {
 	<select
 		id="download"
 		class="bg-gray-50 border border-gray-300 text-gray-900 text-xs leading-[1.2] rounded focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -212,15 +211,16 @@ templ (vctx *ViewCtx) DownloadForm(f filter.Filter) {
 	</select>
 }
 
-templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
+templ (vctx *ViewCtx) MembersTable(members []entity.Member, f *filter.Filter) {
 	<div class="flex flex-grow overflow-y-scroll flex-col max-h-[50rem]">
 		<table class="w-full text-left text-sm font-light">
 			<thead class="border-1 font-medium dark:border-neutral-500">
 				<tr class="sticky top-0 py-2 text-slate-200 bg-blue-600">
 					// Table header member's data
 					for _, col := range []string{"ID", "Name", "Fødselsnr", "Age", "Family", "SynSeat", "RecEmail", "RecMail", "RecHatikvah" /*, "Archived"*/} {
+						// Link to sort
 						<th
-							hx-get={ constants.ROUTE_MEMBERS + f.URLQuery("", col, f.SortOrder, "true") }
+							hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(f.MemberUUID, col, "true") }
 							hx-target="#members"
 							hx-select="#members"
 							hx-swap="outerHTML"
@@ -253,10 +253,11 @@ templ (vctx *ViewCtx) MembersTable(members []entity.Member, f filter.Filter) {
 			</thead>
 			<tbody>
 				for i, member := range members {
+					// Link to select member
 					<tr
 						tabindex={ strconv.Itoa(i + 1) }
 						id={ "member-" + member.UUID }
-						hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(member.UUID, f.SortCol, f.SortOrder, "false") }
+						hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(member.UUID, f.SortCol, "false") }
 						hx-target="#members"
 						hx-select="#members"
 						hx-swap="outerHTML"

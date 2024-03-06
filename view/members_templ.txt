@@ -18,7 +18,7 @@
 </div><div class=\"ml-2\">
 </div><div class=\"ml-2\">
 </div><div class=\"ml-[1rem]\">
-<button hx-include=\"[name=&#39;searchterms&#39;], [name=&#39;from&#39;], [name=&#39;to&#39;], [name=&#39;receiveEmail&#39;], [name=&#39;receiveMail&#39;], [name=&#39;receiveHatikvah&#39;]\" hx-get=\"
+<button hx-get=\"
 \" hx-target=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"keyup[keyCode==13]\" class=\"
 \">Search</button></div><div class=\"ml-2\">
 <button hx-get=\"
@@ -39,7 +39,7 @@
 \">Fødselsnummer</option> <option value=\"
 \">Emails</option></select>
 <div class=\"flex flex-grow overflow-y-scroll flex-col max-h-[50rem]\"><table class=\"w-full text-left text-sm font-light\"><thead class=\"border-1 font-medium dark:border-neutral-500\"><tr class=\"sticky top-0 py-2 text-slate-200 bg-blue-600\">
-<th hx-get=\"
+ <th hx-get=\"
 \" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" class=\"pl-4 py-2 text-slate-200 cursor-pointer\">
  
 <svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" class=\"w-4 h-4 inline-block\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M5 15l7-7 7 7\"></path></svg>
@@ -48,7 +48,7 @@
 </th>
 <th scope=\"col\" class=\"py-2 text-slate-200 text-right italic text-sm font-normal\">count:</th><th scope=\"col\" class=\"pr-2 py-2 text-slate-200 italic text-sm font-normal\">
 </th></tr></thead> <tbody>
-<tr tabindex=\"
+ <tr tabindex=\"
 \" id=\"
 \" hx-get=\"
 \" hx-target=\"#members\" hx-select=\"#members\" hx-swap=\"outerHTML\" hx-push-url=\"true\" hx-trigger=\"click\"

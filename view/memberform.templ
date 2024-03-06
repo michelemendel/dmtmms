@@ -4,34 +4,17 @@ import (
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
 	"github.com/michelemendel/dmtmms/util"
+	"github.com/michelemendel/dmtmms/filter"
 )
 
-templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []string, families []entity.Family, groups []entity.Group, op string, inputErrors entity.InputErrors) {
+templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []string, families []entity.Family, groups []entity.Group, op string, f *filter.Filter, inputErrors entity.InputErrors) {
 	<div
 		id="memberForm"
 		class="fixed z-20 inset-0 overflow-y-auto"
 	>
 		<div class="flex items-center justify-center min-h-screen bg-gray-300 bg-opacity-40">
 			<div class="bg-white w-1/2 p-6 rounded shadow-md">
-				<div class="flex justify-end">
-					<!-- Close button -->
-					// <button id="closeMemberForm" class="text-gray-700 hover:text-red-500">
-					// 	<svg
-					// 		class="w-6 h-6"
-					// 		fill="none"
-					// 		stroke="currentColor"
-					// 		viewBox="0 0 24 24"
-					// 		xmlns="http://www.w3.org/2000/svg"
-					// 	>
-					// 		<path
-					// 			stroke-linecap="round"
-					// 			stroke-linejoin="round"
-					// 			stroke-width="2"
-					// 			d="M6 18L18 6M6 6l12 12"
-					// 		></path>
-					// 	</svg>
-					// </button>
-				</div>
+				<div class="flex justify-end"></div>
 				<h2 class="text-lg font-bold text-gray-900">
 					if op == "create" {
 						Add Member
@@ -44,10 +27,12 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 				<form>
 					// uuid
 					<input type="hidden" name="uuid" value={ member.UUID }/>
-					// id
-					// <div class="mt-2">
-					// @Input("id", util.Int2String(member.ID), "", "Id", false, false, inputErrors["id"])
-					// </div>
+					// wsort=false
+					<input type="hidden" name="wsort" value="false"/>
+					// sort=Age
+					<input type="hidden" name="sort" value={ f.SortCol }/>
+					// order=ASC
+					<input type="hidden" name="order" value={ f.SortOrder }/>
 					// name
 					<div class="mt-2">
 						@Input("name", member.Name, "", "Name", true, false, inputErrors["name"])
@@ -180,7 +165,7 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 						<div class="ml-2">
 							<button
 								id="closeMemberForm"
-								hx-get={ constants.ROUTE_MEMBER_FORM_CLOSE }
+								hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(f.MemberUUID, f.SortCol, "false") + "&formclose=true" }
 								hx-target="#members"
 								hx-swap="outerHTML"
 								class={ ButtonClass }
