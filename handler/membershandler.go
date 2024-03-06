@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 
 	// "fmt"
 	"log/slog"
@@ -18,7 +17,6 @@ import (
 
 func (h *HandlerContext) MembersHandler(c echo.Context) error {
 	nlatest := c.QueryParam("nlatest")
-	fmt.Println("   [MembersHandler]:nlatest:", nlatest)
 	if nlatest != "" {
 		n := util.String2Int(nlatest)
 		return h.NLatestMembers(c, n)
