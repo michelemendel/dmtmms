@@ -84,15 +84,25 @@ See tailwind.config.js for more details
 
 ## Production environment
 
-Templates and CSS are generated on the development machine and pushed to Github.
+Linux Debian
+
+- install (apt install ...): git, gcc, make, go, ssqlite3
+- go env -w CGO_ENABLED=1
+  - needed for sqlite3
+
+Templates and CSS are generated on the development machine and pushed/pulled to/from Github.
 
 - Pull from Github
 - $> make server
   - This will first build the application
 
+- Setup a cron job to backup the database
+
+Maybe at a later time
+
 - Use Github actions
   - Setup systemd - https://strapengine.com/auto-restart-mechanism-for-golang-program/
-- Setup a cron job to backup the database
+
 
 ---
 
@@ -101,6 +111,7 @@ Templates and CSS are generated on the development machine and pushed to Github.
 This a command line interface, mainly used for database migrations.
 
 - $> make cli
+- $> ./bin/cli
 
 ---
 

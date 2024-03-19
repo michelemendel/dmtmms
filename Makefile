@@ -3,7 +3,9 @@
 
 build_server:
 	@go build -o bin/server ./cmd/api/...
-	
+
+set_cgo:
+	go env -w CGO_ENABLED=1
 
 # --------------------------------------------------------------------------------
 # Run

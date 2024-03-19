@@ -196,10 +196,10 @@ func (r *Repo) CreateIndexes() {
 // Users
 func (r *Repo) InsertUsers() {
 	users := []entity.User{
-		{Name: "root", HashedPassword: "root", Role: "root"},
-		{Name: "abe", HashedPassword: "abe", Role: "admin"},
-		{Name: "eve", HashedPassword: "eve", Role: "edit"},
-		{Name: "ron", HashedPassword: "ron", Role: "read"},
+		{Name: "root", HashedPassword: "root123", Role: "root"},
+		{Name: "admin", HashedPassword: "admin123", Role: "admin"},
+		{Name: "eve", HashedPassword: "eve123", Role: "edit"},
+		{Name: "ron", HashedPassword: "ron123", Role: "read"},
 	}
 
 	for _, user := range users {
@@ -216,10 +216,10 @@ func (r *Repo) InsertUsers() {
 func (r *Repo) InsertFamilies() {
 	families := []entity.Family{
 		{UUID: "0", Name: "none"},
-		{UUID: "101", Name: "Cohen"},
-		{UUID: "102", Name: "Levi"},
-		{UUID: "103", Name: "Israel"},
-		{UUID: "104", Name: "Hoffman"},
+		// {UUID: "101", Name: "Cohen"},
+		// {UUID: "102", Name: "Levi"},
+		// {UUID: "103", Name: "Israel"},
+		// {UUID: "104", Name: "Hoffman"},
 	}
 
 	for _, family := range families {
@@ -234,12 +234,12 @@ func (r *Repo) InsertFamilies() {
 func (r *Repo) InsertGroups() {
 	groups := []entity.Group{
 		{UUID: "0", Name: "none"},
-		{UUID: "1001", Name: "styret"},
-		{UUID: "1002", Name: "chevre"},
-		{UUID: "1003", Name: "kiddush"},
-		{UUID: "1004", Name: "ligning"},
-		{UUID: "1005", Name: "teacher"},
-		{UUID: "1006", Name: "barnehage"},
+		// {UUID: "1001", Name: "styret"},
+		// {UUID: "1002", Name: "chevre"},
+		// {UUID: "1003", Name: "kiddush"},
+		// {UUID: "1004", Name: "ligning"},
+		// {UUID: "1005", Name: "lærer"},
+		// {UUID: "1006", Name: "barnehage"},
 	}
 	for _, group := range groups {
 		err := r.CreateGroup(group)
@@ -264,13 +264,13 @@ func getMembers(nofMembers int) map[string]member {
 		"11": {name: "abe", receiveEmail: true, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1001", "1002"}},
 		"12": {name: "bob", receiveEmail: true, familyUUID: "101", familyName: "fam1", groupUUIDs: []string{"1002", "1003"}},
 		"13": {name: "carl", receiveEmail: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1001", "1002"}},
-		"14": {name: "dave", receiveEmail: true, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1003"}},
-		"15": {name: "eve", receiveEmail: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1004"}},
+		// "14": {name: "dave", receiveEmail: true, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1003"}},
+		// "15": {name: "eve", receiveEmail: false, familyUUID: "102", familyName: "fam2", groupUUIDs: []string{"1002", "1004"}},
 	}
 
-	for i := 16; i < nofMembers; i++ {
-		members[fmt.Sprintf("%d", i)] = member{name: fmt.Sprintf("m%d", i), receiveEmail: false, familyUUID: "", familyName: "", groupUUIDs: []string{}}
-	}
+	// for i := 16; i < nofMembers; i++ {
+	// 	members[fmt.Sprintf("%d", i)] = member{name: fmt.Sprintf("m%d", i), receiveEmail: false, familyUUID: "", familyName: "", groupUUIDs: []string{}}
+	// }
 
 	return members
 }
