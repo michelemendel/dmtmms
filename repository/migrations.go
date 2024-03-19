@@ -196,8 +196,8 @@ func (r *Repo) CreateIndexes() {
 // Users
 func (r *Repo) InsertUsers() {
 	users := []entity.User{
-		{Name: "root", HashedPassword: "root123", Role: "root"},
-		{Name: "admin", HashedPassword: "admin123", Role: "admin"},
+		{Name: "root", HashedPassword: "shoreshdeep", Role: "root"},
+		{Name: "admin", HashedPassword: "Dimethyltryptamine", Role: "admin"},
 		{Name: "eve", HashedPassword: "eve123", Role: "edit"},
 		{Name: "ron", HashedPassword: "ron123", Role: "read"},
 	}
