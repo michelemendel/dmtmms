@@ -41,11 +41,13 @@ const (
 	LEFT JOIN families as f ON m.family_uuid=f.uuid
 	LEFT JOIN members_groups as mg on m.uuid = mg.member_uuid
 	LEFT JOIN groups as g on mg.group_uuid = g.uuid	
+	WHERE m.name != "dummy"
 	`
 )
 
 func (r *Repo) SelectNLatestMembers(n int) ([]entity.Member, error) {
-	q := queryMembers + " GROUP BY m.uuid ORDER BY m.updated_at DESC LIMIT ?"
+	q := queryMembers + ` 
+	GROUP BY m.uuid ORDER BY m.updated_at DESC LIMIT ?`
 	return r.ExecuteQuery(q, n)
 }
 
@@ -61,9 +63,9 @@ func (r *Repo) SelectMembersByFilter(f *filter.Filter) ([]entity.Member, error) 
 			qs = append(qs, "strftime('%Y',dob)=? ")
 			args = append(args, year)
 		}
-		q = q + "WHERE (" + strings.Join(qs, " OR ") + ") "
+		q = q + " AND (" + strings.Join(qs, " OR ") + ") "
 	} else {
-		q = q + "WHERE m.dob BETWEEN julianday(?) AND julianday(?)"
+		q = q + " AND m.dob BETWEEN julianday(?) AND julianday(?)"
 		from := constants.DATE_MIN
 		to := constants.DATE_MAX
 		if f.From != "" {
