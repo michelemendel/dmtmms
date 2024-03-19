@@ -92,6 +92,8 @@ Linux Debian
 
 Templates and CSS are generated on the development machine and pushed/pulled to/from Github.
 
+NOTE: Don't forget to run "make templ" and "make tail" after changes!
+
 - Pull from Github
 - $> make server
   - This will first build the application

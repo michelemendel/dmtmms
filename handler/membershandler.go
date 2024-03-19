@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 
 	// "fmt"
 	"log/slog"
@@ -59,6 +60,9 @@ func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error
 
 func (h *HandlerContext) NLatestMembers(c echo.Context, n int) error {
 	members, err := h.Repo.SelectNLatestMembers(n)
+	for i, m := range members {
+		fmt.Println("   [NLatestMembers]:", i, m.Name, m.UpdatedAt)
+	}
 	if err != nil {
 		return h.renderView(c, h.ViewCtx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, h.Filter))
 	}
