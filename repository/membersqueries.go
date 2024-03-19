@@ -17,9 +17,9 @@ import (
 const (
 	selectMember = `
 	SELECT 
-	m.uuid, m.id, m.name, date(m.dob), m.personnummer, 
-	m.email, m.mobile, 
-	m.address1, m.address1, m.postnummer, m.poststed, 
+	m.uuid, m.id, m.name, IFNULL(date(m.dob), "00010101"), IFNULL(m.personnummer, ""), 
+	IFNULL(m.email,""),IFNULL(m.mobile,""), 
+	IFNULL(m.address1,""), IFNULL(m.address1,""), IFNULL(m.postnummer,""), IFNULL(m.poststed,""), 
 	IFNULL(m.synagogue_seat, ""),
 	IFNULL(m.membership_fee_tier, ""),
 	IFNULL(date(m.registered_date), ""),
@@ -27,9 +27,9 @@ const (
 	IFNULL(m.receive_email, false),
 	IFNULL(m.receive_mail, false),
 	IFNULL(m.receive_hatikvah, false),
-	m.status, 
+	IFNULL(m.status,""), 
 	IFNULL(f.uuid, ""), IFNULL(f.name, ""),
-	m.created_at, m.updated_at
+	m.created_at, IFNULL(m.updated_at,"")
 	FROM members as m
 	`
 
