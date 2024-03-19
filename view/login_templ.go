@@ -42,11 +42,11 @@ func (vctx *ViewCtx) Login(username string, err error) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#appRoot\" hx-swap=\"outerHTML\" hx-push-url=\"true\"><!--E-mail input--><div class=\"mb-6\" data-te-input-wrapper-init>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#appRoot\" hx-swap=\"outerHTML\" hx-push-url=\"true\"><!--user name--><div class=\"mb-6\" data-te-input-wrapper-init>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = Input("username", "", "Username", "Enter email", true, false, entity.InputError{}).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = Input("username", "", "Username", "Enter user name", true, false, entity.InputError{}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
