@@ -20,9 +20,9 @@ templ (vctx *ViewCtx) Login(username string, err error) {
 					hx-swap="outerHTML"
 					hx-push-url="true"
 				>
-					<!--E-mail input-->
+					<!--user name-->
 					<div class="mb-6" data-te-input-wrapper-init>
-						@Input("username", "", "Username", "Enter email", true, false, entity.InputError{})
+						@Input("username", "", "Username", "Enter user name", true, false, entity.InputError{})
 					</div>
 					<!--Password input-->
 					<div class="mb-6" data-te-input-wrapper-init>
