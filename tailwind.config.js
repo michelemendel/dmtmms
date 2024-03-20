@@ -4,6 +4,7 @@ module.exports = {
     './public/**/*.{html,js}',
     './view/**/*_templ.go',
     './view/**/*_templ.txt',
+    './view/**/formelements.go',
   ],
   theme: {
     extend: {

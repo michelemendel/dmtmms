@@ -135,7 +135,7 @@ setting PRAGMA in Go, see https://gist.github.com/dgsb/6061941d2185f761848b143f0
 - See linux/dbbackup.sh
   - The backup file will be moved to a safe place
   - The cron job run every day at midnight
-    -  0 0 * * * /Users/michelemendel/checkouts/dmtmms/linux/dbbackup.sh >> /Users/michelemendel/checkouts/dmtmms/linux/backup.log 2>&1
+    -  0 0 * * * /Users/michelemendel/checkouts/dmtmms/linux/dbbackup.sh >> /Users/michelemendel/checkouts/dmtmms/linux/backup.log 2>&1se
 - Alt. use litestream
 
 ### Restore
