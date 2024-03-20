@@ -98,7 +98,7 @@ NOTE: Don't forget to run "make templ" and "make tail" after changes!
 - $> make server
   - This will first build the application
 
-- Setup a cron job to backup the database
+- Setup a cron job to backup the database. See backup below.
 
 Maybe at a later time
 
@@ -132,13 +132,15 @@ setting PRAGMA in Go, see https://gist.github.com/dgsb/6061941d2185f761848b143f0
 
 ### Backup
 
-- sqlite3 mydb.db ".backup '20240123T1658_mydb.db'"
-  - This file will have to be moved to a safe place
+- See linux/dbbackup.sh
+  - The backup file will be moved to a safe place
+  - The cron job run every day at midnight
+    -  0 0 * * * /Users/michelemendel/checkouts/dmtmms/linux/dbbackup.sh >> /Users/michelemendel/checkouts/dmtmms/linux/backup.log 2>&1
 - Alt. use litestream
 
 ### Restore
 
-- sqlite3 mydb.db ".restore '20240123T1658_mydb.db'"
+- sqlite3 dmtmms.db ".restore '<a backup file>'"
 
 ### Some sqlite3 CLI commands
 

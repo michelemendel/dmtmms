@@ -30,7 +30,9 @@ alias routes='netstat -nr'
 # ----------------------------------------
 # DMT MMS - medlemsregister
 alias dmt='cd /home/michele/dmtmms'
-alias dmtstart='dmt && make server'
+alias dmtstart='dmt && make server &'
+alias dmtstop='ps aux | grep .bin/server | grep -v grep | awk "{print \$2}" | xargs kill'
+alias dmttail='dmt && tail -f log/log.log'
 alias cli='dmt && ./bin/cli'
 
 
