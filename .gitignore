@@ -25,3 +25,5 @@ go.work
 *.log
 
 node_modules/
+
+members*.csv

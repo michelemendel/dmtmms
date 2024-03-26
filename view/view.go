@@ -54,7 +54,6 @@ func MakeOpts() Opts {
 			string(entity.MemberStatusActive),
 			string(entity.MemberStatusDeregistered),
 			string(entity.MemberStatusDead),
-			string(entity.MemberStatusStop),
 		},
 		TempPassword:         "",
 		TempPasswordUserName: "",

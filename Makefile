@@ -44,3 +44,12 @@ watch_all:
 
 build_cli:
 	@go build -o bin/cli ./cmd/cli/...
+
+# --------------------------------------------------------------------------------
+# Import
+
+build_import:
+	@go build -o bin/import ./cmd/import/...
+
+import: build_import
+	@./bin/import

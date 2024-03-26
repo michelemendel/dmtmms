@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log/slog"
 	"strings"
+	"time"
 
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
@@ -173,7 +174,7 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 		deregisteredDate := util.String2Date(deregisteredDateStr)
 		address := entity.NewAddress(m.Address1, m.Address2, m.Postnummer, m.Poststed)
 		createdAt := util.String2DateTime(createdAtStr)
-		updatedAt := util.String2DateTime(updatedAtStr)
+		updatedAt := time.Now() //util.String2DateTime(updatedAtStr)
 
 		members = append(members, entity.NewMember(
 			m.UUID, m.ID, m.Name, DOB, age, m.Personnummer,

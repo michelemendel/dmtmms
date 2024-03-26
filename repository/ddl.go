@@ -126,17 +126,14 @@ func (r *Repo) CreateTables() {
 }
 
 // SELECT name FROM sqlite_master WHERE type = 'trigger';
-func (r *Repo) CreateTriggers() {
+func (r *Repo) CreateTriggers(doAutoIncrementId bool) {
 	var sqlStmts = make(map[string]string)
 
 	// CREATE TRIGGER inc_member_id AFTER INSERT ON names WHEN new.id IS NULL BEGIN UPDATE names SET id=(SELECT coalesce(max(id),0)+1 FROM names) WHERE uuid=new.uuid; END;
 
-	sqlStmts["trigger_inc_member_id"] = `
-	CREATE TRIGGER IF NOT EXISTS trigger_inc_member_id AFTER INSERT ON members
-	WHEN new.id IS NULL BEGIN 
-		UPDATE members SET id=(SELECT coalesce(max(id),0)+1 FROM members) 
-			WHERE uuid=new.uuid; 
-	END;`
+	if doAutoIncrementId {
+		r.SetAutoIDTrigger()
+	}
 
 	sqlStmts["trigger_u_members_updated_at"] = `
 	CREATE TRIGGER IF NOT EXISTS trigger_u_member_updated_at AFTER UPDATE ON members
@@ -166,6 +163,19 @@ func (r *Repo) CreateTriggers() {
 	CREATE TRIGGER IF NOT EXISTS trigger_u_users_updated_at AFTER UPDATE ON users
 	BEGIN 
 		UPDATE users SET updated_at=CURRENT_TIMESTAMP WHERE name=new.name; 
+	END;`
+
+	r.runStatements(sqlStmts)
+}
+
+func (r *Repo) SetAutoIDTrigger() {
+	var sqlStmts = make(map[string]string)
+
+	sqlStmts["trigger_inc_member_id"] = `
+	CREATE TRIGGER IF NOT EXISTS trigger_inc_member_id AFTER INSERT ON members
+	WHEN new.id IS NULL BEGIN 
+	UPDATE members SET id=(SELECT coalesce(max(id),0)+1 FROM members) 
+	WHERE uuid=new.uuid; 
 	END;`
 
 	r.runStatements(sqlStmts)

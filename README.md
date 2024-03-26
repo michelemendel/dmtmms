@@ -89,6 +89,9 @@ Linux Debian
 - install (apt install ...): git, gcc, make, go, ssqlite3
 - go env -w CGO_ENABLED=1
   - needed for sqlite3
+- Firewall
+  - make 80 point to 8080
+    - sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
 
 Templates and CSS are generated on the development machine and pushed/pulled to/from Github.
 
@@ -99,11 +102,7 @@ NOTE: Don't forget to run "make templ" and "make tail" after changes!
   - This will first build the application
 
 - Setup a cron job to backup the database. See backup below.
-
-Maybe at a later time
-
-- Use Github actions
-  - Setup systemd - https://strapengine.com/auto-restart-mechanism-for-golang-program/
+- Setup systemd - https://strapengine.com/auto-restart-mechanism-for-golang-program/
 
 
 ---

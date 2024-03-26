@@ -38,13 +38,11 @@ func NewUser(name, password, role string) User {
 
 type MemberStatus string
 
-// Aktiv, Utmeldt, Død, Stopp
-// TODO: What does "Stopp" mean?
+// Aktiv, Utmeldt, Død
 const (
 	MemberStatusActive       MemberStatus = "active"
 	MemberStatusDeregistered MemberStatus = "deregistered"
 	MemberStatusDead         MemberStatus = "dead"
-	MemberStatusStop         MemberStatus = "stop"
 )
 
 // https://www.posten.no/sende/adressering#:~:text=Adressering%20til%20postmottakere%20i%20Norge&text=Felles%20for%20all%20adressering%20er,p%C3%A5%20nederste%20linje%20i%20adressen.
@@ -77,7 +75,7 @@ func NewAddress(address1, address2, postnummer, poststed string) Address {
 // ok Medlemsbidrags-grupper
 // ok Innmeldings dato
 // ok Utmeldings dato
-// ok Status medlemskap Aktiv, Utmeldt, Død, Stopp
+// ok Status medlemskap Aktiv, Utmeldt, Død
 // ok Hatikva?
 type Member struct {
 	UUID         string

@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	db := flag.String("db", "", "reset")
+	db := flag.String("db", "", "reset, reset_no_auto_id")
 	drop := flag.String("drop", "", "tables")
-	create := flag.String("create", "", "tables")
+	create := flag.String("create", "", "tables, tables_no_auto_id")
 	insert := flag.String("insert", "", "users, members_groups")
 	show := flag.String("show", "", "users")
 
@@ -25,12 +25,18 @@ func main() {
 		case "reset":
 			repo.DropTables()
 			repo.CreateTables()
-			repo.CreateTriggers()
+			repo.CreateTriggers(true)
 			repo.CreateIndexes()
 			repo.InsertUsers()
-			repo.InsertFamilies()
-			repo.InsertGroups()
-			repo.InsertMembers()
+		// repo.InsertFamilies()
+		// repo.InsertGroups()
+		// repo.InsertMembers()
+		case "reset_no_auto_id":
+			repo.DropTables()
+			repo.CreateTables()
+			repo.CreateTriggers(false)
+			repo.CreateIndexes()
+			repo.InsertUsers()
 		default:
 			fmt.Println("no op specified")
 		}
@@ -49,7 +55,11 @@ func main() {
 		switch *create {
 		case "tables":
 			repo.CreateTables()
-			repo.CreateTriggers()
+			repo.CreateTriggers(true)
+			repo.CreateIndexes()
+		case "tables_no_auto_id":
+			repo.CreateTables()
+			repo.CreateTriggers(false)
 			repo.CreateIndexes()
 		default:
 			fmt.Println("no op specified")

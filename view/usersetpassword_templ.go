@@ -75,7 +75,7 @@ func (vctx *ViewCtx) UserSetPasswordInitPage() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"setNewPassword\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -87,7 +87,7 @@ func (vctx *ViewCtx) UserSetPasswordInitPage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -111,7 +111,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"setNewPassword\" class=\"bg-gray-100 flex justify-center items-center h-screen\"><div class=\"block max-w-sm rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700\"><h1 class=\"text-2xl font-semibold mb-4\">Set new password</h1><form id=\"setNewPasswordForm\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -119,7 +119,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#setNewPassword\" hx-swap=\"outerHTML\" hx-push-url=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -127,7 +127,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><!-- New password --><div class=\"mb-6\" data-te-input-wrapper-init>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -135,7 +135,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 6)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><!-- New password check --><div class=\"mb-6\" data-te-input-wrapper-init>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -143,12 +143,12 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><!-- Error message -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if vctx.ViewError.Err != nil {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mb-4\"><div class=\"block text-red-600 text-sm\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -161,17 +161,17 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Message -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if vctx.Msg != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 11)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mb-4\"><div class=\"block text-blue-600 text-sm\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -184,12 +184,12 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 12)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 13)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"grid grid-flow-col gap-1 justify-stretch\"><!--Submit button-->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -198,7 +198,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 14)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button type=\"submit\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -206,7 +206,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 15)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Submit</button><!-- Cancel/Close button -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -215,7 +215,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 16)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -223,7 +223,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 17)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#members\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -231,7 +231,7 @@ func (vctx *ViewCtx) UserSetPassword(newPassword, newPasswordCheck string, input
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 18)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">Close</button></div></form></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -255,7 +255,7 @@ func (vctx *ViewCtx) UserSetPassword1(newPassword, newPasswordCheck string) temp
 			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 19)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"setNewPassword\" class=\"bg-gray-100 flex justify-center items-center h-screen\"><div class=\"lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2\"><h1 class=\"text-2xl font-semibold mb-4\">Set new password</h1><!-- Form --><form id=\"setNewPasswordForm\" hx-post=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -263,7 +263,7 @@ func (vctx *ViewCtx) UserSetPassword1(newPassword, newPasswordCheck string) temp
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 20)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#setNewPassword\" hx-swap=\"outerHTML\" hx-push-url=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -271,7 +271,7 @@ func (vctx *ViewCtx) UserSetPassword1(newPassword, newPasswordCheck string) temp
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 21)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><!-- New password --><div class=\"mb-4\"><label for=\"newpassword\" class=\"inline-block text-gray-600\">Password</label> <span class=\"relative\">*</span> <input type=\"password\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -279,7 +279,7 @@ func (vctx *ViewCtx) UserSetPassword1(newPassword, newPasswordCheck string) temp
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 22)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" id=\"newpassword\" name=\"newpassword\" required class=\"w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500\"></div><!-- New password check --><div class=\"mb-4\"><label for=\"newpasswordcheck\" class=\"inline-block text-gray-600\">Repeat password</label> <span class=\"relative\">*</span> <input type=\"password\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -287,12 +287,12 @@ func (vctx *ViewCtx) UserSetPassword1(newPassword, newPasswordCheck string) temp
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 23)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" id=\"newpasswordcheck\" name=\"newpasswordcheck\" required class=\"w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500\"></div><!-- Error -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if vctx.ViewError.Err != nil {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 24)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mb-4\"><div class=\"block text-red-600\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -305,17 +305,17 @@ func (vctx *ViewCtx) UserSetPassword1(newPassword, newPasswordCheck string) temp
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 25)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 26)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Message -->")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if vctx.Msg != "" {
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 27)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mb-4\"><div class=\"block text-blue-600\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -328,12 +328,12 @@ func (vctx *ViewCtx) UserSetPassword1(newPassword, newPasswordCheck string) temp
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 28)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 29)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Cancel button --><span><button hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -341,7 +341,7 @@ func (vctx *ViewCtx) UserSetPassword1(newPassword, newPasswordCheck string) temp
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 30)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#main\" hx-select=\"#members\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full\">Cancel</button></span><!-- Submit button --><span><button type=\"submit\" class=\"bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full\">Submit</button></span></form></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
