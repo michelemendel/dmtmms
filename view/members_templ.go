@@ -1022,8 +1022,8 @@ func (vctx *ViewCtx) memberTableRowButtons(member entity.Member) templ.Component
 // Helpers
 func jsFunctions() templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_jsFunctions_48fc`,
-		Function: `function __templ_jsFunctions_48fc(){// Focus on search input
+		Name: `__templ_jsFunctions_6097`,
+		Function: `function __templ_jsFunctions_6097(){// Focus on search input
 	let search = document.getElementById("searchterms");
 	val = search.value;
 
@@ -1042,11 +1042,14 @@ func jsFunctions() templ.ComponentScript {
 	var download = document.querySelector('#download');
 	download.addEventListener('change', function () {
     	var url = this.value;
-       	window.open(url, '_self');
+		if (url != "Download") {
+       		window.open(url, '_self');
+		}
+		download.selectedIndex = 0;
 	});
 }`,
-		Call:       templ.SafeScript(`__templ_jsFunctions_48fc`),
-		CallInline: templ.SafeScriptInline(`__templ_jsFunctions_48fc`),
+		Call:       templ.SafeScript(`__templ_jsFunctions_6097`),
+		CallInline: templ.SafeScriptInline(`__templ_jsFunctions_6097`),
 	}
 }
 

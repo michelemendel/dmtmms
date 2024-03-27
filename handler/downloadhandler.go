@@ -25,25 +25,27 @@ func (h *HandlerContext) DownloadHandler(c echo.Context) error {
 	case "csv":
 		c.Response().Header().Set("Content-Disposition", "attachment; filename=members.csv")
 		data, _ = h.MembersAsCSV(members, h.MembersTransformer)
-		return c.Blob(200, "text/csv", data)
+		return c.Blob(200, "text/csv; charset=utf-8", data)
 	case "fnr":
 		c.Response().Header().Set("Content-Disposition", "attachment; filename=fodselsnummer.csv")
 		data, _ = h.MembersAsCSV(members, h.PersonnummerTransformer)
-		return c.Blob(200, "text/csv", data)
+		return c.Blob(200, "text/csv; charset=utf-8", data)
 	case "emails":
 		c.Response().Header().Set("Content-Disposition", "attachment; filename=emails.txt")
 		data = h.Emails(members)
-		return c.Blob(200, "text/plain", data)
+		return c.Blob(200, "text/plain; charset=utf-8", data)
 	}
 	return nil
 }
 
 func (h *HandlerContext) Emails(members []entity.Member) []byte {
-	var emails string
+	var emails []string
 	for _, m := range members {
-		emails += m.Email + ","
+		if strings.TrimSpace(m.Email) != "" {
+			emails = append(emails, m.Email)
+		}
 	}
-	return []byte(emails)
+	return []byte(strings.Join(emails, ","))
 }
 
 func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string {
