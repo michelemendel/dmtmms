@@ -28,31 +28,31 @@ func (h *HandlerContext) MembersHandler(c echo.Context) error {
 		// true: We need to refresh the page when the form is closed to make a new search with current filter.
 		return h.Members(c, true)
 	}
+
 	return h.Members(c, false)
 }
 
 func (h *HandlerContext) Members(c echo.Context, doRefresh bool) error {
-	members, err := h.MembersFiltered(c)
-	if err != nil {
-		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, &filter.Filter{}))
-	}
-
-	memberDetails := view.MemberDetailsForPresentation(h.MemberDetails(c))
 	if doRefresh {
 		c.Response().Header().Set("HX-Refresh", "true")
 	}
 
-	return h.renderView(c, h.ViewCtx.Members(members, h.GetGroups(true), memberDetails, h.Filter))
+	members, err := h.MembersFiltered(c)
+	if err != nil {
+		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErr(err))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, &filter.Filter{}))
+	}
+
+	return h.renderView(c, h.ViewCtx.Members(members, h.GetGroups(true), h.Filter))
 }
 
 func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error) {
 	h.Filter.MakeFilterFromQuery(c)
 
-	xt := time.Now()
+	tstart := time.Now()
 	members, err := h.Repo.SelectMembersByFilter(h.Filter)
 	members = h.Filter.SortMembers(c, members)
-	fmt.Println("T:MembersFiltered", time.Since(xt))
+	fmt.Println("T:MembersFiltered", time.Since(tstart))
 
 	if err != nil {
 		return []entity.Member{}, err
@@ -64,10 +64,15 @@ func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error
 func (h *HandlerContext) NLatestMembers(c echo.Context, n int) error {
 	members, err := h.Repo.SelectNLatestMembers(n)
 	if err != nil {
-		return h.renderView(c, h.ViewCtx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, h.Filter))
+		return h.renderView(c, h.ViewCtx.Members([]entity.Member{}, []entity.Group{}, h.Filter))
 	}
 
-	return h.renderView(c, h.ViewCtx.Members(members, []entity.Group{}, entity.MemberDetails{}, &filter.Filter{}))
+	return h.renderView(c, h.ViewCtx.Members(members, []entity.Group{}, &filter.Filter{}))
+}
+
+func (h *HandlerContext) MemberDetailsHandler(c echo.Context) error {
+	memberDetails := view.MemberDetailsForPresentation(h.MemberDetails(c))
+	return h.renderView(c, h.ViewCtx.MemberDetails(memberDetails))
 }
 
 func (h *HandlerContext) MemberDetails(c echo.Context) (entity.Member, []entity.Group) {
@@ -129,7 +134,7 @@ func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 	if err != nil {
 		slog.Error(err.Error(), "uuid", uuid)
 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, &filter.Filter{}))
+		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, &filter.Filter{}))
 	}
 	return h.MembersHandler(c)
 }
@@ -151,7 +156,7 @@ func (h *HandlerContext) MemberUpdateInitHandler(c echo.Context) error {
 	// c.QueryParams().Set("order", c.FormValue("order"))
 	// c.QueryParams().Set("wsort", "false")
 	// c.QueryParams().Set("muuid", memberUUID)
-	urlReplacement := h.Filter.URLQuery(memberUUID, "Name", "false")
+	urlReplacement := h.Filter.URLQuery("Name", "false")
 	// fmt.Println("   [MemberUpdateInitHandler]::", c.Request().URL.Path)
 	// fmt.Println("   [MemberUpdateInitHandler]:sort:", sort, order)
 	// fmt.Println("   [MemberUpdateInitHandler]:CURR:", urlReplacement)

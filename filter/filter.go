@@ -53,17 +53,16 @@ func (f *Filter) MakeFilterFromQuery(c echo.Context) {
 }
 
 func (f *Filter) URLForDownloadLink(downloadType string) string {
-	return "/download" + f.URLQuery("", f.SortCol, "false") + "&t=" + downloadType
+	return "/download" + f.URLQuery(f.SortCol, "false") + "&t=" + downloadType
 }
 
-func (f *Filter) URLQuery(mUUID, sortCol, withSort string) string {
+func (f *Filter) URLQuery(sortCol, withSort string) string {
 	selAges := ""
 	for _, age := range f.SelectedAges {
 		selAges += "&selectedAges=" + age
 	}
 
-	return "?muuid=" + mUUID +
-		"&fuuid=" + f.FamilyUUID +
+	return "?fuuid=" + f.FamilyUUID +
 		"&guuid=" + f.GroupUUID +
 		"&from=" + f.From +
 		"&to=" + f.To +

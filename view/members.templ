@@ -10,17 +10,17 @@ import (
 	"strings"
 )
 
-templ (vctx *ViewCtx) Members(members []entity.Member, groups []entity.Group, memberDetails entity.MemberDetails, f *filter.Filter) {
+templ (vctx *ViewCtx) Members(members []entity.Member, groups []entity.Group, f *filter.Filter) {
 	if ctx.Value(constants.CTX_IS_XHR_KEY).(bool) {
-		@vctx.MembersPage(members, groups, memberDetails, f)
+		@vctx.MembersPage(members, groups, f)
 	} else {
 		@vctx.AppRoot() {
-			@vctx.MembersPage(members, groups, memberDetails, f)
+			@vctx.MembersPage(members, groups, f)
 		}
 	}
 }
 
-templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group, memberDetails entity.MemberDetails, f *filter.Filter) {
+templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group, f *filter.Filter) {
 	<div id="members">
 		// Placeholder
 		<div id="memberForm">
@@ -58,9 +58,9 @@ templ (vctx *ViewCtx) MembersPage(members []entity.Member, groups []entity.Group
 					@vctx.MembersTable(members, f)
 				</div>
 			</div>
-			// Member details
+			// Member details placeholder
 			<div class="w-1/5 px-4 mt-[9rem]">
-				@vctx.MemberDetails(memberDetails)
+				<div id="memberDetails"></div>
 			</div>
 		</div>
 		@vctx.Footer()
@@ -217,12 +217,12 @@ templ (vctx *ViewCtx) AddMemberButton() {
 templ (vctx *ViewCtx) NLatestUpdatesButton() {
 	// N latest button
 	<button
-		hx-get={ constants.ROUTE_MEMBERS + "?nlatest=10" }
+		hx-get={ constants.ROUTE_MEMBERS + "?nlatest=5" }
 		hx-target="#members"
 		hx-swap="outerHTML"
 		hx-push-url="true"
 		class={ ButtonClassFullWidth }
-	>10 latest updates</button>
+	>5 latest updates</button>
 }
 
 templ (vctx *ViewCtx) MembersTable(members []entity.Member, f *filter.Filter) {
@@ -243,7 +243,7 @@ templ (vctx *ViewCtx) memberTableHead(members []entity.Member, f *filter.Filter)
 			for _, col := range []string{"ID", "Family", "Name", "Fødselsnr", "Age", "SynagSeat", "RecEmail", "RecMail", "RecHatikvah" } {
 				// Link to sort
 				<th
-					hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(f.MemberUUID, col, "true") }
+					hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(col, "true") }
 					hx-target="#members"
 					hx-select="#members"
 					hx-swap="outerHTML"
@@ -276,17 +276,17 @@ templ (vctx *ViewCtx) memberTableHead(members []entity.Member, f *filter.Filter)
 	</thead>
 }
 
+// Includes link to click on a member to show the member's details
 templ (vctx *ViewCtx) memberTableBody(members []entity.Member, f *filter.Filter) {
 	<tbody>
 		for i, member := range members {
-			// Link to select member
 			<tr
 				tabindex={ strconv.Itoa(i + 1) }
 				id={ "member-" + member.UUID }
-				hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(member.UUID, f.SortCol, "false") }
-				hx-target="#members"
+				hx-get={ constants.ROUTE_MEMBER_DETAILS + "?muuid=" + member.UUID }
+				hx-target="#memberDetails"
 				hx-swap="outerHTML"
-				hx-push-url="true"
+				hx-push-url="false"
 				hx-trigger="click"
 				if member.UUID == f.MemberUUID {
 					class="border-b dark:border-neutral-500 focus:bg-blue-100 hover:bg-neutral-100 cursor-pointer bg-blue-100"
@@ -333,6 +333,7 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member) {
 			hx-trigger="click consume"
 			class="w-3 font-medium cursor-pointer whitespace-nowrap px-2 py-4"
 		>
+			// Update icon
 			<span class="[&>svg]:w-5">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 					<path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"></path>
@@ -353,6 +354,7 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member) {
 			onClick={ ConfirmDialog("#delete-"+member.UUID, "Delete member", "Are you sure you want to delete this member?") }
 			class="w-3 font-medium cursor-pointer whitespace-nowrap px-2 py-4"
 		>
+			// Delete icon
 			<span class="[&>svg]:w-5">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 					<path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"></path>
@@ -360,59 +362,6 @@ templ (vctx *ViewCtx) memberTableRowButtons(member entity.Member) {
 			</span>
 		</td>
 	}
-}
-
-templ (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) {
-	<div
-		id="memberDetails"
-		class="px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left dark:bg-neutral-700"
-	>
-		if len(memberDetails.MemberDetails) == 0 {
-			<p class="text-sm italic">Click on a member to view details</p>
-		} else {
-			<ul class=" text-sm">
-				// Various details
-				for _, m := range memberDetails.MemberDetails[3:] {
-					if strings.TrimSpace(m.Value) != "" && strings.TrimSpace(m.Value) != constants.DATE_MIN {
-						<li class="mt-2 text-xs font-semibold dark:border-opacity-50">{ m.Title } </li>
-						<li class="pt-0.25 dark:border-opacity-50">{ m.Value } </li>
-					}
-				}
-				// Family
-				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
-					Family
-				</li>
-				<li
-					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&fuuid=" + memberDetails.MemberDetails[1].Value }
-					hx-target="#members"
-					hx-select="#members"
-					hx-swap="outerHTML"
-					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&fuuid=" + memberDetails.MemberDetails[1].Value }
-					class="w-full pt-0.25 text-blue-600 dark:border-opacity-50 cursor-pointer"
-				>
-					// Family name
-					{ string(memberDetails.MemberDetails[2].Value) }
-				</li>
-				// Groups
-				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
-					Groups	
-				</li>
-				<li class="pt-0.25 text-blue-600 dark:border-opacity-50 cursor-pointer">
-					<ul class="text-sm">
-						for _, group := range memberDetails.Groups {
-							<li
-								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&guuid=" + group.UUID }
-								hx-target="#members"
-								hx-select="#members"
-								hx-swap="outerHTML"
-								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&guuid=" + group.UUID }
-							>{ group.Name }</li>
-						}
-					</ul>
-				</li>
-			</ul>
-		}
-	</div>
 }
 
 //--------------------------------------------------------------------------------

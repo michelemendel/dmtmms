@@ -35,6 +35,7 @@ func Routes(e *echo.Echo, hCtx *handler.HandlerContext) {
 
 	// Members
 	e.GET(constants.ROUTE_MEMBERS, hCtx.MembersHandler)
+	e.GET(constants.ROUTE_MEMBER_DETAILS, hCtx.MemberDetailsHandler)
 	e.GET(constants.ROUTE_MEMBER_CREATE, hCtx.MemberCreateInitHandler)
 	e.POST(constants.ROUTE_MEMBER_CREATE, hCtx.MemberCreateHandler)
 	e.DELETE(constants.ROUTE_MEMBER_DELETE+"/:uuid", hCtx.MemberDeleteHandler)

@@ -1,0 +1,60 @@
+package view
+
+import (
+	"github.com/michelemendel/dmtmms/entity"
+	"github.com/michelemendel/dmtmms/constants"
+	"strings"
+)
+
+templ (vctx *ViewCtx) MemberDetails(memberDetails entity.MemberDetails) {
+	<div
+		id="memberDetails"
+		class="px-2 py-2 block max-w-[18rem] rounded-lg bg-white text-left dark:bg-neutral-700"
+	>
+		if len(memberDetails.MemberDetails) == 0 {
+			<p class="text-sm italic">Click on a member to view details</p>
+		} else {
+			<ul class=" text-sm">
+				// Various details
+				for _, m := range memberDetails.MemberDetails[3:] {
+					if strings.TrimSpace(m.Value) != "" && strings.TrimSpace(m.Value) != constants.DATE_MIN {
+						<li class="mt-2 text-xs font-semibold dark:border-opacity-50">{ m.Title } </li>
+						<li class="pt-0.25 dark:border-opacity-50">{ m.Value } </li>
+					}
+				}
+				// Family
+				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
+					Family
+				</li>
+				<li
+					hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&fuuid=" + memberDetails.MemberDetails[1].Value }
+					hx-target="#members"
+					hx-select="#members"
+					hx-swap="outerHTML"
+					hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&fuuid=" + memberDetails.MemberDetails[1].Value }
+					class="w-full pt-0.25 text-blue-600 dark:border-opacity-50 cursor-pointer"
+				>
+					// Family name
+					{ string(memberDetails.MemberDetails[2].Value) }
+				</li>
+				// Groups
+				<li class="text-xs font-semibold pt-2 dark:border-opacity-50">
+					Groups	
+				</li>
+				<li class="pt-0.25 text-blue-600 dark:border-opacity-50 cursor-pointer">
+					<ul class="text-sm">
+						for _, group := range memberDetails.Groups {
+							<li
+								hx-get={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&guuid=" + group.UUID }
+								hx-target="#members"
+								hx-select="#members"
+								hx-swap="outerHTML"
+								hx-push-url={ constants.ROUTE_MEMBERS + "?muuid=" + memberDetails.MemberDetails[0].Value + "&guuid=" + group.UUID }
+							>{ group.Name }</li>
+						}
+					</ul>
+				</li>
+			</ul>
+		}
+	</div>
+}

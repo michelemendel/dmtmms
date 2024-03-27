@@ -135,7 +135,7 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 					// --------------------------------------------------------------------------------
 					// Buttons
 					<div class="flex flex-row mt-4">
-						// Submit button
+						// Update button
 						<div>
 							<button
 								if op == "create" {
@@ -159,7 +159,7 @@ templ (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []str
 						<div class="ml-2">
 							<button
 								id="closeMemberForm"
-								hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(f.MemberUUID, f.SortCol, "false") + "&formclose=true" }
+								hx-get={ constants.ROUTE_MEMBERS + f.URLQuery(f.SortCol, "false") + "&formclose=true" }
 								hx-target="#members"
 								hx-swap="outerHTML"
 								class={ ButtonClass }

@@ -332,7 +332,7 @@ func (vctx *ViewCtx) MemberFormModal(member entity.Member, selectedGroups []stri
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_MEMBERS + f.URLQuery(f.MemberUUID, f.SortCol, "false") + "&formclose=true"))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(constants.ROUTE_MEMBERS + f.URLQuery(f.SortCol, "false") + "&formclose=true"))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
