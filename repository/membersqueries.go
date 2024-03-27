@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log/slog"
 	"strings"
-	"time"
 
 	"github.com/michelemendel/dmtmms/constants"
 	"github.com/michelemendel/dmtmms/entity"
@@ -20,7 +19,7 @@ const (
 	SELECT 
 	m.uuid, m.id, m.name, IFNULL(date(m.dob), "00010101"), IFNULL(m.personnummer, ""), 
 	IFNULL(m.email,""),IFNULL(m.mobile,""), 
-	IFNULL(m.address1,""), IFNULL(m.address1,""), IFNULL(m.postnummer,""), IFNULL(m.poststed,""), 
+	IFNULL(m.address1,""), IFNULL(m.address2,""), IFNULL(m.postnummer,""), IFNULL(m.poststed,""), 
 	IFNULL(m.synagogue_seat, ""),
 	IFNULL(m.membership_fee_tier, ""),
 	IFNULL(date(m.registered_date), ""),
@@ -113,11 +112,6 @@ func (r *Repo) SelectMembersByFilter(f *filter.Filter) ([]entity.Member, error) 
 		args = append(args, f.ReceiveHatikvah)
 	}
 
-	// if filter.Archived != "" {
-	// 	q = q + "AND m.archived=?"
-	// 	args = append(args, filter.Archived)
-	// }
-
 	if f.SelectedGroup != "" && f.SelectedGroup != "All groups" {
 		q = q + "AND g.name=?"
 		args = append(args, f.SelectedGroup)
@@ -142,7 +136,6 @@ func (r *Repo) ExecuteQuery(query string, args ...interface{}) ([]entity.Member,
 	return r.MakeMemberList(rows)
 }
 
-// Run select on members
 func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 	defer rows.Close()
 	var members []entity.Member
@@ -159,7 +152,6 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 			&m.Email, &m.Mobile,
 			&m.Address1, &m.Address2, &m.Postnummer, &m.Poststed,
 			&m.Synagogueseat, &m.MembershipFeeTier, &registeredDateStr, &deregisteredDateStr,
-			// &m.ReceiveEmail, &m.ReceiveMail, &m.ReceiveHatikvah, &m.Archived, &m.Status, &m.FamilyUUID,
 			&m.ReceiveEmail, &m.ReceiveMail, &m.ReceiveHatikvah, &m.Status, &m.FamilyUUID, &m.FamilyName,
 			&createdAtStr, &updatedAtStr,
 		)
@@ -174,14 +166,13 @@ func (r *Repo) MakeMemberList(rows *sql.Rows) ([]entity.Member, error) {
 		deregisteredDate := util.String2Date(deregisteredDateStr)
 		address := entity.NewAddress(m.Address1, m.Address2, m.Postnummer, m.Poststed)
 		createdAt := util.String2DateTime(createdAtStr)
-		updatedAt := time.Now() //util.String2DateTime(updatedAtStr)
+		updatedAt := util.String2DateTime(updatedAtStr)
 
 		members = append(members, entity.NewMember(
 			m.UUID, m.ID, m.Name, DOB, age, m.Personnummer,
 			m.Email, m.Mobile,
 			address,
 			m.Synagogueseat, m.MembershipFeeTier, registeredDate, deregisteredDate, m.ReceiveEmail,
-			// m.ReceiveMail, m.ReceiveHatikvah, m.Archived, entity.MemberStatus(m.Status), m.FamilyUUID,
 			m.ReceiveMail, m.ReceiveHatikvah, entity.MemberStatus(m.Status), m.FamilyUUID,
 			m.FamilyName, createdAt, updatedAt,
 		))

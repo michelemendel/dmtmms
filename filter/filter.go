@@ -72,7 +72,6 @@ func (f *Filter) URLQuery(mUUID, sortCol, withSort string) string {
 		"&receiveEmail=" + f.ReceiveEmail +
 		"&receiveMail=" + f.ReceiveMail +
 		"&receiveHatikvah=" + f.ReceiveHatikvah +
-		// "&archived=" + f.Archived +
 		"&selectedStatus=" + f.SelectedStatus +
 		"&wsort=" + withSort +
 		"&sort=" + sortCol +

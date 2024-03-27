@@ -62,7 +62,6 @@ func (r *Repo) CreateTables() {
 
 	// id - this is an id shared by dmt and tripletex
 	// https://mail.google.com/mail/u/0/#search/from%3Aadm%40dmt.oslo.no/FMfcgzGwJcbCTnSbdzxfhHXlFLZCXDGZ?projector=1&messagePartId=0.1
-	// state = [active, archived, tobedeleted]
 	sqlStmts["create_members"] = `
 	CREATE TABLE IF NOT EXISTS members (
 		uuid TEXT PRIMARY KEY,
@@ -85,7 +84,7 @@ func (r *Repo) CreateTables() {
 		receive_hatikvah BOOLEAN,
 		status TEXT,
 		created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
-		updated_at INTEGER,
+		updated_at INTEGER DEFAULT CURRENT_TIMESTAMP,
 		family_uuid TEXT,
 		family_name TEXT,
 		FOREIGN KEY(family_uuid) REFERENCES families(uuid)
@@ -263,10 +262,9 @@ func (r *Repo) InsertGroups() {
 type member struct {
 	name         string
 	receiveEmail bool
-	// archived     bool
-	familyUUID string
-	familyName string
-	groupUUIDs []string
+	familyUUID   string
+	familyName   string
+	groupUUIDs   []string
 }
 
 func getMembers(nofMembers int) map[string]member {

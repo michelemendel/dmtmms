@@ -94,12 +94,11 @@ type Member struct {
 	ReceiveEmail      bool
 	ReceiveMail       bool
 	ReceiveHatikvah   bool
-	// Archived          bool
-	Status     MemberStatus
-	FamilyUUID string
-	FamilyName string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	Status            MemberStatus
+	FamilyUUID        string
+	FamilyName        string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 func NewMember(
@@ -119,7 +118,6 @@ func NewMember(
 	receiveEmail bool,
 	receiveMail bool,
 	receiveHatikvah bool,
-	// archived bool,
 	status MemberStatus,
 	familyUUID,
 	familyName string,
@@ -143,12 +141,11 @@ func NewMember(
 		ReceiveEmail:      receiveEmail,
 		ReceiveMail:       receiveMail,
 		ReceiveHatikvah:   receiveHatikvah,
-		// Archived:          archived,
-		Status:     status,
-		FamilyUUID: familyUUID,
-		FamilyName: familyName,
-		CreatedAt:  createdAt,
-		UpdatedAt:  updatedAt,
+		Status:            status,
+		FamilyUUID:        familyUUID,
+		FamilyName:        familyName,
+		CreatedAt:         createdAt,
+		UpdatedAt:         updatedAt,
 	}
 }
 

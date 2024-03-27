@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 
 	// "fmt"
 	"log/slog"
@@ -47,8 +48,11 @@ func (h *HandlerContext) Members(c echo.Context, doRefresh bool) error {
 
 func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error) {
 	h.Filter.MakeFilterFromQuery(c)
+
+	xt := time.Now()
 	members, err := h.Repo.SelectMembersByFilter(h.Filter)
 	members = h.Filter.SortMembers(c, members)
+	fmt.Println("T:MembersFiltered", time.Since(xt))
 
 	if err != nil {
 		return []entity.Member{}, err
@@ -117,18 +121,7 @@ func (h *HandlerContext) MemberCreateHandler(c echo.Context) error {
 }
 
 //--------------------------------------------------------------------------------
-// Archive & Delete member
-
-// func (h *HandlerContext) MemberArchiveHandler(c echo.Context) error {
-// 	uuid := c.Param("uuid")
-// 	err := h.Repo.ArchiveMember(uuid)
-// 	if err != nil {
-// 		slog.Error(err.Error(), "uuid", uuid)
-// 		vctx := view.MakeViewCtx(h.Session, view.MakeOpts().WithErrType(err, view.ErrTypeOnDelete))
-// 		return h.renderView(c, vctx.Members([]entity.Member{}, []entity.Group{}, entity.MemberDetails{}, filter.Filter{}))
-// 	}
-// 	return h.MembersHandler(c)
-// }
+// Delete member
 
 func (h *HandlerContext) MemberDeleteHandler(c echo.Context) error {
 	uuid := c.Param("uuid")

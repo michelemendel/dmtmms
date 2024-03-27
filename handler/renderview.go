@@ -27,8 +27,8 @@ func (h *HandlerContext) renderView(c echo.Context, comp templ.Component) error 
 
 	// Bypass the login
 	if os.Getenv(constants.ENV_BYPASS_LOGIN) == "true" {
-		username := "abe"
-		role := "admin"
+		username := "root"
+		role := "root"
 		h.Session.Login(c, username)
 		ctx = context.WithValue(ctx, constants.CTX_USER_NAME_KEY, username)
 		ctx = context.WithValue(ctx, constants.CTX_USER_ROLE_KEY, role)

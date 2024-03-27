@@ -48,7 +48,6 @@ func (h *HandlerContext) Emails(members []entity.Member) []byte {
 
 func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string {
 	var items [][]string
-	// items = append(items, []string{"ID", "Name", "Fødselsnummer", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah", "Archived"})
 	items = append(items, []string{"ID", "Name", "Family", "Fødselsnummer", "Age", "Email", "Mobile", "Address1", "Address2", "Postnummer", "Poststed", "Status", "RegisteredDate", "DeregisteredDate", "SynagogueSeat", "ReceiveEmail", "ReceiveMail", "ReceiveHatikvah", "Created", "Updated"})
 	for _, m := range members {
 		items = append(items, []string{
@@ -70,7 +69,6 @@ func (h *HandlerContext) MembersTransformer(members []entity.Member) [][]string 
 			util.Bool2String(m.ReceiveEmail),
 			util.Bool2String(m.ReceiveMail),
 			util.Bool2String(m.ReceiveHatikvah),
-			// util.Bool2String(m.Archived),
 			util.DateTime2String(m.CreatedAt),
 			util.DateTime2String(m.UpdatedAt),
 		})

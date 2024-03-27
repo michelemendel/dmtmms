@@ -28,15 +28,17 @@ func main() {
 			repo.CreateTriggers(true)
 			repo.CreateIndexes()
 			repo.InsertUsers()
-		// repo.InsertFamilies()
-		// repo.InsertGroups()
-		// repo.InsertMembers()
+			repo.InsertFamilies()
+			repo.InsertGroups()
+			// repo.InsertMembers()
 		case "reset_no_auto_id":
 			repo.DropTables()
 			repo.CreateTables()
 			repo.CreateTriggers(false)
 			repo.CreateIndexes()
 			repo.InsertUsers()
+			repo.InsertFamilies()
+			repo.InsertGroups()
 		default:
 			fmt.Println("no op specified")
 		}

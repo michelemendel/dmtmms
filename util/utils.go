@@ -90,6 +90,9 @@ func DateTime2String(t time.Time) string {
 }
 
 func String2DateTime(s string) time.Time {
+	if s == "" {
+		return time.Time{}
+	}
 	t, err := time.Parse(constants.DATE_TIME_FRMT, s)
 	if err != nil {
 		slog.Error("Error parsing date time", "error", err)

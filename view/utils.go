@@ -39,7 +39,6 @@ func MemberDetailsForPresentation(member entity.Member, groups []entity.Group) e
 	details = append(details, entity.MemberDetail{Title: "ReceiveHatikvah", Value: util.Bool2String(member.ReceiveHatikvah)})
 	details = append(details, entity.MemberDetail{Title: "CreatedAt", Value: util.DateTime2String(member.CreatedAt)})
 	details = append(details, entity.MemberDetail{Title: "UpdatedAt", Value: util.DateTime2String(member.UpdatedAt)})
-	// details = append(details, MemberDetail{"Archived", util.Bool2String(member.Archived)})
 
 	return entity.MemberDetails{
 		MemberDetails: details,

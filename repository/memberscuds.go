@@ -52,7 +52,6 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 		member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
 		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
-		// member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikvah, member.Archived, member.Status,
 		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikvah, member.Status,
 		familyUUID, familyName,
 	)
@@ -77,16 +76,6 @@ func (r *Repo) CreateMember(member entity.Member, groupUUIDs []string) error {
 	slog.Info("CreateMember", "uuid", member.UUID, "name", member.Name)
 	return nil
 }
-
-// func (r *Repo) ArchiveMember(memberUUID string) error {
-// 	_, err := r.DB.Exec("UPDATE members SET archived=true WHERE uuid=?", memberUUID)
-// 	if err != nil {
-// 		slog.Error(err.Error(), "uuid", memberUUID)
-// 		return err
-// 	}
-// 	slog.Info("ArchivedMember", "uuid", memberUUID)
-// 	return nil
-// }
 
 func (r *Repo) DeleteMember(memberUUID string) error {
 	_, err := r.DB.Exec("DELETE FROM members_groups WHERE member_uuid=?", memberUUID)
@@ -121,7 +110,6 @@ func (r *Repo) UpdateMember(member entity.Member, groupUUIDs []string) error {
 		member.Name, member.DOB, member.Personnummer, member.Email, member.Mobile,
 		member.Address.Address1, member.Address.Address2, member.Address.Postnummer, member.Address.Poststed,
 		member.Synagogueseat, member.MembershipFeeTier, member.RegisteredDate, member.DeregisteredDate,
-		// member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikvah, member.Archived, member.Status,
 		member.ReceiveEmail, member.ReceiveMail, member.ReceiveHatikvah, member.Status,
 		member.FamilyUUID, member.FamilyName,
 		member.UUID,
