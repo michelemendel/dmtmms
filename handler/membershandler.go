@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 
 	// "fmt"
 	"log/slog"
@@ -49,10 +48,8 @@ func (h *HandlerContext) Members(c echo.Context, doRefresh bool) error {
 func (h *HandlerContext) MembersFiltered(c echo.Context) ([]entity.Member, error) {
 	h.Filter.MakeFilterFromQuery(c)
 
-	tstart := time.Now()
 	members, err := h.Repo.SelectMembersByFilter(h.Filter)
 	members = h.Filter.SortMembers(c, members)
-	fmt.Println("T:MembersFiltered", time.Since(tstart))
 
 	if err != nil {
 		return []entity.Member{}, err

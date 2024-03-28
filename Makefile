@@ -46,7 +46,8 @@ build_cli:
 	@go build -o bin/cli ./cmd/cli/...
 
 # --------------------------------------------------------------------------------
-# Import
+# Import data from a CSV file that was exported from the old member system
+# This is a one-time job
 
 build_import:
 	@go build -o bin/import ./cmd/import/...
